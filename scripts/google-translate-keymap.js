@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         GTK
+// @name         GoogleTranslateKeymap
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  在谷歌翻译中，输入完毕后按下 shift+enter 即可发音，再次按下可再次输入，不用操作鼠标了！
