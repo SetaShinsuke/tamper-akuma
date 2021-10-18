@@ -7,6 +7,7 @@
 // @match        https://www.google.com/search?*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
+// @updateURL   https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/better-google-bilibili.js
 // ==/UserScript==
 
 (function() {
