@@ -20,7 +20,7 @@
 
     if (textArea) {
         // 拦截 Alt 键，防止焦点到 chrome 右上角的设置键
-        textArea.addEventListener('keypress', event => {
+        textArea.addEventListener('keydown', event => {
             if (event.altKey) {
                 event.preventDefault();
             }
