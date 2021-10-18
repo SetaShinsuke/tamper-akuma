@@ -7,7 +7,7 @@
 // @match        https://www.vgtime.com/*
 // @icon         https://www.google.com/s2/favicons?domain=vgtime.com
 // @grant        none
-// @updateURL   https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bgtime-auto-login.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/vgtime-auto-login.js
 // ==/UserScript==
 
 (function() {
