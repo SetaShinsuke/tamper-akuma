@@ -5,6 +5,8 @@
 ## 如何添加 tampermonkey 脚本
 在浏览器单机 tampermonkey 图标，选择【控制面板】，单击右上角【实用工具】，在下方从 【URL 安装】输入代码的 raw url（如：https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/google-translate-keymap.js ）
 
+---
+
 ## BGB ( Better-google-bilibili )
 https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/better-google-bilibili.js    
 在 Google 搜索视频的时候，搜出的 B 站的结果中，经常有一些是 `"/s/video"` 下的链接，播放页面比较奇怪，这个脚本可以把链接改成正常的 `"/video"` 链接。
