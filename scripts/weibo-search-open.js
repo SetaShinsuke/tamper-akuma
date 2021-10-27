@@ -28,6 +28,8 @@
     });
 })();
 
+// todo: 测试代码的自动更新
+
 function inject() {
     var items = document.querySelector(".gn_topmenulist").querySelectorAll(".clearfix");
     for (var i = 0; i < items.length; i++) {
