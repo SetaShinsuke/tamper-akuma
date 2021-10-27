@@ -10,24 +10,27 @@
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo-search-open.js
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
     window.addEventListener('load', (x) => {
         console.log('window loaded');
-        document.querySelector('.gn_search_v2').addEventListener('input', (x) => {
-            setTimeout(inject, 1000);
-        });
+        setTimeout(() => {
+            var searchBar = document.querySelector('.gn_search_v2');
+            if (!searchBar) {
+                console.log('Search Bar not found.')
+                return;
+            }
+            searchBar.addEventListener('input', (x) => {
+                setTimeout(inject, 1000);
+            });
+        }, 3000)
     });
 })();
 
-function findSearch(){
-    return document.querySelector('.gn_search_v2');
-}
-
-function inject(){
+function inject() {
     var items = document.querySelector(".gn_topmenulist").querySelectorAll(".clearfix");
-    for(var i = 0; i< items.length; i++){
+    for (var i = 0; i < items.length; i++) {
         var item = items[i];
         // console.log('item: ');
         // console.log(item);
@@ -37,13 +40,13 @@ function inject(){
     }
 }
 
-function onAuxClick(event){
-    if(event.which !== 2){
+function onAuxClick(event) {
+    if (event.which !== 2) {
         return;
     }
     // console.log(event.target);
     var item = event.target.closest(".clearfix");
-    if(!item){
+    if (!item) {
         return;
     }
     var url = item.getAttribute('durl');
