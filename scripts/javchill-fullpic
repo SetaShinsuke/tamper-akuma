@@ -1,0 +1,60 @@
+// ==UserScript==
+// @name         JavChill-FullPic
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  Click 👁 to see full picture.
+// @author       Akuma
+// @match        https://javchill.com/*
+// @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+// @grant        none
+// ==/UserScript==
+
+var TIMEOUT = 3000;
+
+console.log('starting inject');
+
+(function () {
+    'use strict';
+    window.addEventListener('load', (x) => {
+        console.log('window loaded');
+        setTimeout(() => {
+            onReady();
+        }, TIMEOUT);
+    });
+})();
+
+function onReady() {
+    // do stuff
+    document.querySelectorAll(".pull-right").forEach(x => {
+        var thumb = x.nextElementSibling;
+        // console.log('thumb');
+        if (thumb && thumb.classList.contains('thumb')) {
+            var url = thumb.style['background-image'].replaceAll('url("', '').replaceAll('")', '');
+            x.attributes['durl'] = url;
+            x.href = url;
+            console.log('durl added');
+            x.addEventListener('click', y => {
+                window.open(url, '_blank').focus();
+            });
+            x.removeEventListener('auxclick', onAuxClick);
+            x.addEventListener('auxclick', onAuxClick);
+            // });
+        }
+    });
+}
+
+function onAuxClick(event) {
+    console.log(event);
+    if (event.button !== 1) {
+        return;
+    }
+    // console.log(event.target);
+    var item = event.target.closest(".pull-right");
+    if (!item) {
+        return;
+    }
+    // var url = item.getAttribute('durl');
+    var url = item.href;
+    console.log(url);
+    window.open(url, '_blank').focus();
+}
