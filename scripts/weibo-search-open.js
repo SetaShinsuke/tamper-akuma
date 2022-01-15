@@ -16,6 +16,15 @@
     window.addEventListener('load', (x) => {
         console.log('window loaded');
         setTimeout(() => {
+            // 发送图标去色
+            var sendBtn = document.querySelector('.ficon_send');
+            if(!sendBtn){
+                console.log('Send Btn not found.')
+            }else {
+                sendBtn.style['background'] = '#00000022'
+            }
+
+            // 搜索栏中键
             var searchBar = document.querySelector('.gn_search_v2');
             if (!searchBar) {
                 console.log('Search Bar not found.')
