@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WBSearch
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  中键打开搜索结果
 // @author       Akuma
 // @match        https://weibo.com/*
@@ -25,13 +25,13 @@
                 sendBtn.style['background'] = '#00000022'
             }
 
-            // 去掉图标
-            var icons = document.querySelector('.gn_set_v2 S_line1');
-            if(!icons){
-                console.log('Junk icons not found.');
-            }else {
-                document.querySelector('.gn_set_v2').parentNode.removeChild(icons);
-            }
+            // // 去掉图标
+            // var icons = document.querySelector('.gn_set_v2 S_line1');
+            // if(!icons){
+            //     console.log('Junk icons not found.');
+            // }else {
+            //     document.querySelector('.gn_set_v2').parentNode.removeChild(icons);
+            // }
 
             // 搜索栏中键
             var searchBar = document.querySelector('.gn_search_v2');
