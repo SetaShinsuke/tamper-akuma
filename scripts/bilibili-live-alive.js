@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bilibili-live-alive
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.2.1
 // @description  防止B站直播在后台自动暂停
 // @author       xfgryujk
 // @include      /https?:\/\/live\.bilibili\.com\/?\??.*/
@@ -19,8 +19,7 @@
     window.setTimeout = function (func, ...args) {
         let code = func.toString();
         if (code.indexOf('triggerSleepCallback') !== -1) {
-            console.log(code);
-            console.log('Prevent sleeping');
+            console.log(`${code} \nPrevent sleeping`);
             return null;
         }
         return realSetTimeout.call(this, func, ...args);
@@ -28,8 +27,7 @@
     window.setInterval = function (func, ...args) {
         let code = func.toString();
         if (code.indexOf('triggerSleepCallback') !== -1) {
-            console.log(code);
-            console.log('Prevent sleeping');
+            console.log(`${code} \nPrevent sleeping`);
             return null;
         }
         return realSetInterval.call(this, func, ...args);
