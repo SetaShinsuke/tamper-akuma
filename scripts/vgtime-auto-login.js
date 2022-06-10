@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         VG-auto-login
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Auto login to VGTime
 // @author       Akuma
 // @match        https://www.vgtime.com/*
 // @icon         https://www.google.com/s2/favicons?domain=vgtime.com
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/vgtime-auto-login.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/vgtime-auto-login.js
 // ==/UserScript==
 
 (function() {

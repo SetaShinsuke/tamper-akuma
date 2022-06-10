@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         JOJOWikiGallery
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  复制 JOJO wiki 页面的所有图片链接
 // @author       Seta
 // @match        https://jojowiki.com/Art_Gallery*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/jojowiki-gallery.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/jojowiki-gallery.js
 // @run-at       context-menu
 // ==/UserScript==
 

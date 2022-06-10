@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         GoogleTranslateKeymap
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  在谷歌翻译中，输入完毕后按下 shift+enter 即可发音，再次按下可再次输入，不用操作鼠标了！
 // @author       Seta
 // @match        https://translate.google.com*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/google-translate-keymap.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/google-translate-keymap.js
 // ==/UserScript==
 
 (function () {
