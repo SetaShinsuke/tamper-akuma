@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ComikonMoreFiles
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  推送漫画到漫画控时，多选文件
 // @author       Akumu
 // @match        http://192.168.50.70:8080/*
@@ -12,11 +12,8 @@
 // ==/UserScript==
 (function() {
     'use strict';
-    var form = document.getElementsByTagName('form')[0]
-    form.getElementsByTagName('p').forEach(p => {
-        var input = p.firstElementChild();
-        input.setAttribute('multiple', '');
-    })
+    var form = document.getElementsByTagName('form')[0];
+    form.getElementsByTagName('p')[0].firstElementChild.setAttribute('multiple', '');
     // var pNew = p.cloneNode(true);
     // form.appendChild(pNew);
 })();
