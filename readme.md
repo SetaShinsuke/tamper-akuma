@@ -28,3 +28,7 @@ https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/vgtim
 ## BMCE ( Bilibili Manga Credits Exchange) 
 https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili-manga-credits-exchange.js
 只需打开[B漫积分兑换页面](https://manga.bilibili.com/eden/credits-exchange.html?refresh=true)，便会自动将积分兑换为通用券（目前需要不停手动刷新）
+
+## BEI (BM-EP-Index)
+https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bm-ep-index.js
+给B漫章节目录添加真正的index（从1开始）
