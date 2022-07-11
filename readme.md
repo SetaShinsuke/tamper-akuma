@@ -24,3 +24,7 @@ https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo
 ## vgtime-auto-login
 https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/vgtime-auto-login.js  
 游戏时光(VGTime)总是记不住登录状态，这个脚本可以在用户名密码自动填充的情况下，自动点击登录，恢复到登录状态。
+
+## BMCE ( Bilibili Manga Credits Exchange) 
+https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili-manga-credits-exchange.js
+只需打开[B漫积分兑换页面](https://manga.bilibili.com/eden/credits-exchange.html?refresh=true)，便会自动将积分兑换为通用券（目前需要不停手动刷新）
