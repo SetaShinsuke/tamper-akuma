@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-EP-index
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Hover to show episode index.
 // @author       Akuma
 // @match        https://manga.bilibili.com/detail/*
@@ -38,4 +38,5 @@ function onReady() {
         i++;
         btnEp.title = `${i}`;
     });
+    console.log('Index added.');
 }
