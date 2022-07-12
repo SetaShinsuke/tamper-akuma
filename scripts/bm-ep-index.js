@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-EP-index
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Hover to show episode index.
 // @author       Akuma
 // @match        https://manga.bilibili.com/detail/*
@@ -11,9 +11,7 @@
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bm-ep-index.js
 // ==/UserScript==
 
-var TIMEOUT = 3000;
-var END_MIN = 5; //12:05分停止刷新
-// 兑换页: https://manga.bilibili.com/eden/credits-exchange.html?refresh=true
+var TIMEOUT = 2000;
 
 console.log('starting inject');
 
@@ -22,7 +20,7 @@ console.log('starting inject');
     window.addEventListener('load', (x) => {
         console.log('window loaded');
         try {
-            onReady();
+            setTimeout(onReady, TIMEOUT);
         } catch (e) {
             console.error(e);
         }
@@ -32,6 +30,7 @@ console.log('starting inject');
 function onReady() {
     var epList = document.querySelector('.episode-list');
     if (!epList) {
+        console.log('Eplist not found')
         return;
     }
     var i = 0;
