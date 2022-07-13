@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BMangaExchange
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?refresh=true
@@ -11,8 +11,7 @@
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili-manga-credits-exchange.js
 // ==/UserScript==
 
-var TIMEOUT = 3000;
-var END_MIN = 5; //12:05分停止刷新
+var TIMEOUT = 5_000;
 // 兑换页: https://manga.bilibili.com/eden/credits-exchange.html?refresh=true
 
 console.log('starting inject');
@@ -40,37 +39,63 @@ function onReady() {
     var btn = document.querySelector('.action-btn');
     // var btn = document.querySelectorAll('.action-btn')[24];
     var urlParams = new URLSearchParams(document.location.search);
-    // var date = new Date();
-    // var hours = date.getHours();
-    // var minutes = date.getMinutes();
-    // // 12:05 之后不再刷新
-    if (!urlParams.get('refresh') || !btn) {
-        //     || hours < 11 || (hours === 11 && minutes < 55)
-        //     || hours > 12 || (hours === 12 && minutes > END_MIN)) {
+    // 当前积分
+    var creditDiv = document.querySelector('.my-credit');
+    var credits = 0;
+    try {
+        credits = parseInt(creditDiv.innerHTML.replace('赛季积分：', ''));
+    } catch (e) {
+        console.log(e);
+    }
+    console.log(`当前积分: ${credits}`);
+    // 检查时间
+    var date = new Date();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    console.log(`时间: ${date.getHours()}:${date.getMinutes()}`);
+    // // 12:02 之后不再刷新
+    if (!urlParams.get('refresh') || !btn || credits < 100
+        || hours < 11 || (hours === 11 && minutes < 55)
+        || hours > 12 || (hours === 12 && minutes > 1)) {
         console.log('不自动刷新');
         return;
     }
     var isDisabled = btn.classList.contains('disabled');
     if (isDisabled) {
+        console.log('兑换按钮不可用');
         // 没刷出来，重新加载
         // todo: 按时间改变刷新频率
-        // var timeout = 60_000;
-        // if (minutes > 0 && minutes < END_MIN) {
-        //     timeout = 500;
-        // }
-        // setTimeout(() => {
-        //     window.location.reload();
-        // }, timeout);
-        console.log('兑换按钮不可用');
+        var timeout = 30_000;
+        if (minutes >= 0 && minutes < 2) {
+            timeout = 5_000;
+        }
+        console.log(`${timeout / 1_000}s 后刷新页面...`);
+        setTimeout(() => {
+            window.location.reload();
+        }, timeout);
     } else { // 刷出来按钮
         btn.click();
-        setTimeout(() => { // +5
-            document.querySelector('.right-hot-area').click();
-            document.querySelector('.right-hot-area').click();
-            document.querySelector('.right-hot-area').click();
-            document.querySelector('.right-hot-area').click();
-            // 点击兑换
-            setTimeout(clickExchange, 200);
+        setTimeout(() => { // 数量 +5
+            var i = 0;
+            var appendTask = setInterval(() => {
+                var addBtn = document.querySelector('.right-hot-area')
+                if (!addBtn) {
+                    clearInterval(appendTask);
+                    return
+                }
+                addBtn.click();
+                i = i + 1;
+                console.log(`+1, i = ${i}`);
+                if (i === 5) {
+                    clearInterval(appendTask);
+                    // 点击兑换
+                    setTimeout(clickExchange, 200);
+                    // 不管兑换是否成功, 3秒后刷新页面
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3_000);
+                }
+            }, 100);
         }, 200);
     }
     // todo: 兑换完成, 跳转到不刷新的页面
