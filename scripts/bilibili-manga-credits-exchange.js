@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BMangaExchange
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?refresh=true
@@ -32,6 +32,10 @@ function onReady() {
     // 验证第一个是不是通用券
     var firstItem = document.querySelector('.manga-item');
     if (!firstItem || !firstItem.innerHTML.includes('global-welfare-coupon')) {
+        console.log('First item not expected!Refreshing...')
+        setTimeout(() => {
+            window.location.reload();
+        }, 3_000);
         return;
     }
     console.log('第一个是通用券, 准备自动抢券');

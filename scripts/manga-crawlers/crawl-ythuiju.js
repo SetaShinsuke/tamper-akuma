@@ -4,19 +4,25 @@
 // @version      0.1
 // @description  爬取扑飞漫画网的漫画
 // @author       Akuma
-// @match        https://www.ythuiju.com/manhua/3402/
+// @match        https://www.ythuiju.com/chapters/*?save=true
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @run-at       context-menu
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/crawl-ythuiju.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/crawl-ythuiju.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawl-ythuiju.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawl-ythuiju.js
 // ==/UserScript==
 
 (function () {
     'use strict';
-    // saveChap1_2();
-    saveChap3();
+
 })();
+
+function getTasks() {
+    var info = __cr;
+    var bookName = info.comic_name;
+    var imgs = info.chapter_list_all;
+    // __cr.nexturl
+}
 
 function saveChap3() {
     var tasks = {};
