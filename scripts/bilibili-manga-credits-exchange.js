@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BMangaExchange
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?refresh=true
@@ -31,14 +31,13 @@ console.log('starting inject');
 function onReady() {
     // 验证第一个是不是通用券
     var firstItem = document.querySelector('.manga-item');
+    var firstExpected = true;
     if (!firstItem || !firstItem.innerHTML.includes('global-welfare-coupon')) {
         console.log('First item not expected!Refreshing...')
-        setTimeout(() => {
-            window.location.reload();
-        }, 3_000);
-        return;
+        firstExpected = false;
+    }else {
+        console.log('第一个是通用券, 准备自动抢券');
     }
-    console.log('第一个是通用券, 准备自动抢券');
 
     var btn = document.querySelector('.action-btn');
     // var btn = document.querySelectorAll('.action-btn')[24];
@@ -65,7 +64,7 @@ function onReady() {
         return;
     }
     var isDisabled = btn.classList.contains('disabled');
-    if (isDisabled) {
+    if (isDisabled || !firstExpected) {
         console.log('兑换按钮不可用');
         // 没刷出来，重新加载
         // todo: 按时间改变刷新频率
