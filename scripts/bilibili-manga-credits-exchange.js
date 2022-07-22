@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name         BMangaExchange
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
-// @match        https://manga.bilibili.com/eden/credits-exchange.html?refresh=true
+// @match        https://manga.bilibili.com/eden/credits-exchange.html?refresh=*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili-manga-credits-exchange.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili-manga-credits-exchange.js
 // ==/UserScript==
 
-var TIMEOUT = 5_000;
+var TIMEOUT_DEFAULT = 5_000;
 // 兑换页: https://manga.bilibili.com/eden/credits-exchange.html?refresh=true
 
 console.log('starting inject');
@@ -35,7 +35,7 @@ function onReady() {
     if (!firstItem || !firstItem.innerHTML.includes('global-welfare-coupon')) {
         console.log('First item not expected!Refreshing...')
         firstExpected = false;
-    }else {
+    } else {
         console.log('第一个是通用券, 准备自动抢券');
     }
 
@@ -44,7 +44,7 @@ function onReady() {
     var urlParams = new URLSearchParams(document.location.search);
     // 当前积分
     var creditDiv = document.querySelector('.my-credit');
-    var credits = 0;
+    var credits = -1;
     try {
         credits = parseInt(creditDiv.innerHTML.replace('赛季积分：', ''));
     } catch (e) {
@@ -64,13 +64,21 @@ function onReady() {
         return;
     }
     var isDisabled = btn.classList.contains('disabled');
-    if (isDisabled || !firstExpected) {
+    if (isDisabled || !firstExpected || credits < 0) {
         console.log('兑换按钮不可用');
         // 没刷出来，重新加载
         // todo: 按时间改变刷新频率
         var timeout = 30_000;
         if (minutes >= 0 && minutes < 2) {
-            timeout = 5_000;
+            timeout = TIMEOUT_DEFAULT;
+            try {
+                var timeoutPar = parseInt(urlParams.get('refresh')) * 1000;
+                if(!isNaN(timeoutPar)){
+                    timeout = timeoutPar;
+                }
+            } catch (e) {
+                console.log(e);
+            }
         }
         console.log(`${timeout / 1_000}s 后刷新页面...`);
         setTimeout(() => {

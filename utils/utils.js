@@ -30,5 +30,17 @@ function copyToClipboard(text) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    console.log("Copied!")
+    console.log("Copied!");
+}
+
+function verifyFileName(fileName) {
+    fileName = fileName.replace('\\', '_').replace('/', '_');
+    fileName = fileName.replace('（', '(').replace('）', ')')
+        .replace(' ', '_').replace('：', ':');
+    var reg = /[/:*?"<>|]/g;
+    fileName = fileName.replace(reg, '-');
+    if (fileName.length > 150) {
+        fileName = fileName.substring(0, 100);
+    } //# 文件名超长
+    return fileName;
 }
