@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BMangaExchange
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?refresh=*
@@ -47,6 +47,9 @@ function onReady() {
     var credits = -1;
     try {
         credits = parseInt(creditDiv.innerHTML.replace('赛季积分：', ''));
+        if (isNaN(credits)) {
+            credits = -1;
+        }
     } catch (e) {
         console.log(e);
     }
@@ -57,8 +60,8 @@ function onReady() {
     var minutes = date.getMinutes();
     console.log(`时间: ${date.getHours()}:${date.getMinutes()}`);
     // // 12:02 之后不再刷新
-    if (!urlParams.get('refresh') || !btn || credits < 100
-        || hours < 11 || (hours === 11 && minutes < 55)
+    if (!urlParams.get('refresh') || !btn || (credits >= 0 && credits < 100)
+        || hours < 11 || (hours === 11 && minutes < 50)
         || hours > 12 || (hours === 12 && minutes > 1)) {
         console.log('不自动刷新');
         return;
@@ -73,12 +76,14 @@ function onReady() {
             timeout = TIMEOUT_DEFAULT;
             try {
                 var timeoutPar = parseInt(urlParams.get('refresh')) * 1000;
-                if(!isNaN(timeoutPar)){
+                if (!isNaN(timeoutPar)) {
                     timeout = timeoutPar;
                 }
             } catch (e) {
                 console.log(e);
             }
+        } else if (minutes < 55) {
+            timeout = 2 * 60_000;
         }
         console.log(`${timeout / 1_000}s 后刷新页面...`);
         setTimeout(() => {
