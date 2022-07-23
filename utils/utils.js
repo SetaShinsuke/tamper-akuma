@@ -37,7 +37,7 @@ function verifyFileName(fileName) {
     fileName = fileName.replace('\\', '_').replace('/', '_');
     fileName = fileName.replace('（', '(').replace('）', ')')
         .replace(' ', '_').replace('：', ':');
-    var reg = /[/:*?"<>|]/g;
+    var reg = /[/·. :*?"<>|]/g;
     fileName = fileName.replace(reg, '-');
     if (fileName.length > 150) {
         fileName = fileName.substring(0, 100);

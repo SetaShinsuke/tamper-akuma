@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BMangaExchange
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.6.1
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?refresh=*
@@ -40,6 +40,8 @@ function onReady() {
     }
 
     var btn = document.querySelector('.action-btn');
+    console.log('btn: ');
+    console.log(btn);
     // var btn = document.querySelectorAll('.action-btn')[24];
     var urlParams = new URLSearchParams(document.location.search);
     // 当前积分
@@ -60,14 +62,16 @@ function onReady() {
     var minutes = date.getMinutes();
     console.log(`时间: ${date.getHours()}:${date.getMinutes()}`);
     // // 12:02 之后不再刷新
-    if (!urlParams.get('refresh') || !btn || (credits >= 0 && credits < 100)
+    if (!urlParams.get('refresh') || (credits >= 0 && credits < 100)
         || hours < 11 || (hours === 11 && minutes < 50)
         || hours > 12 || (hours === 12 && minutes > 1)) {
+        console.log(credits);
+        console.log(urlParams.get('refresh'));
         console.log('不自动刷新');
         return;
     }
     var isDisabled = btn.classList.contains('disabled');
-    if (isDisabled || !firstExpected || credits < 0) {
+    if (isDisabled || !firstExpected || credits < 0 || !btn) {
         console.log('兑换按钮不可用');
         // 没刷出来，重新加载
         // todo: 按时间改变刷新频率
