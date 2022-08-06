@@ -1,14 +1,14 @@
 // ==UserScript==
-// @name         Crawl-Cocomanga
+// @name         Crawl-Wb-Album
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  爬取爱发电的漫画
+// @description  爬取微博相册的图
 // @author       Akuma
-// @match        https://www.cocomanga.com/*
+// @match        https://photo.weibo.com/*/albums/detail/album_id/*/mode/3/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-cocomanga.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-cocomanga.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-wb-album.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-wb-album.js
 // ==/UserScript==
 
 (function () {
@@ -18,34 +18,27 @@
 })();
 
 function getTasks() {
-    if(!document.getElementById('mangalist')){
-        console.log('Not in manga reading page!');
-        return
-    }
-
     var tasks = {};
-    var bookName = document.querySelectorAll('li>a.read_page_link')[1].title;
+    var bookName = document.querySelector('strong').innerText
     tasks['config'] = {};
     tasks['config']['referer'] = `${window.location.protocol}//${window.location.host}`;
     tasks['config']['book_name'] = bookName;
 
-    var chapName = verifyFileName(document.querySelector('.mh_readtitle>h1').innerText);
-    var index = window.location.pathname.split('/').pop().split('.')[0];
-    index = `${index}`.padStart(4, '0');
-    chapName = `${index}_${chapName}`;
+    var chapName = document.querySelector('.list>a>span.t').innerText.replaceAll(' ', '');
     tasks[chapName] = [];
-
-    var pics = document.querySelectorAll('.mh_comicpic');
-    pics.forEach(pic => {
-        var page = pic.getAttribute('p');
-        var url = 'https:' + __cr.getPicUrl(page);
-        var fileName = `${index}_` + url.split('=/').pop();
+    var imgs = document.querySelector('.photoList').querySelectorAll('img');
+    imgs = Array.from(imgs).reverse();
+    var i = 0;
+    imgs.forEach(img => {
+        var url = img.src.replace('/square', '/large');
+        i += 1;
+        var fileName = `${i}`.padStart(4, '0') + `.${url.split('.').pop()}`;
         tasks[chapName].push({'url': url, 'file_name': fileName});
     });
-
     console.log(tasks);
+
     // 保存
-    var save_name = `tasks_${index}.json`;
+    var save_name = `tasks_${(new Date).getTime()}.json`;
     console.log(save_name);
     saveTextFile(JSON.stringify(tasks), save_name);
 }
@@ -72,16 +65,4 @@ function saveTextFile(text, fileName) {
     });
 
     return textFile;
-}
-
-function verifyFileName(fileName) {
-    fileName = fileName.replace('\\', '_').replace('/', '_');
-    fileName = fileName.replace('（', '(').replace('）', ')')
-        .replace(' ', '_').replace('：', ':');
-    var reg = /[/·. :*?"<>|]/g;
-    fileName = fileName.replace(reg, '-');
-    if (fileName.length > 150) {
-        fileName = fileName.substring(0, 100);
-    } //# 文件名超长
-    return fileName;
 }

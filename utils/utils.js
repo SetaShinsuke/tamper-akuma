@@ -22,17 +22,6 @@ function saveTextFile(text, fileName) {
     return textFile;
 }
 
-function copyToClipboard(text) {
-    console.log("Start copy...");
-    var el = document.createElement('textarea');
-    el.value = text;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    console.log("Copied!");
-}
-
 function verifyFileName(fileName) {
     fileName = fileName.replace('\\', '_').replace('/', '_');
     fileName = fileName.replace('（', '(').replace('）', ')')
@@ -43,4 +32,15 @@ function verifyFileName(fileName) {
         fileName = fileName.substring(0, 100);
     } //# 文件名超长
     return fileName;
+}
+
+function copyToClipboard(text) {
+    console.log("Start copy...");
+    var el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    console.log("Copied!");
 }

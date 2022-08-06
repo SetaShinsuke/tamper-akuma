@@ -1,14 +1,14 @@
 // ==UserScript==
-// @name         Crawl-Cocomanga
+// @name         Crawl-Maofly
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  爬取爱发电的漫画
+// @description  爬取漫画猫的漫画
 // @author       Akuma
-// @match        https://www.cocomanga.com/*
+// @match        https://www.maofly.com/manga/*/*.html*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-cocomanga.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-cocomanga.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-maofly.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-maofly.js
 // ==/UserScript==
 
 (function () {
@@ -18,32 +18,31 @@
 })();
 
 function getTasks() {
-    if(!document.getElementById('mangalist')){
-        console.log('Not in manga reading page!');
+    if (!document.querySelector('.img-content')) {
+        console.log('Not in reading page!');
         return
     }
 
     var tasks = {};
-    var bookName = document.querySelectorAll('li>a.read_page_link')[1].title;
+    var bookName = document.querySelector('h1>a').innerText;
     tasks['config'] = {};
     tasks['config']['referer'] = `${window.location.protocol}//${window.location.host}`;
     tasks['config']['book_name'] = bookName;
 
-    var chapName = verifyFileName(document.querySelector('.mh_readtitle>h1').innerText);
-    var index = window.location.pathname.split('/').pop().split('.')[0];
-    index = `${index}`.padStart(4, '0');
-    chapName = `${index}_${chapName}`;
+    var chapName = document.querySelector('.breadcrumb-item').innerText;
+    chapName = verifyFileName(chapName);
     tasks[chapName] = [];
-
-    var pics = document.querySelectorAll('.mh_comicpic');
-    pics.forEach(pic => {
-        var page = pic.getAttribute('p');
-        var url = 'https:' + __cr.getPicUrl(page);
-        var fileName = `${index}_` + url.split('=/').pop();
+    var imgs = img_data_arr;
+    for (var i = 0; i < imgs.length; i++) {
+        var url = cdnImage(img_pre + img_data_arr[parseInt(i)], asset_domain, asset_key);
+        var fileName = `${i + 1}`.padStart(3, '0') + '_' + `${url.split('/').pop()}`;
+        fileName = fileName.replace('.jpg', '.webp').replace('.png', '.webp');
         tasks[chapName].push({'url': url, 'file_name': fileName});
-    });
+    }
 
     console.log(tasks);
+
+    var index = document.querySelector('.vg-r-data').getAttribute('data-chapter_num');
     // 保存
     var save_name = `tasks_${index}.json`;
     console.log(save_name);

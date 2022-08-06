@@ -1,14 +1,14 @@
 // ==UserScript==
-// @name         Crawl-Cocomanga
+// @name         Crawl-MHXin
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  爬取爱发电的漫画
+// @description  爬取漫画芯的漫画
 // @author       Akuma
-// @match        https://www.cocomanga.com/*
+// @match        https://www.mhxin.com/manhua/*/*.html
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-cocomanga.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-cocomanga.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-mhxin.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-mhxin.js
 // ==/UserScript==
 
 (function () {
@@ -18,45 +18,47 @@
 })();
 
 function getTasks() {
-    if(!document.getElementById('mangalist')){
-        console.log('Not in manga reading page!');
-        return
-    }
-
     var tasks = {};
-    var bookName = document.querySelectorAll('li>a.read_page_link')[1].title;
+    var bookName = verifyFileName(document.querySelector('.book_title').title);
     tasks['config'] = {};
     tasks['config']['referer'] = `${window.location.protocol}//${window.location.host}`;
     tasks['config']['book_name'] = bookName;
 
-    var chapName = verifyFileName(document.querySelector('.mh_readtitle>h1').innerText);
-    var index = window.location.pathname.split('/').pop().split('.')[0];
-    index = `${index}`.padStart(4, '0');
-    chapName = `${index}_${chapName}`;
+    var chapName = pageTitle.replace(' ', '_');
+    if (/^[0-9]{1,3}话/.test(chapName)) {
+        chapName = '第' + chapName;
+    }
+    // "第33话" "特别篇"
+    var indexName = chapName.split('_')[0]
+    var chapIndex = document.location.pathname.split('.html')[0].split('/').pop();
+    // 针对钢炼漫画，获取 index
+    if (prevChapterData.comic_id === 14482 || nextChapterData.comic_id === 14482) {
+        chapIndex = parseInt(chapIndex) - 991985;
+    }
+    // 第1话_两个炼金术师
+    chapName = `${chapIndex}`.padStart(3, '0') + '_' + chapName;
+    chapName = verifyFileName(chapName);
     tasks[chapName] = [];
-
-    var pics = document.querySelectorAll('.mh_comicpic');
-    pics.forEach(pic => {
-        var page = pic.getAttribute('p');
-        var url = 'https:' + __cr.getPicUrl(page);
-        var fileName = `${index}_` + url.split('=/').pop();
-        tasks[chapName].push({'url': url, 'file_name': fileName});
+    var i = 0;
+    chapterImages.forEach(img => {
+        i += 1;
+        var url = img;
+        var ext = img.split('.').pop();
+        var fileName = `${indexName}_` + `${i}`.padStart(3, '0') + `.${ext}`;
+        tasks[chapName].push({
+            'url': url, 'file_name': fileName
+        });
     });
-
     console.log(tasks);
+
     // 保存
-    var save_name = `tasks_${index}.json`;
+    var save_name = `tasks_${chapIndex}.json`;
     console.log(save_name);
     saveTextFile(JSON.stringify(tasks), save_name);
 }
 
 function saveTextFile(text, fileName) {
     var data = new Blob([text], {type: 'text/plain'});
-    // // If we are replacing a previously generated file we need to
-    // // manually revoke the object URL to avoid memory leaks.
-    // if (textFile !== null) {
-    //     window.URL.revokeObjectURL(textFile);
-    // }
     let textFile = window.URL.createObjectURL(data);
 
     var link = document.createElement('a');
