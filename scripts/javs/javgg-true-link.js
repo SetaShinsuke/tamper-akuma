@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         Javgg-CopyUrl
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Right click to copy video player link address
 // @author       Akuma
 // @match        https://javgg.net/jav/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @run-at       context-menu
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javgg-true-link.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javgg-true-link.js
 // ==/UserScript==
 
 (function () {
@@ -33,8 +35,8 @@ function inject() {
         return
     }
     var playerUrl = videoFrame.src;
-    var no = document.location.pathname.replace('/jav/', '').replace('/', '-');
-    var text = `${playerUrl}\n${no}`;
+    var no = document.location.pathname.replace('/jav/', '').replace('/javs/', '').replace('/', '-');
+    var text = `[${no.slice(0, -1)}](${playerUrl}?v_name=${no})`;
     copyToClipboard(text);
     toast('Copied!');
 }
@@ -79,3 +81,6 @@ function toast(text) {
         snackbar.style["visibility"] = 'hidden';
     }, 3000);
 }
+
+// actorJP = ["吉高宁々", ]
+// actorCN = ["吉高宁宁", ]

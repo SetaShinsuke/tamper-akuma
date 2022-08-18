@@ -36,7 +36,7 @@ function getTasks() {
         chapIndex = parseInt(chapIndex) - 991985;
     }
     // 第1话_两个炼金术师
-    chapName = `${chapIndex}`.padStart(3, '0') + '_' + chapName;
+    chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
     chapName = verifyFileName(chapName);
     tasks[chapName] = [];
     var i = 0;

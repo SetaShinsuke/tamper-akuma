@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         JavChill-FullPic
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Click 👁 to see full picture.
 // @author       Akuma
 // @match        https://javchill.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javchill-fullpic.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javchill-fullpic.js
 // ==/UserScript==
 
 var TIMEOUT = 3000;

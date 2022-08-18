@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         JavGuru-FullPic
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Click 👁 to see full picture.
 // @author       Akuma
 // @match        https://jav.guru/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javguru-fullpic.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javguru-fullpic.js
 // ==/UserScript==
 
 var TIMEOUT = 3000;
