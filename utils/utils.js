@@ -23,11 +23,11 @@ function saveTextFile(text, fileName) {
 }
 
 function verifyFileName(fileName) {
-    fileName = fileName.replace('\\', '_').replace('/', '_');
-    fileName = fileName.replace('（', '(').replace('）', ')')
-        .replace(' ', '_').replace('：', ':');
+    fileName = fileName.replace(/[\\\/\s+、，。]/g, '_')
+    fileName = fileName.replace('（', '(').replace('）', ')').replace('：', ':');
     var reg = /[/·. :*?"<>|]/g;
-    fileName = fileName.replace(reg, '-');
+    fileName = fileName.replace(reg, '_');
+    fileName = fileName.replace(/_+/, '_');
     if (fileName.length > 150) {
         fileName = fileName.substring(0, 100);
     } //# 文件名超长

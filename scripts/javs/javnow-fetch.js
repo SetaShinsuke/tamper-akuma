@@ -18,10 +18,10 @@
 })();
 
 function inject() {
-    devtoolIsOpening = function stopIt() {
-        // 阻止清空 console
-        console.log('Console clearing canceled.');
-    }
+    // devtoolIsOpening = function stopIt() {
+    //     // 阻止清空 console
+    //     console.log('Console clearing canceled.');
+    // }
     console.log('Ready to inject.');
     // 主业务
     setTimeout(() => {

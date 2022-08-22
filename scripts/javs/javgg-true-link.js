@@ -1,10 +1,12 @@
 // ==UserScript==
-// @name         Javgg-CopyUrl
+// @name         Jav-CopyUrl
 // @namespace    http://tampermonkey.net/
 // @version      0.2
 // @description  Right click to copy video player link address
 // @author       Akuma
 // @match        https://javgg.net/jav/*
+// @match        https://jav.guru/*/*/*
+// @match        https://vanfem.com/v/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @run-at       context-menu
@@ -14,6 +16,51 @@
 
 (function () {
     'use strict';
+    switch (window.location.hostname) {
+        case 'javgg.net':
+            fetchJavGG();
+            break;
+        case 'jav.guru':
+            alert('todo');
+            break;
+        case 'vanfem.com':
+            // todo: 在这里操作
+            // enableConsole();
+            fetchJavGuru();
+            break
+    }
+})();
+
+function enableConsole() {
+    devtoolIsOpening = function stopIt() {
+        // 阻止清空 console
+        console.log('Console clearing canceled.');
+    };
+}
+
+function fetchJavGuru() {
+    // todo: 点击等等
+    alert('?');
+    var v = document.querySelector('#vstr');
+    console.log(v);
+
+    // var c = document.querySelector('.jw-preview');
+    // var url = c.style['background-image'];
+    // console.log(url);
+
+    // var iframe = document.querySelector('iframe');
+    // var iframe2 = iframe.contentDocument.getElementsByTagName('iframe')[0];
+    // var player = iframe.contentWindow.document.querySelector('#vstr');
+    // if (!player) {
+    //     alert('Video not found!');
+    //     return;
+    // }
+    // var div = player.querySelectorAll('div')[1];
+    // var uid = div.style['background-image'].match(/\/[^\/]*\?/)[0].replace(/[\/\?]/g, '').split('.')[0];
+    // alert(uid);
+}
+
+function fetchJavGG() {
     var btn;
     var btns = document.querySelectorAll('.dooplay_player_option');
     console.log(btns);
@@ -24,11 +71,11 @@
     });
     btn.click();
     setTimeout(() => {
-        inject()
+        fetchGG()
     }, 3000)
-})();
+}
 
-function inject() {
+function fetchGG() {
     var videoFrame = document.querySelector('.rptss');
     if (!videoFrame) {
         alert('Video link not found!');
