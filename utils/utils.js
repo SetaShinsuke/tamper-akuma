@@ -44,3 +44,52 @@ function copyToClipboard(text) {
     document.body.removeChild(el);
     console.log("Copied!");
 }
+
+function toast(text) {
+    var snackbar = document.getElementById('snackbar_jav');
+    if (!snackbar) {
+        console.log('Creating snackbar...')
+        snackbar = document.createElement('div');
+        snackbar.id = 'snackbar_jav';
+        // snackbar.style['visibility'] = "visible";
+        snackbar.style['visibility'] = "hidden";
+        snackbar.style['min-width'] = "250px";
+        snackbar.style['margin-left'] = "-125px";
+        snackbar.style['background-color'] = "#333";
+        snackbar.style['color'] = "#fff";
+        snackbar.style['text-align'] = "center";
+        snackbar.style['border-radius'] = "2px";
+        snackbar.style['padding'] = "16px";
+        snackbar.style['position'] = "fixed";
+        snackbar.style['z-index'] = "1";
+        snackbar.style['left'] = "50%";
+        snackbar.style['top'] = "400px";
+        snackbar.style['font-size'] = "17px";
+        document.body.appendChild(snackbar);
+    }
+    snackbar.innerHTML = text;
+    snackbar.style['visibility'] = 'visible';
+    console.log('Snackbar showed');
+    setTimeout(() => {
+        snackbar.style["visibility"] = 'hidden';
+    }, 3000);
+}
+
+// 每秒找一次element，直到元素加载出来再运行
+function runWhenLoaded(queryStr, task, timeout = 1000, maxTimeout = 30_000) {
+    // 找到元素后开启任务
+    var intervalTask = setInterval(() => {
+        console.log('Doing interval...');
+        var element = document.querySelector(queryStr);
+        if (element) {
+            task(element);
+            console.log(`Interval finished, id: ${intervalTask}`);
+            clearInterval(intervalTask);
+        }
+    }, timeout);
+    // 30s 后仍找不到元素，停止任务
+    setTimeout(() => {
+        console.log(`查找元素超时，用时: ${parseInt(maxTimeout / 1000)}s`);
+        clearInterval(intervalTask);
+    }, maxTimeout);
+}

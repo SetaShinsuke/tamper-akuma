@@ -24,11 +24,37 @@ function inject() {
     // }
     console.log('Ready to inject.');
     // 主业务
-    setTimeout(() => {
-        document.querySelector('svg').addEventListener('click', () => {
+    // setTimeout(() => {
+    //     document.querySelector('svg').addEventListener('click', () => {
+    //         addCopyBtn();
+    //     });
+    // }, 1000);
+
+    runWhenLoaded('svg', (playIcon) => {
+        playIcon.addEventListener('click', () => {
+            console.log('Play icon clicked.');
             addCopyBtn();
-        });
-    }, 1000);
+        })
+    });
+}
+
+// 每秒找一次element，直到元素加载出来再运行
+function runWhenLoaded(queryStr, task, timeout = 1000, maxTimeout = 30_000) {
+    // 找到元素后开启任务
+    var intervalTask = setInterval(() => {
+        console.log('Doing interval...');
+        var element = document.querySelector(queryStr);
+        if (element) {
+            task(element);
+            console.log(`Interval finished, id: ${intervalTask}`);
+            clearInterval(intervalTask);
+        }
+    }, timeout);
+    // 30s 后仍找不到元素，停止任务
+    setTimeout(() => {
+        console.log(`查找元素超时，用时: ${parseInt(maxTimeout / 1000)}s`);
+        clearInterval(intervalTask);
+    }, maxTimeout);
 }
 
 function addCopyBtn() {
@@ -40,7 +66,7 @@ function addCopyBtn() {
         btn.classList.add('jw-icon-inline');
         var playerDiv = document.querySelector('#vstr');
         playerDiv.appendChild(btn);
-        playerDiv.style['min-height']='95%';
+        playerDiv.style['min-height'] = '95%';
         btn.addEventListener('click', onCopyClick);
     }, 1000);
 }
@@ -76,10 +102,9 @@ function onCopyClick() {
 }
 
 // 使用浏览器下载
-function downloadURI(uri, name)
-{
+function downloadURI(uri, name) {
     var link = document.querySelector("#final_link");
-    if(!link){
+    if (!link) {
         link = document.createElement("a");
         document.body.insertBefore(link, document.body.firstElementChild);
     }
@@ -139,7 +164,7 @@ function doDownload(url, name) {
             console.log(error);
         },
         onprogress: function (progress) {
-            console.log('progress: ', `${(progress.loaded/progress.total*100).toFixed(4)}%`);
+            console.log('progress: ', `${(progress.loaded / progress.total * 100).toFixed(4)}%`);
         },
         onload: function () {
             console.log('Download onload...');
