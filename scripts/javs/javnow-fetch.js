@@ -1,14 +1,18 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://watchjavnow.xyz/v/*
+// @match        https://*.mycloudzz.com/v/*
+// @match        https://javcl.me/v/*
+// @match        https://www.ffem.club/v/*
 // @grant        GM.setClipboard
 // @grant        GM_download
 // @grant        GM_xmlhttpRequest
 // @connect      *
+// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javnow-fetch.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javnow-fetch.js
 // ==/UserScript==
@@ -18,17 +22,7 @@
 })();
 
 function inject() {
-    // devtoolIsOpening = function stopIt() {
-    //     // 阻止清空 console
-    //     console.log('Console clearing canceled.');
-    // }
     console.log('Ready to inject.');
-    // 主业务
-    // setTimeout(() => {
-    //     document.querySelector('svg').addEventListener('click', () => {
-    //         addCopyBtn();
-    //     });
-    // }, 1000);
 
     runWhenLoaded('svg', (playIcon) => {
         playIcon.addEventListener('click', () => {
@@ -36,27 +30,6 @@ function inject() {
             addCopyBtn();
         })
     });
-}
-
-// 每秒找一次element，直到元素加载出来再运行
-function runWhenLoaded(queryStr, task, timeout = 1000, maxTimeout = 30_000) {
-    var safeStop = null;
-    // 找到元素后开启任务
-    var intervalTask = setInterval(() => {
-        console.log('Doing interval...');
-        var element = document.querySelector(queryStr);
-        if (element) {
-            task(element);
-            console.log(`Interval finished, id: ${intervalTask}`);
-            clearTimeout(safeStop);
-            clearInterval(intervalTask);
-        }
-    }, timeout);
-    // 30s 后仍找不到元素，停止任务
-    safeStop = setTimeout(() => {
-        console.log(`查找元素超时，用时: ${parseInt(maxTimeout / 1000)}s`);
-        clearInterval(intervalTask);
-    }, maxTimeout);
 }
 
 function addCopyBtn() {

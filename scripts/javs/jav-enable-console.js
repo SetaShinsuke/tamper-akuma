@@ -7,6 +7,9 @@
 // @match        https://jav.guru/*
 // @match        https://vanfem.com/*
 // @match        https://watchjavnow.xyz/v/*
+// @match        https://mycloudzz.com/v/*
+// @match        https://stream.cdnsh.xyz*
+// @match        https://javsky.tv/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javguru-fullpic.js

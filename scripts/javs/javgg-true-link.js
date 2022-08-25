@@ -7,6 +7,7 @@
 // @match        https://javgg.net/jav/*
 // @match        https://jav.guru/*/*/*
 // @match        https://vanfem.com/v/*
+// @match        http://javtk.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @run-at       context-menu
@@ -28,17 +29,26 @@
             // enableConsole();
             fetchJavGuru();
             break
+        case 'javtk.com':
+            fetchJavTk();
+            break
     }
 })();
 
-function enableConsole() {
-    devtoolIsOpening = function stopIt() {
-        // 阻止清空 console
-        console.log('Console clearing canceled.');
-    };
+function fetchJavTk() {
+    var iframe = document.querySelector('#iframeMovie');
+    if (!iframe) {
+        alert('Video link not found!');
+        return
+    }
+    var playerUrl = iframe.src;
+    var no = document.querySelector('.img-fluid.lozad').alt;
+    var text = `[${no}](${playerUrl}?v_name=${no}-)`;
+    copyToClipboard(text);
+    toast('Copied!');
 }
 
-function fetchJavGuru() {
+function fetchJavGuru()     {
     // todo: 点击等等
     alert('?');
     var v = document.querySelector('#vstr');

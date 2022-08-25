@@ -45,12 +45,16 @@ function copyToClipboard(text) {
     console.log("Copied!");
 }
 
-function toast(text) {
-    var snackbar = document.getElementById('snackbar_jav');
+// _gravity: top, center, bottom, 或指定百分比
+// _styles: 其它自定义样式
+// return: 返回 snackbar 元素
+function toast(text, _gravity = 'top', _timeout = 3000, _styles = {}) {
+    var snackbarId = `snackbar_akuma`;
+    var snackbar = document.getElementById(snackbarId);
     if (!snackbar) {
         console.log('Creating snackbar...')
         snackbar = document.createElement('div');
-        snackbar.id = 'snackbar_jav';
+        snackbar.id = snackbarId;
         // snackbar.style['visibility'] = "visible";
         snackbar.style['visibility'] = "hidden";
         snackbar.style['min-width'] = "250px";
@@ -63,16 +67,37 @@ function toast(text) {
         snackbar.style['position'] = "fixed";
         snackbar.style['z-index'] = "1";
         snackbar.style['left'] = "50%";
-        snackbar.style['top'] = "400px";
         snackbar.style['font-size'] = "17px";
         document.body.appendChild(snackbar);
+    }
+    var top;
+    switch (_gravity) {
+        case 'top':
+            top = '10%'
+            break;
+        case 'center':
+            top = '50%'
+            break;
+        case 'bottom':
+            top = '80%';
+            break;
+        default:
+            top = _gravity;
+            break;
+
+    }
+    snackbar.style['top'] = top;
+    for (const [key, value] of Object.entries(_styles)) {
+        console.log(key, value);
+        snackbar.style[key] = value;
     }
     snackbar.innerHTML = text;
     snackbar.style['visibility'] = 'visible';
     console.log('Snackbar showed');
     setTimeout(() => {
         snackbar.style["visibility"] = 'hidden';
-    }, 3000);
+    }, _timeout);
+    return snackbar;
 }
 
 // 每秒找一次element，直到元素加载出来再运行
@@ -94,4 +119,18 @@ function runWhenLoaded(queryStr, task, timeout = 500, maxTimeout = 30_000) {
         console.log(`查找元素超时，用时: ${parseInt(maxTimeout / 1000)}s\nQuery: ${queryStr}`);
         clearInterval(intervalTask);
     }, maxTimeout);
+}
+
+// SetInterval 但是限制时间
+function setIntervalWithin(_task, _timeout, _maxTimeout) {
+    var intervalTask = setInterval(() => {
+        console.log(`Doing interval, auto stop after ${parseInt(_maxTimeout / 1000)}s.`);
+        _task();
+    }, _timeout);
+    // 30s 后仍找不到元素，停止任务
+    setTimeout(() => {
+        console.log(`Safe stopping interval...`);
+        clearInterval(intervalTask);
+    }, _maxTimeout);
+    return intervalTask;
 }
