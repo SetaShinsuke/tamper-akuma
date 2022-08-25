@@ -48,7 +48,7 @@ function runWhenLoaded(queryStr, task, timeout = 1000, maxTimeout = 30_000) {
         if (element) {
             task(element);
             console.log(`Interval finished, id: ${intervalTask}`);
-            clearInterval(safeStop);
+            clearTimeout(safeStop);
             clearInterval(intervalTask);
         }
     }, timeout);

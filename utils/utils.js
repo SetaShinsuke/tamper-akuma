@@ -76,7 +76,7 @@ function toast(text) {
 }
 
 // 每秒找一次element，直到元素加载出来再运行
-function runWhenLoaded(queryStr, task, timeout = 1000, maxTimeout = 30_000) {
+function runWhenLoaded(queryStr, task, timeout = 500, maxTimeout = 30_000) {
     var safeStop = null;
     // 找到元素后开启任务
     var intervalTask = setInterval(() => {
@@ -85,13 +85,13 @@ function runWhenLoaded(queryStr, task, timeout = 1000, maxTimeout = 30_000) {
         if (element) {
             task(element);
             console.log(`Interval finished, id: ${intervalTask}`);
-            clearInterval(safeStop);
+            clearTimeout(safeStop);
             clearInterval(intervalTask);
         }
     }, timeout);
     // 30s 后仍找不到元素，停止任务
     safeStop = setTimeout(() => {
-        console.log(`查找元素超时，用时: ${parseInt(maxTimeout / 1000)}s`);
+        console.log(`查找元素超时，用时: ${parseInt(maxTimeout / 1000)}s\nQuery: ${queryStr}`);
         clearInterval(intervalTask);
     }, maxTimeout);
 }
