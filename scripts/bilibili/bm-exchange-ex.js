@@ -6,31 +6,64 @@
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?auto=*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @grant        none
 // @grant        GM_xmlhttpRequest
+// @grant        GM_setValue
+// @grant        GM_getValue
 // @connect      *
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm-exchange-ex.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm-exchange-ex.js
 // ==/UserScript==
 
-var TIMEOUT = 5_000;
+// TODO: 关掉测试
+var DEV_MODE = false;
+var INJECT_TIMEOUT = 3_000;
 var API_GET_POINTS = `https://manga.bilibili.com/twirp/pointshop.v1.Pointshop/GetUserPoint?device=pad&platform=ios`;
+var API_LIST_PRODUCT = `https://manga.bilibili.com/twirp/pointshop.v1.Pointshop/ListProduct?device=pad&platform=ios`;
 var API_EXCHANGE = `https://manga.bilibili.com/twirp/pointshop.v1.Pointshop/Exchange?device=pad&platform=ios`;
+var API_SHARE = `https://manga.bilibili.com/twirp/activity.v1.Activity/ShareComic?platform=ios`;
+
+var CPID = 195;
+var LAST_SHARE = 'last_share';
+var SHARE_ID = '25539';
+// 重试的 timeout 范围(1.2s~3s)
+var RANDOM_TIMEOUT_RANGE = [1_200, 3_000];
+
+var pause = true;
 
 (function () {
     'use strict';
-    console.log(`starting inject in ${parseInt(TIMEOUT / 1000)} seconds...`);
-    setTimeout(onReady, TIMEOUT);
+    var lastShare = GM_getValue(LAST_SHARE);
+    var today = (new Date()).toLocaleDateString();
+    if (lastShare !== today) {
+        console.log(`今日未分享，自动分享: ${today}`);
+        doShare((resJson) => {
+            GM_setValue(LAST_SHARE, today);
+            console.log(`分享成功: ${today}\nResponse: ${resJson}`);
+        });
+    } else {
+        console.log(`今日已分享: ${today}`);
+    }
+    console.log(`starting inject in ${parseInt(INJECT_TIMEOUT / 1000)} seconds...`);
+    var urlParams = new URLSearchParams(document.location.search);
+    if (urlParams.get('auto') === 'true') {
+        addPauseBtn();
+        if (!DEV_MODE && timoutByClock() < 0) {
+            return
+        }
+        setTimeout(onReady, INJECT_TIMEOUT);
+    } else {
+        console.log(`不自动兑换`);
+    }
 })();
 
 function onReady() {
+    console.log(`Get points...`);
     // 查积分
     var res;
     GM_xmlhttpRequest({
         method: "POST",
         url: API_GET_POINTS,
-        data: "ep_id=379397",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
             "Referer": "https://manga.bilibili.com",
@@ -42,11 +75,13 @@ function onReady() {
         onload: function (response) {
             console.log(response);
             res = response;
-            console.log(res.responseText);
+            // console.log(response.responseText);
             var resJson = JSON.parse(response.responseText);
             var code = resJson.code;
             if (code !== 0) {
-                alert(`获取积分信息失败!\nMsg: ${resJson.msg}`);
+                console.log(`获取积分信息失败!\nMsg: ${resJson.msg}\n2s 后刷新页面`);
+                // 重新加载页面
+                setTimeout(location.reload, 2_000);
                 return
             }
             var points = parseInt(resJson.data.point);
@@ -54,23 +89,201 @@ function onReady() {
                 alert(`积分不足100, 取消兑换!\nPoints: ${points}`);
                 return;
             }
-            // todo: 查库存
-            // setIntervalWithin()
+            // 查库存
+            listProduct(points);
             toast(`当前积分: ${points}`);
         }
     });
 }
 
-// SetInterval 但是限制时间
-function setIntervalWithin(_task, _timeout, _maxTimeout) {
-    var intervalTask = setInterval(() => {
-        console.log(`Doing interval, auto stop after ${parseInt(_maxTimeout / 1000)}s.`);
-        _task();
-    }, _timeout);
-    // 30s 后仍找不到元素，停止任务
-    setTimeout(() => {
-        console.log(`Safe stopping interval...`);
-        clearInterval(intervalTask);
-    }, _maxTimeout);
-    return intervalTask;
+function listProduct(points) {
+    console.log(`List product...`);
+    GM_xmlhttpRequest({
+        method: "POST",
+        url: API_LIST_PRODUCT,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            "Referer": "https://manga.bilibili.com",
+            "Origin": "https://manga.bilibili.com"
+        },
+        onerror: function (error) {
+            console.log(`Get product list error: `, error);
+            console.log(`重试中: ${this.url}`);
+            retryIn5(listProduct, points);
+        },
+        onload: function (response) {
+            console.log(response);
+            // console.log(response.responseText);
+            var resJson = JSON.parse(response.responseText);
+            console.log(resJson);
+            var code = resJson.code;
+            if (code !== 0) {
+                console.log(`获取兑换列表失败, 重试中...\nMsg: ${resJson.msg}`);
+                retryIn5(listProduct, points);
+                return
+            }
+            if (resJson.data.length <= 0 || resJson.data[0].id !== CPID) {
+                console.log(`第一个商品不是通用券, 重试中...\nMsg: ${resJson.msg}`);
+                retryIn5(listProduct, points);
+                return
+            }
+            var coupon = resJson.data[0];
+            if (!DEV_MODE && coupon.remain_amount === 0) {
+                // 检测时间
+                var t = timoutByClock();
+                if (t < 0) {
+                    console.log(`未到兑换时间, 不再刷新`);
+                    return;
+                }
+                console.log(`通用券兑换不可用，${parseInt(t / 1000)}s 后刷新...`);
+                setTimeout(listProduct, t, points);
+                return;
+            }
+            // 进行兑换
+            doExchange(points);
+        }
+    });
+}
+
+/**
+ * 根据当前时间确定多久刷新一次兑换列表
+ * @returns {number} timeout，返回 -1 则不用刷新
+ */
+function timoutByClock() {
+    var date = new Date();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    console.log(`时间: ${date.getHours()}:${date.getMinutes()}`);
+    // [0:00 ~ 11:50]
+    // [12:03 ~ 24:00]
+    if (hours < 11 || (hours === 11 && minutes < 50)
+        || hours > 12 || (hours === 12 && minutes >= 3)) {
+        console.log(`不必刷新: ${hours}:${minutes}`);
+        return -1;
+    } else if (minutes >= 0 && minutes < 3) {
+        // [12:00 ~ 12:02]
+        return 5_000;
+    } else if (minutes > 55) {
+        // [11:55 ~ 12:00]
+        return 30_000;
+    }
+    // [11:50 ~ 11:55]
+    return 2 * 60 * 1000;
+}
+
+function doExchange(points) {
+    var price = 100; // 单价
+    var num = Math.floor(points / price);
+    var point = num * price;
+    console.log(`Do exchange, num: ${num}, point: ${point}`);
+    GM_xmlhttpRequest({
+        method: "POST",
+        url: API_EXCHANGE,
+        data: `product_id=${CPID}&product_num=${num}&point=${point}`,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            "Referer": "https://manga.bilibili.com",
+            "Origin": "https://manga.bilibili.com"
+        },
+        onerror: function (error) {
+            console.log(`Exchange error: `, error);
+            console.log(`5s内重试: ${this.url}`);
+            retryIn5(doExchange);
+        },
+        onload: function (response) {
+            console.log(response);
+            // console.log(response.responseText);
+            var resJson = JSON.parse(response.responseText);
+            console.log(resJson);
+            var code = resJson.code;
+            if (code === 2) {
+                console.log(`兑换失败, 库存不足, 停止刷新\nMsg: ${resJson.msg}`);
+                alert(`已经结束咧!`);
+                return;
+            } else if (code !== 0) {
+                console.log(`兑换失败, 重试中...\nMsg: ${resJson.msg}`);
+                retryFast(doExchange, points);
+                return
+            }
+            console.log(`兑换成功, 刷新页面!\nNum: ${num}`);
+            window.open(window.location.href.replace(`auto=true`, `auto=false&success=${num}`), '_self');
+        }
+    });
+}
+
+function retryIn5(task, ...arguments) {
+    if (pause) {
+        console.log(`Pause Retry()`);
+        return
+    }
+    console.log(`Retrying in 5s...`);
+    setTimeout(task, 5_000, ...arguments);
+}
+
+function retryFast(task, ...arguments) {
+    if (pause) {
+        console.log(`Pause Retry()`);
+        return
+    }
+    // 服务器似乎限制了 1000ms 的限制
+    var timeout = randomInRange(RANDOM_TIMEOUT_RANGE[0], RANDOM_TIMEOUT_RANGE[1]);
+    console.log(`Retrying fast...random timeout: ${timeout}`);
+    setTimeout(task, timeout, ...arguments);
+}
+
+function randomInRange(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
+function doShare(callback) {
+    GM_xmlhttpRequest({
+        method: "POST",
+        url: API_SHARE,
+        data: `comic_id=${SHARE_ID}`,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            "Referer": "https://manga.bilibili.com",
+            "Origin": "https://manga.bilibili.com"
+        },
+        onerror: function (error) {
+            console.log(`Share error: `, error);
+        },
+        onload: function (response) {
+            console.log(response);
+            // console.log(response.responseText);
+            var resJson = JSON.parse(response.responseText);
+            var code = resJson.code;
+            if (code !== 0) {
+                console.log(`分享失败!\nMsg: ${resJson.msg}`);
+                return
+            }
+            callback(resJson);
+        }
+    });
+}
+
+function addPauseBtn() {
+    var btnPause = document.createElement('button');
+    btnPause.innerHTML = "Pause/Resume";
+    btnPause.id = 'btnPause';
+    btnPause.style['color'] = 'white';
+    btnPause.style['background'] = 'rgb(229 94 194)';
+    btnPause.style['position'] = 'fixed';
+    btnPause.style['top'] = '1%';
+    btnPause.style['right'] = '1%';
+    btnPause.style['padding'] = '16px';
+    btnPause.style['border-radius'] = '4px';
+    btnPause.style['font-size'] = '16px';
+    btnPause.style['z-index'] = '20';
+    btnPause.addEventListener('click', () => {
+        pause = !pause;
+        console.log(`Pause: ${pause}`);
+        if (!pause) {
+            console.log(`重新开始自动兑换`);
+            onReady();
+        }
+    });
+    document.body.appendChild(btnPause);
 }

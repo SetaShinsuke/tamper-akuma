@@ -134,3 +134,20 @@ function setIntervalWithin(_task, _timeout, _maxTimeout) {
     }, _maxTimeout);
     return intervalTask;
 }
+
+// SetTimeout 但是随机时间
+/**
+ * @param task
+ * @param {Array} range [min, max]
+ * @param arguments
+ */
+function retryInRandom(task, range, ...arguments) {
+    if (pause) {
+        console.log(`Pause Retry()`);
+        return
+    }
+    // 服务器似乎限制了 1000ms 的限制
+    var timeout = randomInRange(range[0], range[1]);
+    console.log(`Retrying in random timeout: ${timeout}`);
+    setTimeout(task, timeout, ...arguments);
+}
