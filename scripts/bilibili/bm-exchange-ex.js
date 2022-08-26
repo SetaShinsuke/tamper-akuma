@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
-// @match        https://manga.bilibili.com/eden/credits-exchange.html?auto=*
+// @match        https://manga.bilibili.com/eden/credits-exchange.html*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
@@ -33,13 +33,28 @@ var pause = true;
 
 (function () {
     'use strict';
+    // 如果是edge，跳转到有 param 的页面
+    if (/Edg/.test(navigator.userAgent)
+        && document.location.search === '') {
+        var dest = `${document.location}?auto=true`;
+        console.log(`在使用Edge, 跳转到自动兑换页: ${dest}`);
+        window.open(dest, '_self');
+        return;
+    }
+    if(!/DedeUserID/.test(document.cookie)){
+        alert(`用户未登录!`);
+        console.log(`未登录`);
+        return;
+    }
+    // 自动分享
     var lastShare = GM_getValue(LAST_SHARE);
     var today = (new Date()).toLocaleDateString();
     if (lastShare !== today) {
         console.log(`今日未分享，自动分享: ${today}`);
         doShare((resJson) => {
             GM_setValue(LAST_SHARE, today);
-            console.log(`分享成功: ${today}\nResponse: ${resJson}`);
+            console.log(`分享成功: ${today}\nResponse:`);
+            console.log(resJson);
         });
     } else {
         console.log(`今日已分享: ${today}`);
