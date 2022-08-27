@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jav-EnableConsole
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Stop clearing console!!
 // @author       Akuma
 // @match        https://jav.guru/*
@@ -12,8 +12,8 @@
 // @match        https://javsky.tv/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javguru-fullpic.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javguru-fullpic.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-enable-console.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-enable-console.js
 // ==/UserScript==
 
 (function () {
