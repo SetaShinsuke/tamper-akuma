@@ -1,3 +1,5 @@
+// @require https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
+
 function saveTextFile(text, fileName) {
     var data = new Blob([text], {type: 'text/plain'});
     // // If we are replacing a previously generated file we need to

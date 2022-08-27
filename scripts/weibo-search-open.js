@@ -1,48 +1,38 @@
 // ==UserScript==
 // @name         WBSearch
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  中键打开搜索结果
 // @author       Akuma
 // @match        https://weibo.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
+// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo-search-open.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo-search-open.js
 // ==/UserScript==
 
 (function () {
     'use strict';
+    console.log(`Weibo beautifier ready to inject...`);
+    // 发送图标去色
+    runWhenLoaded('.ficon_send', sendBtn => {
+        sendBtn.style['background'] = '#00000022';
+    })
 
-    window.addEventListener('load', (x) => {
-        console.log('window loaded');
-        setTimeout(() => {
-            // 发送图标去色
-            var sendBtn = document.querySelector('.ficon_send');
-            if(!sendBtn){
-                console.log('Send Btn not found.')
-            }else {
-                sendBtn.style['background'] = '#00000022'
-            }
+    // // 去掉图标
+    // var icons = document.querySelector('.gn_set_v2 S_line1');
+    // if(!icons){
+    //     console.log('Junk icons not found.');
+    // }else {
+    //     document.querySelector('.gn_set_v2').parentNode.removeChild(icons);
+    // }
 
-            // // 去掉图标
-            // var icons = document.querySelector('.gn_set_v2 S_line1');
-            // if(!icons){
-            //     console.log('Junk icons not found.');
-            // }else {
-            //     document.querySelector('.gn_set_v2').parentNode.removeChild(icons);
-            // }
-
-            // 搜索栏中键
-            var searchBar = document.querySelector('.gn_search_v2');
-            if (!searchBar) {
-                console.log('Search Bar not found.')
-                return;
-            }
-            searchBar.addEventListener('input', (x) => {
-                setTimeout(inject, 1000);
-            });
-        }, 3000)
+    // 搜索栏中键
+    runWhenLoaded('.gn_search_v2', searchBar => {
+        searchBar.addEventListener('input', (x) => {
+            setTimeout(inject, 1000);
+        });
     });
 })();
 
