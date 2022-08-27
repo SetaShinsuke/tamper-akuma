@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://watchjavnow.xyz/v/*
@@ -18,32 +18,26 @@
 // ==/UserScript==
 
 (function () {
-    setTimeout(inject, 1000);
-})();
-
-function inject() {
     console.log('Ready to inject.');
-
     runWhenLoaded('svg', (playIcon) => {
         playIcon.addEventListener('click', () => {
             console.log('Play icon clicked.');
             addCopyBtn();
         })
     });
-}
+})();
 
 function addCopyBtn() {
-    setTimeout(() => {
+    runWhenLoaded('#vstr', playerDiv =>{
         var btn = document.createElement("button");
         btn.innerHTML = "Copy";
         btn.style['color'] = 'white';
         btn.style['background'] = 'transparent';
         btn.classList.add('jw-icon-inline');
-        var playerDiv = document.querySelector('#vstr');
         playerDiv.appendChild(btn);
         playerDiv.style['min-height'] = '95%';
         btn.addEventListener('click', onCopyClick);
-    }, 1000);
+    });
 }
 
 function onCopyClick() {

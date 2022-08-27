@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavLibUtils
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Search contents in multiple websites
 // @author       Akuma
 // @match        https://www.javlibrary.com/*
@@ -10,13 +10,13 @@
 // @match        http://javlib.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/jav/javlib-utils.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/jav/javlib-utils.js
+// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javlib-utils.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javlib-utils.js
 // ==/UserScript==
 
 (function () {
     'use strict';
-    // setTimeout(onReady, TIMEOUT);
     console.log(`jav host: ${window.location.hostname}`);
     switch (window.location.hostname) {
         case 'javlib.com':
@@ -96,26 +96,5 @@ function setAdult() {
             setCookie('over18', 18);
         }
     });
-}
-
-// 每秒找一次element，直到元素加载出来再运行
-function runWhenLoaded(queryStr, task, timeout = 500, maxTimeout = 30_000) {
-    var safeStop = null;
-    // 找到元素后开启任务
-    var intervalTask = setInterval(() => {
-        console.log('Doing interval...');
-        var element = document.querySelector(queryStr);
-        if (element) {
-            task(element);
-            console.log(`Interval finished, id: ${intervalTask}`);
-            clearTimeout(safeStop);
-            clearInterval(intervalTask);
-        }
-    }, timeout);
-    // 30s 后仍找不到元素，停止任务
-    safeStop = setTimeout(() => {
-        console.log(`查找元素超时，用时: ${parseInt(maxTimeout / 1000)}s\nQuery: ${queryStr}`);
-        clearInterval(intervalTask);
-    }, maxTimeout);
 }
 
