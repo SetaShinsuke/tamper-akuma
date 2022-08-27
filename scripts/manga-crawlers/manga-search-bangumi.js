@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MangaSearchBangumi
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Search contents in multiple websites
 // @author       Akuma
 // @match        https://bangumi.tv/subject/*
@@ -21,7 +21,6 @@
             return
         }
         runWhenLoaded('#infobox>li', bookNameLi => {
-            var bookName = bookNameLi.childNodes[1].textContent;
             var a = document.createElement('a');
             a.classList.add('l');
             a.style['marginLeft'] = '5px';
@@ -29,6 +28,7 @@
             a.innerText = '\uD83D\uDD0D';
             bookNameLi.appendChild(a);
             a.addEventListener('click', () => {
+                var bookName = bookNameLi.childNodes[1].textContent;
                 search(bookName);
             });
         });
