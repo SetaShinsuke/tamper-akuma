@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.1
+// @version        0.2
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -38,7 +38,7 @@ function injectGG() {
         runWhenLoaded('.module>.content>.items>.item', () => {
             var items = document.querySelectorAll('.module>.content>.items>.item');
             items.forEach(item => {
-                var thumb = item.querySelector('img').src;
+                var thumb = item.querySelector('img').dataset.src;
                 var picUrl = thumb.replace(/-\d*x\d*.jpg/, '.jpg');
                 var span = item.querySelector('.data>span');
                 var a = document.createElement('a');
@@ -48,6 +48,11 @@ function injectGG() {
                 a.innerText = '\ud83d\udc41';
                 a.title = span.title
                 a.href = picUrl;
+                var onClick = (event) => {
+                    console.log(picUrl);
+                }
+                a.addEventListener('click', onClick);
+                a.addEventListener('auxclick', onClick)
                 span.appendChild(a);
             });
         });
