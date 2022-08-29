@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-Exchange-Ex
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html*
@@ -29,7 +29,7 @@ var SHARE_ID = '25539';
 // 重试的 timeout 范围(1.2s~3s)
 var RANDOM_TIMEOUT_RANGE = [1_200, 3_000];
 
-var pause = true;
+var pause = false;
 
 (function () {
     'use strict';
@@ -41,7 +41,7 @@ var pause = true;
         window.open(dest, '_self');
         return;
     }
-    if(!/DedeUserID/.test(document.cookie)){
+    if (!/DedeUserID/.test(document.cookie)) {
         alert(`用户未登录!`);
         console.log(`未登录`);
         return;
@@ -168,7 +168,7 @@ function timoutByClock() {
     var date = new Date();
     var hours = date.getHours();
     var minutes = date.getMinutes();
-    console.log(`时间: ${date.getHours()}:${date.getMinutes()}`);
+    console.log(`时间: ${hours}:` + `${minutes}`.padStart(2, '0') + `:` + `${date.getSeconds()}`.padStart(2, '0'));
     // [0:00 ~ 11:50]
     // [12:03 ~ 24:00]
     if (hours < 11 || (hours === 11 && minutes < 50)
