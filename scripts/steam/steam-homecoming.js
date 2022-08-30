@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SteamHomecoming
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  desc
 // @author       Akuma
 // @match        https://store.steampowered.com/*
@@ -20,11 +20,12 @@
 
 function inject() {
     // do stuff
-    runWhenLoaded('meta[itemprop="priceCurrency"]', currencyMeta => {
+    // runWhenLoaded('meta[itemprop="priceCurrency"]', currencyMeta => {
+        var currencyMeta = document.querySelector('meta[itemprop="priceCurrency"]');
         console.log(`Changing meta[priceCurrency] to CNY`);
         currencyMeta.content = 'CNY';
         // 现在至少 steamDB 的插件现在知道真正的 currency 了, 显示人民币的打折信息
         // steamDB 获取的当前价格 <meta> 里拿到的
         var displayedPrice = document.querySelector('meta[itemprop="price"]');
-    });
+    // });
 }
