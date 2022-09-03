@@ -16,7 +16,7 @@ https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/googl
 使用 [谷歌翻译](https://translate.google.com/) 时，输入完按下 shift+enter 即可转到发音，再次按下 shift+enter 回到输入框，不用再繁琐的操作鼠标了。
 
 ## WSO (weibo-search-open)
-https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo-search-open.js
+https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/wb-search-open.js
 微博网页版左上角的搜索栏，实时搜索出博主的名字之后，并不能直接中键单击、在后台打开链接，而是把当前的 tab 跳转过去，这样会中断当前正在浏览的页面。
 这个脚本可以实现中间点击，不再打扰当前的浏览。
 

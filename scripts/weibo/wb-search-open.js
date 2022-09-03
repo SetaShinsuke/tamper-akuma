@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         WBSearch
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  中键打开搜索结果
 // @author       Akuma
 // @match        https://weibo.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo-search-open.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo-search-open.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo/wb-search-open.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo/wb-search-open.js
 // ==/UserScript==
 
 (function () {
@@ -30,13 +30,11 @@
 
     // 搜索栏中键
     runWhenLoaded('.gn_search_v2', searchBar => {
-        searchBar.addEventListener('input', (x) => {
+        searchBar.addEventListener('input', () => {
             setTimeout(inject, 1000);
         });
     });
 })();
-
-// todo: 测试代码的自动更新
 
 function inject() {
     var items = document.querySelector(".gn_topmenulist").querySelectorAll(".clearfix");
