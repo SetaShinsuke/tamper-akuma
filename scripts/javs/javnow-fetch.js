@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://*.watchjavnow.xyz/v/*
@@ -30,7 +30,9 @@
 function addCopyBtn() {
     runWhenLoaded('#vstr', playerDiv =>{
         var btn = document.createElement("button");
+        btn.id = 'btnCopy';
         btn.innerHTML = "Copy";
+        btn.style['width'] = 'auto';
         btn.style['color'] = 'white';
         btn.style['background'] = 'transparent';
         btn.classList.add('jw-icon-inline');
@@ -57,6 +59,13 @@ function onCopyClick() {
         onload: function (response) {
             var finalUrl = response.finalUrl;
             console.log('FinalUrl: ', finalUrl);
+            var contentLength = response.responseHeaders.match(/\r\ncontent-length: .*\r\n/)[0];
+            contentLength = contentLength.replace(/\r\n/g,'').replace('content-length: ','');
+            contentLength = parseInt(contentLength);
+            contentLength = `${(contentLength/1024/1024).toFixed(2)}m`;
+            document.querySelector('#btnCopy').innerHTML = `Copy (${contentLength})`;
+            console.log(`Video size: ${contentLength}`);
+
             // doDownload(finalUrl, videoName);
             // -480p.mp4
             var ext = finalUrl.split('-').pop();
