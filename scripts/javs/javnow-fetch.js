@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  抓取视频链接
 // @author       Akuma
-// @match        https://watchjavnow.xyz/v/*
+// @match        https://*.watchjavnow.xyz/v/*
 // @match        https://*.mycloudzz.com/v/*
 // @match        https://javcl.me/v/*
 // @match        https://www.ffem.club/v/*
