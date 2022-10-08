@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://*.watchjavnow.xyz/v/*
@@ -23,12 +23,20 @@
         playIcon.addEventListener('click', () => {
             console.log('Play icon clicked.');
             addCopyBtn();
-        })
+        });
+
+        // 隐藏上层遮罩
+        var divs = document.querySelectorAll('div');
+        var ad = divs[divs.length - 1];
+        console.log(ad);
+        if (ad.style['opacity'] !== '') {
+            ad.style['display'] = 'none';
+        }
     });
 })();
 
 function addCopyBtn() {
-    runWhenLoaded('#vstr', playerDiv =>{
+    runWhenLoaded('#vstr', playerDiv => {
         var btn = document.createElement("button");
         btn.id = 'btnCopy';
         btn.innerHTML = "Copy";
@@ -60,9 +68,9 @@ function onCopyClick() {
             var finalUrl = response.finalUrl;
             console.log('FinalUrl: ', finalUrl);
             var contentLength = response.responseHeaders.match(/\r\ncontent-length: .*\r\n/)[0];
-            contentLength = contentLength.replace(/\r\n/g,'').replace('content-length: ','');
+            contentLength = contentLength.replace(/\r\n/g, '').replace('content-length: ', '');
             contentLength = parseInt(contentLength);
-            contentLength = `${(contentLength/1024/1024).toFixed(2)}m`;
+            contentLength = `${(contentLength / 1024 / 1024).toFixed(2)}m`;
             document.querySelector('#btnCopy').innerHTML = `Copy (${contentLength})`;
             console.log(`Video size: ${contentLength}`);
 
