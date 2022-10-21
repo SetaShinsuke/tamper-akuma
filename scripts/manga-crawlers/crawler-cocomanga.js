@@ -2,7 +2,7 @@
 // @name         Crawl-Cocomanga
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  爬取爱发电的漫画
+// @description  爬取Coco的漫画
 // @author       Akuma
 // @match        https://www.cocomanga.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
