@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Jav-CopyUrl
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Right click to copy video player link address
 // @author       Akuma
 // @match        https://javgg.net/jav/*
 // @match        https://jav.guru/*/*/*
 // @match        https://vanfem.com/v/*
 // @match        http://javtk.com/*
+// @match        https://asianclub.tv/f/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @run-at       context-menu
@@ -32,8 +33,30 @@
         case 'javtk.com':
             fetchJavTk();
             break
+        case 'asianclub.tv':
+            fetchJavAS();
+            break
     }
 })();
+
+function fetchJavAS() {
+    var no = document.querySelector('h1').innerText;
+    no = no.replace(`.${no.split('.').pop()}`, '');
+    var text = `[${no}](${window.location.href.split('?')[0]}?v_name=${no}-)`;
+    // 复制
+    copyToClipboard(text);
+    toast('Copied!');
+    // 减少倒计时
+    document.querySelector('#countdown').innerHTML = '1';
+    document.querySelector('#download').click();
+    // 隐藏上层遮罩
+    var divs = document.querySelectorAll('div');
+    var ad = divs[divs.length - 1];
+    console.log(ad);
+    if (ad.style['opacity'] !== '') {
+        ad.style['display'] = 'none';
+    }
+}
 
 function fetchJavTk() {
     var iframe = document.querySelector('#iframeMovie');

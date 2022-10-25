@@ -39,7 +39,8 @@ function inject() {
     img_data_arr.forEach(x => {
         i += 1;
         var url = `${domain}${img_pre}${x}`;
-        var ext = x.split('.').pop();
+        // var ext = x.split('.').pop();
+        var ext = 'webp'; // 并不是 .jpg 格式
         var fileName = `${indexName}_` + `${i}`.padStart(3, '0') + `.${ext}`;
         tasks[chapName].push({
             'url': url, 'file_name': fileName
