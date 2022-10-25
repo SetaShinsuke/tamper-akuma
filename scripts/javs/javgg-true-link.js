@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jav-CopyUrl
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Right click to copy video player link address
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -40,6 +40,15 @@
 })();
 
 function fetchJavAS() {
+    // 隐藏上层遮罩
+    var divs = document.querySelectorAll('div');
+    console.log('隐藏AD遮罩');
+    divs.forEach(ad => {
+        if (ad.style['opacity'] !== '') {
+            ad.style['display'] = 'none';
+        }
+    });
+    // 复制链接
     var no = document.querySelector('h1').innerText;
     no = no.replace(`.${no.split('.').pop()}`, '');
     var text = `[${no}](${window.location.href.split('?')[0]}?v_name=${no}-)`;
@@ -47,15 +56,8 @@ function fetchJavAS() {
     copyToClipboard(text);
     toast('Copied!');
     // 减少倒计时
-    document.querySelector('#countdown').innerHTML = '1';
-    document.querySelector('#download').click();
-    // 隐藏上层遮罩
-    var divs = document.querySelectorAll('div');
-    var ad = divs[divs.length - 1];
-    console.log(ad);
-    if (ad.style['opacity'] !== '') {
-        ad.style['display'] = 'none';
-    }
+    // document.querySelector('#countdown').innerHTML = '1';
+    // document.querySelector('#download').click();
 }
 
 function fetchJavTk() {
@@ -71,7 +73,7 @@ function fetchJavTk() {
     toast('Copied!');
 }
 
-function fetchJavGuru()     {
+function fetchJavGuru() {
     // todo: 点击等等
     alert('?');
     var v = document.querySelector('#vstr');
