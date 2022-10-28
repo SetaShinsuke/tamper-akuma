@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HezhimengPotplayer
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  跳转到 Potplayer 播放视频
 // @author       Akuma
 // @match        https://www.hezhimeng.cn/videoDet.html?videoId=*
@@ -9,8 +9,8 @@
 // @grant        GM_openInTab
 // @run-at       context-menu
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/userscript.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/userscript.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/hezhimeng-potplayer.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/hezhimeng-potplayer.js
 // ==/UserScript==
 
 (function () {
