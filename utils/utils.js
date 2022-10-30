@@ -168,7 +168,7 @@ function addButton(text, styles, onClick = null) {
     button.style['padding'] = '16px';
     button.style['border-radius'] = '4px';
     button.style['font-size'] = '16px';
-    button.style['z-index'] = '20';
+    button.style['z-index'] = '2147483647';
     Object.keys(styles).forEach(key => {
         button.style[key] = styles[key];
     });
