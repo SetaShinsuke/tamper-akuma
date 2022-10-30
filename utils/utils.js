@@ -154,3 +154,27 @@ function setTimeoutInRange(task, range, ...arguments) {
     console.log(`Retrying in random timeout: ${timeout}`);
     return setTimeout(task, timeout, ...arguments);
 }
+
+// 添加按钮, 并返回 id
+function addButton(text, styles, onClick = null) {
+    var button = document.createElement('button');
+    button.innerHTML = text;
+    button.id = `button_${(new Date).getTime()}`;
+    button.style['color'] = 'white';
+    button.style['background'] = '#409eff';
+    button.style['position'] = 'fixed';
+    button.style['top'] = '1%';
+    button.style['right'] = '1%';
+    button.style['padding'] = '16px';
+    button.style['border-radius'] = '4px';
+    button.style['font-size'] = '16px';
+    button.style['z-index'] = '20';
+    Object.keys(styles).forEach(key => {
+        button.style[key] = styles[key];
+    });
+    if(onClick){
+      button.addEventListener('click', onClick);
+    }
+    document.body.appendChild(button);
+    return button.id
+}
