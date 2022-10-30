@@ -156,7 +156,7 @@ function setTimeoutInRange(task, range, ...arguments) {
 }
 
 // 添加按钮, 并返回 id
-function addButton(text, styles, onClick = null) {
+function addButton(text, styles = {}, onClick = null) {
     var button = document.createElement('button');
     button.innerHTML = text;
     button.id = `button_${(new Date).getTime()}`;
