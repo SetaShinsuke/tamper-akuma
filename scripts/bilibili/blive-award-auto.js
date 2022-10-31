@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BliveAwardAuto
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  自动领取直播挂机奖励
 // @author       Akuma
 // @match        https://live.bilibili.com/*?auto_award=true
@@ -28,7 +28,7 @@ function inject() {
 
 function autoClick() {
     var btnAccept = document.querySelector('div[class^="eventTaskItem_button"]');
-    if (btnAccept.innerText === '领取') {
+    if (btnAccept && btnAccept.innerText === '领取') {
         btnAccept.click();
         var timeout = 3_000;
         console.log(`已领取, ${parseInt(timeout / 1_000)}s 后领取下一阶段`);
