@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Yanetflix-Playlink
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  获取视频地址，使用potplayer播放(适用于 NetflixLZ, 多多,  )
 // @author       Akuma
 // @match        https://yanetflix.com/vodplay/*
@@ -31,6 +31,12 @@ function inject() {
                 let url = iframe.src.replace(/.*&url=(.*)/, '$1');
                 let link = `potplayer://${url}`;
                 console.log(`link: ${link}`);
+                // 复制
+                addButton("Copy link", {}, ()=>{
+                    copyToClipboard(url);
+                    alert("链接已复制!\n" + url);
+                });
+                // 打开
                 setTimeout(() => {
                     GM_openInTab(link, false);
                 }, 1000);
