@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         HezhimengPotplayer
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  和之梦: 跳转到 Potplayer 播放视频
 // @author       Akuma
 // @match        https://www.hezhimeng.cn/videoDet.html?videoId=*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
-// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
+// @require      https://ghproxy.com/https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/hezhimeng-potplayer.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/hezhimeng-potplayer.js
 // ==/UserScript==
@@ -20,26 +20,24 @@
 
 function inject() {
     runWhenLoaded('video', video => {
-        let url = video.src;
-        var videoName = url.replace('http://wxres.hezhimeng.cn/', '');
-        var playLink = `potplayer://` + url.replace(videoName, escape(videoName));
-        // var title = document.querySelector('h3.title').innerText.match(/【.*】/)[0].replace(/【(.*)】/,'$1');
-        var title = document.querySelector('h3.title').innerText.match(/[【\[](.*)[】\]]/)[1];
-        var text = `[${title}](${playLink})`;
+        console.log(`PlayLink: ${getPotLink()}`);
 
-        console.log(`PlayLink: ${playLink}`);
         addButton("复制播放链接", {
             top: '1%'
-        }, ()=>{
+        }, () => {
+            var url = getLink();
             copyToClipboard(url);
-            alert("链接已复制!\n" + url);
+            toast("链接已复制!\n" + url);
+            console.log("链接已复制!\n" + url);
         });
 
         addButton("复制PotPlayer链接", {
             top: '8%'
         }, btn => {
-           copyToClipboard(text);
-           alert("链接已复制!\n" + text);
+            var text = getMarkdownText();
+            copyToClipboard(text);
+            toast("链接已复制!\n" + text);
+            console.log("链接已复制!\n" + text);
         });
 
         addButton("使用potplayer播放",
@@ -48,8 +46,25 @@ function inject() {
             }, btn => {
                 // 打开
                 setTimeout(() => {
+                    var playLink = getPotLink();
                     GM_openInTab(playLink, false);
                 }, 1000);
             });
     });
+}
+
+function getLink() {
+    return document.querySelector('video').src;
+}
+
+function getPotLink() {
+    let url = getLink();
+    var videoName = url.replace('http://wxres.hezhimeng.cn/', '');
+    return `potplayer://` + url.replace(videoName, escape(videoName));
+}
+
+function getMarkdownText() {
+    // var title = document.querySelector('h3.title').innerText.match(/【.*】/)[0].replace(/【(.*)】/,'$1');
+    var title = document.querySelector('h3.title').innerText.match(/[【\[](.*)[】\]]/)[1];
+    return `[${title}](${getPotLink()})`;
 }
