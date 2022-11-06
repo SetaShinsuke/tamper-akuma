@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://*.watchjavnow.xyz/v/*
@@ -11,8 +11,13 @@
 // @grant        GM.setClipboard
 // @grant        GM_download
 // @grant        GM_xmlhttpRequest
-// @connect      https://fvs.io/
-// @connect      https://*.ff-*.com/
+// @connect      fvs.io
+// @connect      ff-*.com
+// @connect      ff-01.com
+// @connect      ff-02.com
+// @connect      ff-03.com
+// @connect      ff-04.com
+// @connect      ff-05.com
 // @connect      *
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javnow-fetch.js

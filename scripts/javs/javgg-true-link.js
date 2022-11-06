@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jav-CopyUrl
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Right click to copy video player link address
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -10,13 +10,15 @@
 // @match        http://javtk.com/*
 // @match        https://asianclub.tv/f/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @grant        none
 // @run-at       context-menu
+// @grant        none
+// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javgg-true-link.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javgg-true-link.js
 // ==/UserScript==
 
 (function () {
+    // addButton("获取链接",{},()=>{
     'use strict';
     switch (window.location.hostname) {
         case 'javgg.net':
@@ -37,6 +39,7 @@
             fetchJavAS();
             break
     }
+    // });
 })();
 
 function fetchJavAS() {
@@ -123,46 +126,46 @@ function fetchGG() {
     toast('Copied!');
 }
 
-function copyToClipboard(text) {
-    console.log("Start copy...");
-    var el = document.createElement('textarea');
-    el.value = text;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    console.log("Copied!")
-}
-
-function toast(text) {
-    var snackbar = document.getElementById('snackbar_jav');
-    if (!snackbar) {
-        console.log('Creating snackbar...')
-        snackbar = document.createElement('div');
-        snackbar.id = 'snackbar_jav';
-        // snackbar.style['visibility'] = "visible";
-        snackbar.style['visibility'] = "hidden";
-        snackbar.style['min-width'] = "250px";
-        snackbar.style['margin-left'] = "-125px";
-        snackbar.style['background-color'] = "#333";
-        snackbar.style['color'] = "#fff";
-        snackbar.style['text-align'] = "center";
-        snackbar.style['border-radius'] = "2px";
-        snackbar.style['padding'] = "16px";
-        snackbar.style['position'] = "fixed";
-        snackbar.style['z-index'] = "1";
-        snackbar.style['left'] = "50%";
-        snackbar.style['top'] = "400px";
-        snackbar.style['font-size'] = "17px";
-        document.body.appendChild(snackbar);
-    }
-    snackbar.innerHTML = text;
-    snackbar.style['visibility'] = 'visible';
-    console.log('Snackbar showed');
-    setTimeout(() => {
-        snackbar.style["visibility"] = 'hidden';
-    }, 3000);
-}
+// function copyToClipboard(text) {
+//     console.log("Start copy...");
+//     var el = document.createElement('textarea');
+//     el.value = text;
+//     document.body.appendChild(el);
+//     el.select();
+//     document.execCommand('copy');
+//     document.body.removeChild(el);
+//     console.log("Copied!")
+// }
+//
+// function toast(text) {
+//     var snackbar = document.getElementById('snackbar_jav');
+//     if (!snackbar) {
+//         console.log('Creating snackbar...')
+//         snackbar = document.createElement('div');
+//         snackbar.id = 'snackbar_jav';
+//         // snackbar.style['visibility'] = "visible";
+//         snackbar.style['visibility'] = "hidden";
+//         snackbar.style['min-width'] = "250px";
+//         snackbar.style['margin-left'] = "-125px";
+//         snackbar.style['background-color'] = "#333";
+//         snackbar.style['color'] = "#fff";
+//         snackbar.style['text-align'] = "center";
+//         snackbar.style['border-radius'] = "2px";
+//         snackbar.style['padding'] = "16px";
+//         snackbar.style['position'] = "fixed";
+//         snackbar.style['z-index'] = "1";
+//         snackbar.style['left'] = "50%";
+//         snackbar.style['top'] = "400px";
+//         snackbar.style['font-size'] = "17px";
+//         document.body.appendChild(snackbar);
+//     }
+//     snackbar.innerHTML = text;
+//     snackbar.style['visibility'] = 'visible';
+//     console.log('Snackbar showed');
+//     setTimeout(() => {
+//         snackbar.style["visibility"] = 'hidden';
+//     }, 3000);
+// }
 
 // actorJP = ["吉高宁々", ]
 // actorCN = ["吉高宁宁", ]
