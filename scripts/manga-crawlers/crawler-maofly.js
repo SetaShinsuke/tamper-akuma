@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawl-Maofly
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  爬取漫画猫的漫画
 // @author       Akuma
 // @match        https://www.maofly.com/manga/*/*.html*
@@ -30,7 +30,8 @@ function getTasks() {
     tasks['config']['book_name'] = bookName;
 
     var chapName = document.querySelector('.breadcrumb-item').innerText;
-    chapName = verifyFileName(chapName);
+    var chapId = document.querySelector('.d-none.vg-r-data').dataset.chapter_num;
+    chapName = verifyFileName(`${chapId}_${chapName}`);
     tasks[chapName] = [];
     var imgs = img_data_arr;
     for (var i = 0; i < imgs.length; i++) {
@@ -42,9 +43,8 @@ function getTasks() {
 
     console.log(tasks);
 
-    var index = document.querySelector('.vg-r-data').getAttribute('data-chapter_num');
     // 保存
-    var save_name = `tasks_${index}.json`;
+    var save_name = `tasks_${chapId}.json`;
     console.log(save_name);
     saveTextFile(JSON.stringify(tasks), save_name);
 }
