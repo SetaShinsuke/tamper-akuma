@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jav-Automation
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Automate click buttons etc.
 // @author       Akuma
 // @match        https://hpjav.tv/download/*
@@ -23,7 +23,7 @@
 function inject() {
     // do stuff
     let href = window.location.href;
-    if (href.startsWith("https://hpjav.tv/download/*")) {
+    if (href.startsWith("https://hpjav.tv/download/")) {
         injectHpDown()
     } else if (href.startsWith("https://asianclub.tv/f/") || href.startsWith("https://www.ffem.club/f/")) {
         injectAS();
