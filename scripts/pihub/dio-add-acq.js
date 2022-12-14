@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
+// @match        https://www.xbox.com/*/games/store/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @run-at       context-menu
@@ -15,6 +16,9 @@
 // ==/UserScript==
 
 const HOST = 'http://captaintito.zicp.io:2210';
+const ACCOUNT_EPIC = 8;
+const ACCOUNT_EPIC_CN = 10;
+const ACCOUNT_XBOX = 9;
 
 (function () {
     'use strict';
@@ -30,7 +34,39 @@ function inject() {
         case 'store.epicgames.com':
             injectEpic();
             break
+        case 'www.xbox.com':
+            injectXbox();
+            break
     }
+}
+
+function injectXbox() {
+    runWhenLoaded(`[class^='Price-module']`, priceTag => {
+       let priceStr = priceTag.innerText;
+       try {
+           // var sku = JSON.parse(document.querySelector(`#PageContent>div`).dataset['m']).pid;
+           var sku = document.location.pathname.match(/store\/(.*)/)[1];
+           var name = JSON.parse(document.querySelector(`#PageContent>div`).dataset['m']).prod;
+           var currency = 'USD';
+           var region = 'US';
+           var regionText = priceStr.split('$')[0];
+           if(regionText === 'HK'){
+               currency = 'HKD';
+               region = 'HK';
+           }
+           var orgPrice = priceStr.split('$')[1];
+           orgPrice = parseInt(parseFloat(orgPrice) * 100);
+           var url = `${HOST}/pages/#/dio/main/new`
+               + `?sku=${sku}&platform=xbox&name=${name}&org_name=${name}&account_id=${ACCOUNT_XBOX}`
+               + `&acq_method=vip&acq_date=${(new Date()).toDateString()}&currency=${currency}`
+               + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=${region}`
+           console.log(url);
+           GM_openInTab(url, false);
+       }catch (e) {
+           console.log(e);
+           alert('获取游戏信息出错!' + e.message)
+       }
+    });
 }
 
 function injectEpic() {
@@ -41,10 +77,10 @@ function injectEpic() {
         try {
             let data = JSON.parse(document.querySelector('#_schemaOrgMarkup-Product').innerText);
             currency = data.offers[0].priceCurrency;
-            var accountId = 8;
+            var accountId = ACCOUNT_EPIC;
             var region = 'US';
             if (currency === 'CNY') {
-                accountId = 10;
+                accountId = ACCOUNT_EPIC_CN;
                 region = 'CN';
             }
             let name = data.name.replace(/《(.*)》/, '$1');
