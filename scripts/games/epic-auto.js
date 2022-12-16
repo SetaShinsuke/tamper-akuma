@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EpicAuto
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  自动领取 epic 游戏
 // @author       Akuma
 // @match        https://store.epicgames.com/*?auto=true
@@ -24,6 +24,11 @@ function inject() {
     if (/\/p\//.test(document.location.pathname)) {
         console.log(`游戏详情页，准备自动领取...`);
         runWhenLoaded(`[data-testid="purchase-cta-button"]`, btn => {
+            var text = btn.innerText;
+            if(/已在库中/.test(text) || /IN LIBRARY/.test(text)){
+                alert(`已经领取过!`);
+                return
+            }
             console.log(`点击获取按钮...`);
             btn.click();
             runWhenLoaded(`.payment-order-confirm__btn`, btnConfirm => {
