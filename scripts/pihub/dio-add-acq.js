@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      0.8
+// @version      0.9
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -47,7 +47,7 @@ function inject() {
 }
 
 function injectSteam() {
-    runWhenLoaded(`.game_area_purchase_game`, () => {
+    runWhenLoaded(`.game_area_purchase_game`, div => {
         let sku = document.location.pathname.match(/\/app\/(.*?)\//)[1];
         let name = document.querySelector('#appHubAppName').innerText;
         let currency = document.querySelector(`[itemprop="priceCurrency"]`).content;
@@ -56,9 +56,11 @@ function injectSteam() {
             accountId = ACCOUNT_STEAM_ALT;
         }
         var orgPrice = 0;
+        // 没打折
         var priceStr = document.querySelector(`.game_purchase_price.price`)?.dataset?.priceFinal;
+        // 打折中
         if(!priceStr){
-            priceStr = document.querySelector('.discount_original_price')?.innerText;
+            priceStr = div.querySelector('.discount_original_price')?.innerText;
             if(priceStr){
                 orgPrice = priceStr.match(/[$¥]\s(.*)/) * 100;
             }
