@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
 // @match        https://www.xbox.com/*/games/store/*
+// @match        https://store.steampowered.com/app/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @run-at       context-menu
@@ -19,6 +20,8 @@ const HOST = 'http://captaintito.zicp.io:2210';
 const ACCOUNT_EPIC = 8;
 const ACCOUNT_EPIC_CN = 10;
 const ACCOUNT_XBOX = 9;
+const ACCOUNT_STEAM = 1;
+const ACCOUNT_STEAM_ALT = 4;
 
 (function () {
     'use strict';
@@ -37,7 +40,37 @@ function inject() {
         case 'www.xbox.com':
             injectXbox();
             break
+        case 'store.steampowered.com':
+            injectSteam();
+            break
     }
+}
+
+function injectSteam() {
+    runWhenLoaded(`.game_area_purchase_game`, () => {
+        let sku = document.location.pathname.match(/\/app\/(.*?)\//)[1];
+        let name = document.querySelector('#appHubAppName').innerText;
+        let currency = document.querySelector(`[itemprop="priceCurrency"]`).content;
+        var accountId = ACCOUNT_STEAM;
+        if(document.querySelector(`.persona.online`)?.innerText === 'woolenpants'){
+            accountId = ACCOUNT_STEAM_ALT;
+        }
+        var orgPrice = document.querySelector(`.game_purchase_price.price`)?.dataset?.priceFinal;
+        if(!orgPrice){
+            orgPrice = document.querySelector('.discount_original_price')?.innerText;
+            if(orgPrice){
+                orgPrice = orgPrice.match(/[$¥]\s(.*)/) * 100;
+            }else {
+                orgPrice = 0;
+            }
+        }
+        var url = `${HOST}/pages/#/dio/main/new`
+            + `?sku=${sku}&platform=steam&name=${name}&org_name=${name}&account_id=${accountId}`
+            + `&acq_method=buy&acq_date=${(new Date()).toDateString()}&currency=${currency}`
+            + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=CN`;
+        console.log(url);
+        GM_openInTab(url, false);
+    });
 }
 
 function injectXbox() {

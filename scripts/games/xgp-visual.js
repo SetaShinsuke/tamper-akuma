@@ -8,8 +8,8 @@
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @run-at       context-menu
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/xgp-visual.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/xgp-visual.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/xgp-visual.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/xgp-visual.js
 // ==/UserScript==
 
 (function () {

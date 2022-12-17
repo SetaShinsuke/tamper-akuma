@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         HowLongToBeat-AutoSearch
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Search how long to beat depending on url param
 // @author       Akuma
 // @match        https://howlongtobeat.com/*?keyword=*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/hl2b-auto-search.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/hl2b-auto-search.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/hl2b-auto-search.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/hl2b-auto-search.js
 // ==/UserScript==
 
 (function () {
