@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -55,13 +55,12 @@ function injectSteam() {
         if(document.querySelector(`.persona.online`)?.innerText === 'woolenpants'){
             accountId = ACCOUNT_STEAM_ALT;
         }
-        var orgPrice = document.querySelector(`.game_purchase_price.price`)?.dataset?.priceFinal;
-        if(!orgPrice){
-            orgPrice = document.querySelector('.discount_original_price')?.innerText;
-            if(orgPrice){
+        var orgPrice = 0;
+        var priceStr = document.querySelector(`.game_purchase_price.price`)?.dataset?.priceFinal;
+        if(!priceStr){
+            priceStr = document.querySelector('.discount_original_price')?.innerText;
+            if(priceStr){
                 orgPrice = orgPrice.match(/[$¥]\s(.*)/) * 100;
-            }else {
-                orgPrice = 0;
             }
         }
         var url = `${HOST}/pages/#/dio/main/new`
