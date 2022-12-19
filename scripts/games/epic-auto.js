@@ -41,7 +41,7 @@ function inject() {
             btn.click();
             runWhenLoaded(`#webPurchaseContainer>iframe`, iframe => {
                 console.log(`跳转到订单确认页`);
-                var src = iframe.src;
+                var url = iframe.src;
                 // GM_openInTab(`${src}%auto=true`, false);
                 window.open(url, '_self');
             });
