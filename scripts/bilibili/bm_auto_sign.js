@@ -10,8 +10,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/userscript.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/userscript.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm_auto_sign.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm_auto_sign.js
 // ==/UserScript==
 
 var API_SHARE = `https://manga.bilibili.com/twirp/activity.v1.Activity/ShareComic?platform=ios`;
