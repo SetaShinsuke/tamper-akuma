@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BmAutoSign
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  BM自动签到
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto_sign=true*
@@ -16,7 +16,7 @@
 
 var API_SHARE = `https://manga.bilibili.com/twirp/activity.v1.Activity/ShareComic?platform=ios`;
 const API_GET_SEASON_INFO = `https://manga.bilibili.com/twirp/user.v1.Season/GetSeasonInfo?device=pad&platform=ios`;
-const API_TAKE_SEASON_GIFTS = `https://manga.bilibili.com/twirp/user.v1.Season/TakeSeasonGifts?device=pad&platform=ios`;
+const API_TAKE_SEASON_GIFTS = `https://manga.bilibili.com/twirp/user.v1.Season/TakeSeasonGifts?device=h5&platform=web`;
 const API_SIGN_INFO = `https://manga.bilibili.com/twirp/activity.v1.Activity/GetClockInInfo?platform=android`;
 const API_SIGN = `https://manga.bilibili.com/twirp/activity.v1.Activity/ClockIn?platform=android`;
 const HEADERS = {
@@ -115,7 +115,7 @@ function takeSeasonGifts(seasonId) {
         method: "POST",
         url: API_TAKE_SEASON_GIFTS,
         headers: HEADERS,
-        data: `season_id=${seasonId}`,
+        data: `season_id=${seasonId}&id=0&take_type=1`,
         onerror: function (error) {
             console.log(`TAKE_SEASON_GIFTS error: `, error);
         },
