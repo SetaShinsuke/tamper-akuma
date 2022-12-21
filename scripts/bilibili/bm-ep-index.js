@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-EP-index
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Hover to show episode index.
 // @author       Akuma
 // @match        https://manga.bilibili.com/detail/*
@@ -56,6 +56,18 @@ function addIndexToDetailPage() {
         });
         console.log('Index added to Detail Page.');
     });
+}
+
+function st2Num(shortTitle) {
+    var str = shortTitle.replace(/^十/, '一').replace(/[百十]/g, '');
+    var patterns = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+    // var result = '';
+    patterns.forEach(p => {
+        str = str.replaceAll(p, '' + patterns.indexOf(p));
+        str = str.replaceAll('两', '2');
+    });
+    console.log(str);
+    return parseInt(str);
 }
 
 function doPost() {

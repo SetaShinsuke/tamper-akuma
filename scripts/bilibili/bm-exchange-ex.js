@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         BM-Exchange-Ex
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
-// @match        https://manga.bilibili.com/eden/credits-exchange.html*
+// @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto=true*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
@@ -22,6 +22,11 @@ var API_GET_POINTS = `https://manga.bilibili.com/twirp/pointshop.v1.Pointshop/Ge
 var API_LIST_PRODUCT = `https://manga.bilibili.com/twirp/pointshop.v1.Pointshop/ListProduct?device=pad&platform=ios`;
 var API_EXCHANGE = `https://manga.bilibili.com/twirp/pointshop.v1.Pointshop/Exchange?device=pad&platform=ios`;
 var API_SHARE = `https://manga.bilibili.com/twirp/activity.v1.Activity/ShareComic?platform=ios`;
+var HEADERS = {
+    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    "Referer": "https://manga.bilibili.com",
+    "Origin": "https://manga.bilibili.com"
+}
 
 var CPID = 195;
 var LAST_SHARE = 'last_share';
@@ -34,30 +39,17 @@ var pause = false;
 (function () {
     'use strict';
     // 如果是edge，跳转到有 param 的页面
-    if (/Edg/.test(navigator.userAgent)
-        && document.location.search === '') {
-        var dest = `${document.location}?auto=true`;
-        console.log(`在使用Edge, 跳转到自动兑换页: ${dest}`);
-        window.open(dest, '_self');
-        return;
-    }
+    // if (/Edg/.test(navigator.userAgent)
+    //     && document.location.search === '') {
+    //     var dest = `${document.location}?auto=true`;
+    //     console.log(`在使用Edge, 跳转到自动兑换页: ${dest}`);
+    //     window.open(dest, '_self');
+    //     return;
+    // }
     if (!/DedeUserID/.test(document.cookie)) {
         alert(`用户未登录!`);
         console.log(`未登录`);
         return;
-    }
-    // 自动分享
-    var lastShare = GM_getValue(LAST_SHARE);
-    var today = (new Date()).toLocaleDateString();
-    if (lastShare !== today) {
-        console.log(`今日未分享，自动分享: ${today}`);
-        doShare((resJson) => {
-            GM_setValue(LAST_SHARE, today);
-            console.log(`分享成功: ${today}\nResponse:`);
-            console.log(resJson);
-        });
-    } else {
-        console.log(`今日已分享: ${today}`);
     }
     console.log(`starting inject in ${parseInt(INJECT_TIMEOUT / 1000)} seconds...`);
     var urlParams = new URLSearchParams(document.location.search);
@@ -79,11 +71,7 @@ function onReady() {
     GM_xmlhttpRequest({
         method: "POST",
         url: API_GET_POINTS,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-            "Referer": "https://manga.bilibili.com",
-            "Origin": "https://manga.bilibili.com"
-        },
+        headers: HEADERS,
         onerror: function (error) {
             console.log(`Get user points error: `, error);
         },
@@ -116,11 +104,7 @@ function listProduct(points) {
     GM_xmlhttpRequest({
         method: "POST",
         url: API_LIST_PRODUCT,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-            "Referer": "https://manga.bilibili.com",
-            "Origin": "https://manga.bilibili.com"
-        },
+        headers: HEADERS,
         onerror: function (error) {
             console.log(`Get product list error: `, error);
             console.log(`重试中: ${this.url}`);
@@ -195,11 +179,7 @@ function doExchange(points) {
         method: "POST",
         url: API_EXCHANGE,
         data: `product_id=${CPID}&product_num=${num}&point=${point}`,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-            "Referer": "https://manga.bilibili.com",
-            "Origin": "https://manga.bilibili.com"
-        },
+        headers: HEADERS,
         onerror: function (error) {
             console.log(`Exchange error: `, error);
             console.log(`5s内重试: ${this.url}`);
@@ -250,33 +230,6 @@ function randomInRange(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
-}
-
-function doShare(callback) {
-    GM_xmlhttpRequest({
-        method: "POST",
-        url: API_SHARE,
-        data: `comic_id=${SHARE_ID}`,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-            "Referer": "https://manga.bilibili.com",
-            "Origin": "https://manga.bilibili.com"
-        },
-        onerror: function (error) {
-            console.log(`Share error: `, error);
-        },
-        onload: function (response) {
-            console.log(response);
-            // console.log(response.responseText);
-            var resJson = JSON.parse(response.responseText);
-            var code = resJson.code;
-            if (code !== 0) {
-                console.log(`分享失败!\nMsg: ${resJson.msg}`);
-                return
-            }
-            callback(resJson);
-        }
-    });
 }
 
 function addPauseBtn() {

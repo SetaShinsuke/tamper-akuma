@@ -2,7 +2,7 @@
 // @name         BMangaExchange
 // @namespace    http://tampermonkey.net/
 // @version      0.6.1
-// @description  Auto exchange bilibili manga credits for global-welfare-coupon
+// @description  弃用!!Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?refresh=*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
