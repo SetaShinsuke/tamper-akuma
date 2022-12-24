@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WBImprover
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  优化微博页面
 // @author       Akuma
 // @match        https://weibo.com/*
@@ -9,8 +9,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @require      https://ghproxy.com/https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo/wb-search-open.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo/wb-search-open.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo/wb-improver.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo/wb-improver.js
 // ==/UserScript==
 
 (function () {
@@ -36,6 +36,12 @@
             }
             loadBkg();
         });
+    });
+
+    // 视频->收藏
+    runWhenLoaded(`[href^="/u/"]`, div => {
+        var uid = div.href.match(/\/u\/(.*)/)[1];
+        document.querySelector(`[href="/tv"]`).href = `/u/page/fav/${uid}`;
     });
 
     // // 去掉图标
