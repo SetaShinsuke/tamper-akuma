@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BmAutoSign
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  BM自动签到
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto_sign=true*
@@ -82,7 +82,7 @@ function sign() {
         method: "POST",
         url: API_SIGN,
         headers: HEADERS,
-        data: `type=0&date=${today}`,
+        // data: `type=0&date=${today}`,
         onerror: function (error) {
             console.log(`SIGN error: `, error);
         },
