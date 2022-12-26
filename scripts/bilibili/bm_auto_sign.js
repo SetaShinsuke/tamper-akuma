@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BmAutoSign
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  BM自动签到
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto_sign=true*
@@ -64,7 +64,8 @@ function inject() {
         onload: function (response) {
             var resJson = JSON.parse(response.responseText);
             console.log(resJson);
-            if (resJson["data"]["status"] === "0") {
+            var status = resJson["data"]["status"];
+            if (status === 0 || status === "0") {
                 console.log('今日未签到, 进行签到...');
                 sign();
             }else {
