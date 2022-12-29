@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Jav-CopyUrl
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Right click to copy video player link address
 // @author       Akuma
 // @match        https://javgg.net/jav/*
 // @match        https://jav.guru/*/*/*
 // @match        https://vanfem.com/v/*
 // @match        http://javtk.com/*
+// @match        https://javcl.com/*
 // @match        https://asianclub.tv/f/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @run-at       context-menu
@@ -35,6 +36,9 @@
         case 'javtk.com':
             fetchJavTk();
             break
+        case 'javcl.com':
+            fetchJavCl();
+            break
         case 'asianclub.tv':
             fetchJavAS();
             break
@@ -55,6 +59,7 @@ function fetchJavAS() {
     var no = document.querySelector('h1').innerText;
     no = no.replace(`.${no.split('.').pop()}`, '');
     var text = `[${no}](${window.location.href.split('?')[0]}?v_name=${no}-)`;
+    console.log(text);
     // 复制
     copyToClipboard(text);
     toast('Copied!');
@@ -72,6 +77,21 @@ function fetchJavTk() {
     var playerUrl = iframe.src;
     var no = document.querySelector('.img-fluid.lozad').alt;
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
+    console.log(text);
+    copyToClipboard(text);
+    toast('Copied!');
+}
+
+function fetchJavCl() {
+    var iframe = document.querySelector('iframe');
+    if (!iframe) {
+        alert('Video link not found!');
+        return
+    }
+    var playerUrl = iframe.src;
+    var no = document.querySelector('.mb-1')?.innerText;
+    var text = `[${no}](${playerUrl}?v_name=${no}-)`;
+    console.log(text);
     copyToClipboard(text);
     toast('Copied!');
 }

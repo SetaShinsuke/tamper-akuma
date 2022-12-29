@@ -77,7 +77,7 @@ function inject() {
 }
 
 function sign() {
-    var today = (new Date()).toLocaleDateString();
+    var today = (new Date()).toLocaleDateString().replaceAll('\/', '-');
     GM_xmlhttpRequest({
         method: "POST",
         url: API_SIGN,
