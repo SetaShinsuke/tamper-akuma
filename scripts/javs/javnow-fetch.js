@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      0.10
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://*.watchjavnow.xyz/v/*
@@ -37,7 +37,7 @@
         var divs = document.querySelectorAll('div');
         var ad = divs[divs.length - 1];
         console.log(ad);
-        if (ad.style['opacity'] !== '') {
+        if (ad.style['opacity'] !== '' || ad.style['opacity']==='0.01') {
             ad.style['display'] = 'none';
         }
     });
