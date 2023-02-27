@@ -7,6 +7,7 @@
 // @match        https://translate.google.com/*
 // @match        https://translate.google.co.uk/*
 // @match        https://translate.google.com.hk/*
+// @exclude      https://translate.google.com/_/TranslateWebserverUi/bscframe
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
