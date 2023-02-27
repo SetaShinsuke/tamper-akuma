@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GoogleTranslateKeymap
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  在谷歌翻译中，输入完毕后按下 shift+enter 即可发音，再次按下可再次输入，不用操作鼠标了！
 // @author       Akuma
 // @match        https://translate.google.com/*
@@ -18,6 +18,7 @@
     'use strict';
     console.log('google translate add vocal keymap');
 
+    var button = null;
     runWhenLoaded('TEXTAREA', textArea => {
         console.log(textArea);
         // 拦截 Alt 键，防止焦点到 chrome 右上角的设置键
@@ -26,24 +27,25 @@
                 event.preventDefault();
             }
         });
-        runWhenLoaded(`button[data-tooltip-label-off]`, button => {
-            // shift + enter 发音
-            textArea.addEventListener('keypress', event => {
-                if (['Enter', 'NumpadEnter'].includes(event.code) && event.shiftKey) {
-                    console.log('shift + enter');
-                    event.preventDefault();
-                    button.click();
-                }
-            });``
-            // 切回到输入框
-            button.addEventListener('keypress', event => {
-                if (['Enter', 'NumpadEnter'].includes(event.code) && event.shiftKey) {
-                    console.log('shift + enter');
-                    textArea.focus();
-                    textArea.select();
-                }
-            });
+        if (!button) {
+            button = document.querySelector('button[data-tooltip-label-off]');
+        }
+        // shift + enter 发音
+        textArea.addEventListener('keypress', event => {
+            if (['Enter', 'NumpadEnter'].includes(event.code) && event.shiftKey) {
+                console.log('shift + enter');
+                event.preventDefault();
+                button?.click();
+            }
         });
-
+        ``
+        // 切回到输入框
+        button?.addEventListener('keypress', event => {
+            if (['Enter', 'NumpadEnter'].includes(event.code) && event.shiftKey) {
+                console.log('shift + enter');
+                textArea.focus();
+                textArea.select();
+            }
+        });
     });
 })();
