@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         GoogleTranslateKeymap
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  在谷歌翻译中，输入完毕后按下 shift+enter 即可发音，再次按下可再次输入，不用操作鼠标了！
-// @author       Seta
+// @author       Akuma
 // @match        https://translate.google.com/*
 // @match        https://translate.google.co.uk/*
+// @match        https://translate.google.com.hk/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -25,10 +26,16 @@
                 event.preventDefault();
             }
         });
-        var button;
-        try {
-            button = textArea.parentNode.parentNode.parentNode.parentNode
-                .getElementsByTagName("BUTTON")[4];
+        runWhenLoaded(`button[data-tooltip-label-off]`, button => {
+            // shift + enter 发音
+            textArea.addEventListener('keypress', event => {
+                if (['Enter', 'NumpadEnter'].includes(event.code) && event.shiftKey) {
+                    console.log('shift + enter');
+                    event.preventDefault();
+                    button.click();
+                }
+            });``
+            // 切回到输入框
             button.addEventListener('keypress', event => {
                 if (['Enter', 'NumpadEnter'].includes(event.code) && event.shiftKey) {
                     console.log('shift + enter');
@@ -36,17 +43,7 @@
                     textArea.select();
                 }
             });
-        } catch (e) {
-            console.log(e);
-        }
-        if (button) {
-            textArea.addEventListener('keypress', event => {
-                if (['Enter', 'NumpadEnter'].includes(event.code) && event.shiftKey) {
-                    console.log('shift + enter');
-                    event.preventDefault();
-                    button.click();
-                }
-            });
-        }
+        });
+
     });
 })();
