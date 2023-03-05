@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BmAutoSign
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  BM自动签到
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto_sign=true*
@@ -136,7 +136,12 @@ function takeSeasonGifts(seasonId) {
                     break
             }
             console.log(result);
-            alert(result);
+            // alert(result);
+            console.log(`领取完毕, 即将关闭窗口...`);
+            setTimeout(() => {
+                var customWindow = window.open('', '_self', '');
+                customWindow.close();
+            }, 5_000);
         }
     });
 }
