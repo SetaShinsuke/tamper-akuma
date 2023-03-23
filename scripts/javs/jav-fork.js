@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Jav-CopyUrl
+// @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.6
-// @description  Right click to copy video player link address
+// @version      0.7
+// @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
 // @match        https://jav.guru/*/*/*
@@ -12,11 +12,13 @@
 // @match        https://asianclub.tv/f/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @run-at       context-menu
-// @grant        none
+// @grant        GM_openInTab
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javgg-true-link.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javgg-true-link.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-fork.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-fork.js
 // ==/UserScript==
+
+const HOST = 'http://captaintito.zicp.io:2210';
 
 (function () {
     // addButton("获取链接",{},()=>{
@@ -144,6 +146,29 @@ function fetchGG() {
     var text = `[${no.slice(0, -1)}](${playerUrl}?v_name=${no})`;
     copyToClipboard(text);
     toast('Copied!');
+
+    const fullUrl = new URL(playerUrl);
+    let hostname = fullUrl.hostname;
+    let uid = fullUrl.pathname.replace(/^\/v\//, '');
+    let cover = document.querySelector('#coverimage>img')?.getAttribute('data-src');
+    data = {
+        title: no.slice(0, -1),
+        site: hostname,
+        uid: uid
+    };
+    if (cover) {
+        data.cover = cover;
+    }
+    forkIt(data);
+}
+
+function forkIt(data) {
+    let url = `${HOST}/pages/#/no_media/javs/new?`;
+    for (const [key, value] of Object.entries(data)) {
+        url += `${key}=${value}&`;
+    }
+    console.log('Fork to: ', url);
+    GM_openInTab(url, false);
 }
 
 // function copyToClipboard(text) {
