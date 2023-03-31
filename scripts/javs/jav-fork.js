@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -96,6 +96,20 @@ function fetchJavCl() {
     console.log(text);
     copyToClipboard(text);
     toast('Copied!');
+
+    const fullUrl = new URL(playerUrl);
+    let hostname = fullUrl.hostname;
+    let uid = fullUrl.pathname.replace(/^\/v\//, '');
+    let data = {
+        title: no,
+        site: hostname,
+        uid: uid
+    };
+    let cover = document.querySelector('.row img').getAttribute('data-src');
+    if (cover) {
+        data.cover = cover;
+    }
+    forkIt(data);
 }
 
 function fetchJavGuru() {
@@ -151,7 +165,7 @@ function fetchGG() {
     let hostname = fullUrl.hostname;
     let uid = fullUrl.pathname.replace(/^\/v\//, '');
     let cover = document.querySelector('#coverimage>img')?.getAttribute('data-src');
-    data = {
+    let data = {
         title: no.slice(0, -1),
         site: hostname,
         uid: uid

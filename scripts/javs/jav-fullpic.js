@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.3
+// @version        0.4
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
 // @match          https://jav.guru/*
 // @match          https://javchill.com/*
+// @match          https://javcl.com/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          none
 // @require        https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -28,8 +29,24 @@
         case 'javchill.com':
             injectChill();
             break;
+        case 'javcl.com':
+            injectCl();
+            break
     }
 })();
+
+function injectCl() {
+    runWhenLoaded('.page-section>.container', div => {
+        div.style['max-width'] = '100%';
+    })
+
+    runWhenLoaded('.video-thumb', () => {
+        document.querySelectorAll('.video-thumb').forEach(tb => {
+            tb.src = tb.src.replace(/-[0-9]+x[0-9]+.jpg/, '.jpg');
+            tb.setAttribute('data-src', tb.getAttribute('data-src').replace(/-[0-9]+x[0-9]+.jpg/, '.jpg'));
+        })
+    })
+}
 
 function injectGG() {
     runWhenLoaded('.pagination', () => {
