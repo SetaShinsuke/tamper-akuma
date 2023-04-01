@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.4
+// @version        0.5
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -37,6 +37,10 @@
 
 function injectCl() {
     runWhenLoaded('.page-section>.container', div => {
+        if(document.querySelector('.container>.mb-3')){
+            // 播放页，不处理
+            return
+        }
         div.style['max-width'] = '100%';
     })
 
