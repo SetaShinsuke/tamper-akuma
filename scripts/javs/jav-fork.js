@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.8
+// @version      0.9
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -9,6 +9,7 @@
 // @match        https://vanfem.com/v/*
 // @match        http://javtk.com/*
 // @match        https://javcl.com/*
+// @match        https://javgiga.com/*
 // @match        https://asianclub.tv/f/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @run-at       context-menu
@@ -43,6 +44,9 @@ const HOST = 'http://captaintito.zicp.io:2210';
             break
         case 'asianclub.tv':
             fetchJavAS();
+            break
+        case 'javgiga.com':
+            fetchGiga();
             break
     }
     // });
@@ -82,6 +86,30 @@ function fetchJavTk() {
     console.log(text);
     copyToClipboard(text);
     toast('Copied!');
+}
+
+function fetchGiga() {
+    let a = document.querySelector(`a[href*='javlove.club']`);
+    if(!a){
+        alert('Video link not found!');
+        return
+    }
+    const playerUrl = a.href;
+    const no = window.location.pathname.match(/\/(.*-.*)\//)[1];
+    const fullUrl = new URL(playerUrl);
+    let hostname = fullUrl.hostname;
+    let uid = fullUrl.pathname.replace(/^\/v\//, '');
+    let data = {
+        title: no,
+        site: hostname,
+        uid: uid
+    };
+    let cover = document.querySelector('.video-description img').src;
+    if (cover) {
+        data.cover = cover;
+    }
+    console.log(data);
+    forkIt(data);
 }
 
 function fetchJavCl() {
