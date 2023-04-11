@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         JavLibUtils
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Search contents in multiple websites
 // @author       Akuma
 // @match        https://www.javlibrary.com/*
 // @match        https://www.f61m.com/*
 // @match        https://javlib.com/*
 // @match        http://javlib.com/*
+// @match        https://g64w.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -25,6 +26,7 @@
             break;
         case 'www.javlibrary.com':
         case 'www.f61m.com':
+        case 'g64w.com':
             // 自动选择'已成年'
             setAdult();
             setSearch();
