@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WBImprover
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  优化微博页面
 // @author       Akuma
 // @match        https://weibo.com/*
@@ -62,7 +62,8 @@
 })();
 
 function loadBkg() {
-    runWhenLoaded('#app>div', appDiv => {
+    // runWhenLoaded('#app>div', appDiv => {
+    runWhenLoaded('#app>.woo-box-flex', appDiv => {
         appDiv.style['background-color'] = 'transparent';
         var useBkg = GM_getValue('use_bkg');
         var bkgUrl = GM_getValue('bkg_url');
