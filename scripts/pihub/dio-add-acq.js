@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      1.0
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -10,13 +10,12 @@
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @run-at       context-menu
-// @connect      http://captaintito.zicp.io
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/pihub/dio-add-acq.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/pihub/dio-add-acq.js
 // ==/UserScript==
 
-const HOST = 'http://captaintito.zicp.io:2210';
+const HOST = 'http://192.168.50.166:9292';
 const ACCOUNT_EPIC = 8;
 const ACCOUNT_EPIC_CN = 10;
 const ACCOUNT_XBOX = 9;
