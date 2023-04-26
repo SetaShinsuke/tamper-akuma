@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.6
+// @version        0.7
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -82,7 +82,7 @@ function injectGG() {
 }
 
 function injectGuru() {
-    runWhenLoaded('#page', page => {
+    runWhenLoaded('.paging-navigation', page => {
         page.style['maxWidth'] = '85%';
     });
 

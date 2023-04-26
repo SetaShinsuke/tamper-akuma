@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -90,7 +90,7 @@ function fetchJavTk() {
 
 function fetchGiga() {
     let a = document.querySelector(`a[href*='javlove.club']`);
-    if(!a){
+    if (!a) {
         alert('Video link not found!');
         return
     }
@@ -131,7 +131,8 @@ function fetchJavCl() {
     let data = {
         title: no,
         site: hostname,
-        uid: uid
+        uid: uid,
+        auto_sync_cover: true
     };
     let cover = document.querySelector('.row img').getAttribute('data-src');
     if (cover) {
@@ -163,15 +164,25 @@ function fetchJavGuru() {
 }
 
 function fetchJavGG() {
-    var btn;
-    var btns = document.querySelectorAll('.dooplay_player_option');
-    console.log(btns);
-    btns.forEach(b => {
-        if (b.innerText.includes('婴儿床') || b.innerText.includes('fembed')) {
-            btn = b;
+    var btn = document.querySelector('.dooplay_player_option.on');
+    if (!btn) {
+        var btns = document.querySelectorAll('.dooplay_player_option');
+        console.log(btns);
+        btns.forEach(b => {
+            if (b.innerText.includes('婴儿床') || b.innerText.includes('fembed')) {
+                btn = b;
+            }
+        });
+        btns.forEach(b => {
+            if (b.innerText.includes('婴儿床') || b.innerText.includes('streamsb')) {
+                btn = b;
+            }
+        });
+        if (!btn && btns.length > 0) {
+            btn = btns[0];
         }
-    });
-    btn.click();
+        btn.click();
+    }
     setTimeout(() => {
         fetchGG()
     }, 3000)
@@ -196,7 +207,8 @@ function fetchGG() {
     let data = {
         title: no.slice(0, -1),
         site: hostname,
-        uid: uid
+        uid: uid,
+        auto_sync_cover: true
     };
     if (cover) {
         data.cover = cover;
