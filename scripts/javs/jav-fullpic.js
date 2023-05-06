@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.7
+// @version        0.8
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
