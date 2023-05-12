@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -126,7 +126,7 @@ function injectEpic() {
             //     .querySelector('div>span').innerText.substr(3)) * 100
             let orgPrice = 0;
             let priceStr = document.querySelector('aside>div>div').innerText.match(/[$¥](.*)\n/);
-            if(priceStr.length > 0){
+            if(priceStr && priceStr.length > 0){
                 priceStr = priceStr[1];
                 orgPrice = parseInt(parseFloat(priceStr) * 100);
             }
