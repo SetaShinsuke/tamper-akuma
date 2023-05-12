@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -124,8 +124,12 @@ function injectEpic() {
 
             // let orgPrice = parseFloat(document.querySelectorAll('aside>div>div>div')[2]
             //     .querySelector('div>span').innerText.substr(3)) * 100
-            var priceStr = document.querySelector('aside>div>div').innerText.match(/[$¥](.*)\n/)[1];
-            let orgPrice = parseInt(parseFloat(priceStr) * 100);
+            let orgPrice = 0;
+            let priceStr = document.querySelector('aside>div>div').innerText.match(/[$¥](.*)\n/);
+            if(priceStr.length > 0){
+                priceStr = priceStr[1];
+                orgPrice = parseInt(parseFloat(priceStr) * 100);
+            }
             var url = `${HOST}/pages/#/dio/main/new`
                 + `?sku=${sku}&platform=epic&name=${name}&org_name=${name}&account_id=${accountId}`
                 + `&acq_method=free&acq_date=${(new Date()).toDateString()}&currency=${currency}`
