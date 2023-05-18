@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-Exchange-Ex
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto=true*
@@ -162,8 +162,9 @@ function timoutByClock() {
     console.log(`时间: ${hours}:` + `${minutes}`.padStart(2, '0') + `:` + `${date.getSeconds()}`.padStart(2, '0'));
     // [0:00 ~ 11:50]
     // [12:03 ~ 24:00]
-    if (hours < 11 || (hours === 11 && minutes < 50)
-        || hours > 12 || (hours === 12 && minutes >= 3)) {
+    // 2023.5.19 更新：0点刷新
+    if (hours < 23 || (hours === 23 && minutes < 50)
+        || hours > 0 || (hours === 0 && minutes >= 3)) {
         console.log(`不必刷新: ${hours}:${minutes}`);
         return -1;
     } else if (minutes >= 0 && minutes < 3) {
