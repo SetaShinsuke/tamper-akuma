@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-Exchange-Ex
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto=true*
@@ -28,7 +28,8 @@ var HEADERS = {
     "Origin": "https://manga.bilibili.com"
 }
 
-var CPID = 1931; // 新版【全场券】
+var CPID = 1934; // 新版【超特惠-全场券】
+// var CPID = 1931; // 新版【全场券】
 // var CPID = 195; // 旧版【福利券】下线
 // var LAST_SHARE = 'last_share';
 var SHARE_ID = '25539';
@@ -102,6 +103,12 @@ function onReady() {
 
 function listProduct(points) {
     console.log(`List product...`);
+    // 检测时间
+    var t = timoutByClock();
+    if (!DEV_MODE && t < 0) {
+        console.log(`未到兑换时间, 不再刷新(listProduct)`);
+        return;
+    }
     GM_xmlhttpRequest({
         method: "POST",
         url: API_LIST_PRODUCT,
@@ -123,18 +130,17 @@ function listProduct(points) {
                 return
             }
             if (resJson.data.length <= 0 || resJson.data[0].id !== CPID) {
-                console.log(`第一个商品不是通用券, 重试中...\nMsg: ${resJson.msg}`);
-                retryIn5(listProduct, points);
+                // 有可能换了ID
+                console.log(`First product id: ${resJson.data[0].id}`);
+                if (!resJson.data[0].title.includes('福利券')
+                    || resJson.data[0].real_cost > 100) {
+                    console.log(`第一个商品不是通用券, 重试中...\nMsg: ${resJson.msg}`);
+                    retryIn5(listProduct, points);
+                }
                 return
             }
             var coupon = resJson.data[0];
             if (!DEV_MODE && coupon.remain_amount === 0) {
-                // 检测时间
-                var t = timoutByClock();
-                if (t < 0) {
-                    console.log(`未到兑换时间, 不再刷新`);
-                    return;
-                }
                 console.log(`通用券兑换不可用，${parseInt(t / 1000)}s 后刷新...`);
                 setTimeout(listProduct, t, points);
                 return;
