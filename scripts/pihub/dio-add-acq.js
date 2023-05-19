@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -49,7 +49,10 @@ function injectSteam() {
     runWhenLoaded(`.game_area_purchase_game`, div => {
         let sku = document.location.pathname.match(/\/app\/(.*?)\//)[1];
         let name = document.querySelector('#appHubAppName').innerText;
-        let currency = document.querySelector(`[itemprop="priceCurrency"]`).content;
+        let currency = document.querySelector(`[itemprop="priceCurrency"]`)?.content;
+        if(!currency){
+            currency = 'CNY';
+        }
         var accountId = ACCOUNT_STEAM;
         if(document.querySelector(`.persona.online`)?.innerText === 'woolenpants'){
             accountId = ACCOUNT_STEAM_ALT;
