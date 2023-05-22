@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-Exchange-Ex
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto=true*
@@ -28,7 +28,7 @@ var HEADERS = {
     "Origin": "https://manga.bilibili.com"
 }
 
-var CPID = 1934; // 新版【超特惠-全场券】
+var CPID = 1938; // 新版【超特惠-全场券】
 // var CPID = 1931; // 新版【全场券】
 // var CPID = 195; // 旧版【福利券】下线
 // var LAST_SHARE = 'last_share';
@@ -55,6 +55,10 @@ var pause = false;
     }
     console.log(`starting inject in ${parseInt(INJECT_TIMEOUT / 1000)} seconds...`);
     var urlParams = new URLSearchParams(document.location.search);
+    if(urlParams.get('dev_mode') === 'true'){
+        DEV_MODE = true;
+    }
+    console.log(`Dev mode: ${DEV_MODE}`);
     if (urlParams.get('auto') === 'true') {
         addPauseBtn();
         if (!DEV_MODE && timoutByClock() < 0) {
@@ -133,6 +137,7 @@ function listProduct(points) {
                 // 有可能换了ID
                 console.log(`First product id: ${resJson.data[0].id}`);
                 if (!resJson.data[0].title.includes('福利券')
+                    || !resJson.data[0].title.includes('特惠')
                     || resJson.data[0].real_cost > 100) {
                     console.log(`第一个商品不是通用券, 重试中...\nMsg: ${resJson.msg}`);
                     retryIn5(listProduct, points);
@@ -169,7 +174,7 @@ function timoutByClock() {
         ||(hours === 0 && minutes >= 3)) {
         console.log(`不必刷新: ${hours}:${minutes}`);
         return -1;
-    } else if (minutes >= 0 && minutes < 3) {
+    } else if (minutes >= 0 && minutes < 4) {
         // [12:00 ~ 12:02]
         return 5_000;
     } else if(minutes >= 59){
