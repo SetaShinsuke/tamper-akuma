@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-Exchange-Ex
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      1.0
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto=true*
@@ -145,6 +145,7 @@ function listProduct(points) {
                 return
             }
             var coupon = resJson.data[0];
+            console.log(`Remain: ${coupon.remain_amount}`);
             if (!DEV_MODE && coupon.remain_amount === 0) {
                 console.log(`通用券兑换不可用，${parseInt(t / 1000)}s 后刷新...`);
                 setTimeout(listProduct, t, points);
@@ -218,6 +219,7 @@ function doExchange(points) {
                 return
             }
             console.log(`兑换成功, 刷新页面!\nNum: ${num}`);
+            console.log(`Success, remain: ${resJson.remain_amount}`);
             window.open(window.location.href.replace(`auto=true`, `auto=false&success=${num}`), '_self');
         }
     });
