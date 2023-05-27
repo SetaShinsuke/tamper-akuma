@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-Exchange-Ex
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto=true*
@@ -34,7 +34,7 @@ var CPID = 1938; // 新版【超特惠-全场券】
 // var LAST_SHARE = 'last_share';
 var SHARE_ID = '25539';
 // 重试的 timeout 范围(1.2s~3s)
-var RANDOM_TIMEOUT_RANGE = [1_200, 1_800];
+var RANDOM_TIMEOUT_RANGE = [1_200, 2_000];
 
 var pause = false;
 
