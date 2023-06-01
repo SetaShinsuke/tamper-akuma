@@ -79,6 +79,7 @@ async function inject() {
     //     });
     // });
 
+    tasks['config']['book_name'] = bookName;
     console.log(tasks);
 
     // 保存
