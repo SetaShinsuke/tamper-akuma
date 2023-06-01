@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawler-CPP
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Crawl manga from cpp
 // @author       Akuma
 // @match        https://www.allcpp.cn/s/*
@@ -144,7 +144,7 @@ function getChapDetail(chapId) {
                 // console.log(response.responseText);
                 let resJson = JSON.parse(response.responseText);
                 console.log(resJson);
-                let chapName = verifyFileName(resJson.name);
+                let chapName = verifyFileName(chapId + '_' + resJson.name);
                 let pics = [];
                 let i = 0;
                 resJson.pics.forEach(pic => {
