@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-Exchange-Ex
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Auto exchange bilibili manga credits for global-welfare-coupon
 // @author       Akuma
 // @match        https://manga.bilibili.com/eden/credits-exchange.html?*auto=true*
@@ -28,15 +28,18 @@ var HEADERS = {
     "Origin": "https://manga.bilibili.com"
 }
 
+// &cp_id=1938&refreshing=2000&retry_range=1200-2500&end_min=4
 var CPID = 1938; // 新版【超特惠-全场券】
 // var CPID = 1931; // 新版【全场券】
 // var CPID = 195; // 旧版【福利券】下线
-// var LAST_SHARE = 'last_share';
-var SHARE_ID = '25539';
 // 重试的 timeout 范围(1.2s~3s)
 var RANDOM_TIMEOUT_RANGE = [1_200, 2_000];
+// :04 分后停止刷新
+var END_MIN = 4;
+var REFRESHING = 2_000;
 
 var pause = false;
+var coupon = null;
 
 (function () {
     'use strict';
@@ -55,13 +58,40 @@ var pause = false;
     }
     console.log(`starting inject in ${parseInt(INJECT_TIMEOUT / 1000)} seconds...`);
     var urlParams = new URLSearchParams(document.location.search);
-    if(urlParams.get('dev_mode') === 'true'){
+    // 调试模式
+    if (urlParams.get('dev_mode') === 'true') {
         DEV_MODE = true;
     }
     console.log(`Dev mode: ${DEV_MODE}`);
+    // 兑换ID
+    if (urlParams.get('cp_id')) {
+        CPID = parseInt(urlParams.get('cp_id'));
+        console.log(`要兑换的ID: ${CPID}`);
+    }
+
+    // 重试延时范围
+    if (urlParams.get('retry_range')) {
+        RANDOM_TIMEOUT_RANGE = urlParams.get('retry_range').split('-').map(x => parseInt(x));
+        console.log(`Range: `, RANDOM_TIMEOUT_RANGE);
+    }
+
+    // 停止时限
+    if (urlParams.get('end_min')) {
+        END_MIN = parseInt(urlParams.get('end_min'));
+        console.log(`END MIN: ${urlParams.get('end_min')}`)
+    }
+
+    // 最快的刷新速度
+    if(urlParams.get('refreshing')){
+        REFRESHING = parseInt(urlParams.get('refreshing'));
+        console.log(`Refreshing: ${REFRESHING}`);
+    }
+
+    // 开始注入
     if (urlParams.get('auto') === 'true') {
         addPauseBtn();
         if (!DEV_MODE && timoutByClock() < 0) {
+            console.log(`未到时间, 不自动兑换`);
             return
         }
         setTimeout(onReady, INJECT_TIMEOUT);
@@ -133,7 +163,13 @@ function listProduct(points) {
                 retryIn5(listProduct, points);
                 return
             }
-            if (resJson.data.length <= 0 || resJson.data[0].id !== CPID) {
+            resJson.data.forEach(d => {
+                if (d.id === CPID) {
+                    coupon = d;
+                    console.log(`Coupon id: ${CPID}`);
+                }
+            });
+            if (coupon == null && resJson.data.length > 0) {
                 // 有可能换了ID
                 console.log(`First product id: ${resJson.data[0].id}`);
                 if (!resJson.data[0].title.includes('福利券')
@@ -141,12 +177,13 @@ function listProduct(points) {
                     || resJson.data[0].real_cost > 100) {
                     console.log(`第一个商品不是通用券, 重试中...\nMsg: ${resJson.msg}`);
                     retryIn5(listProduct, points);
+                    return
+                } else {
+                    coupon = resJson.data[0];
                 }
-                return
             }
-            var coupon = resJson.data[0];
-            console.log(`Remain: ${coupon.remain_amount}`);
-            if (!DEV_MODE && coupon.remain_amount === 0) {
+            console.log(`Remain: ${coupon?.remain_amount}`);
+            if (coupon == null || (!DEV_MODE && coupon.remain_amount === 0)) {
                 console.log(`通用券兑换不可用，${parseInt(t / 1000)}s 后刷新...`);
                 setTimeout(listProduct, t, points);
                 return;
@@ -166,42 +203,62 @@ function timoutByClock() {
     var hours = date.getHours();
     var minutes = date.getMinutes();
     console.log(`时间: ${hours}:` + `${minutes}`.padStart(2, '0') + `:` + `${date.getSeconds()}`.padStart(2, '0'));
+    // 2023.5.30 更新: 仅判断分钟
+    if (minutes >= 59) {
+        return 5_000;
+    }
+    if (minutes >= 55) {
+        return 30_000;
+    }
+    if (minutes >= 50) {
+        return 2 * 60 * 1_000;
+    }
+    // 默认 END_MIN = 4
+    if (minutes >= END_MIN) {
+        return -1;
+    }
+    // 默认 REFRESHING = 2000
+    if (minutes >= 1) {
+        return REFRESHING;
+    }
+    return 5_000;
+
     // [0:00 ~ 23:50]
     // [0:03 ~ 24:00]
     // 2023.5.19 更新：0点刷新
-    if ( (hours > 0 && hours < 23)
-        || (hours === 23 && minutes < 50)
-        // || hours > 0
-        ||(hours === 0 && minutes >= 3)) {
-        console.log(`不必刷新: ${hours}:${minutes}`);
-        return -1;
-    } else if (minutes >= 0 && minutes < 4) {
-        // [12:00 ~ 12:02]
-        return 5_000;
-    } else if(minutes >= 59){
-        return 5_000;
-    } else if (minutes > 55) {
-        // [11:55 ~ 12:00]
-        return 30_000;
-    }
-    // [11:50 ~ 11:55]
-    return 2 * 60 * 1000;
+    // if ((hours > 0 && hours < 23)
+    //     || (hours === 23 && minutes < 50)
+    //     // || hours > 0
+    //     || (hours === 0 && minutes >= 3)) {
+    //     console.log(`不必刷新: ${hours}:${minutes}`);
+    //     return -1;
+    // } else if (minutes >= 0 && minutes < 4) {
+    //     // [12:00 ~ 12:02]
+    //     return 5_000;
+    // } else if (minutes >= 59) {
+    //     return 5_000;
+    // } else if (minutes > 55) {
+    //     // [11:55 ~ 12:00]
+    //     return 30_000;
+    // }
+    // // [11:50 ~ 11:55]
+    // return 2 * 60 * 1000;
 }
 
 function doExchange(points) {
-    var price = 100; // 单价
+    var price = coupon.real_cost; // 单价
     var num = Math.floor(points / price);
     var point = num * price;
     console.log(`Do exchange, num: ${num}, point: ${point}`);
     GM_xmlhttpRequest({
         method: "POST",
         url: API_EXCHANGE,
-        data: `product_id=${CPID}&product_num=${num}&point=${point}`,
+        data: `product_id=${coupon.id}&product_num=${num}&point=${point}`,
         headers: HEADERS,
         onerror: function (error) {
             console.log(`Exchange error: `, error);
             console.log(`5s内重试: ${this.url}`);
-            retryIn5(doExchange);
+            retryIn5(doExchange, points);
         },
         onload: function (response) {
             console.log(response);
