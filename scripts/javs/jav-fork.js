@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      0.13
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -12,6 +12,7 @@
 // @match        https://javcl.com/*
 // @match        https://javgiga.com/*
 // @match        https://asianclub.tv/f/*
+// @match        https://tktube.com/videos/*
 // @match        https://javtiful.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @run-at       context-menu
@@ -50,6 +51,9 @@ const HOST = 'http://192.168.50.166:9292';
         case 'javgiga.com':
             forkGiga();
             break
+        case 'tktube.com':
+            forkTkTube()
+            break
         case 'javtiful.com':
             forkTiful();
             break
@@ -58,30 +62,34 @@ const HOST = 'http://192.168.50.166:9292';
 })();
 
 function forkTiful() {
-    runWhenLoaded('#video-section .share-btn', shareBtn => {
-        let playerUrl = shareBtn.getAttribute('data-embed-url');
-        let no = window.location.pathname.split('/').pop();
-        var text = `[${no}](${playerUrl}?v_name=${no}-)`;
-        console.log(text);
-        copyToClipboard(text);
-        toast('Copied!');
+    // runWhenLoaded('#video-section .share-btn', shareBtn => {
+    let shareBtn = document.querySelector('#video-section .share-btn');
+    let playerUrl = shareBtn.getAttribute('data-embed-url');
+    let no = window.location.pathname.split('/').pop();
+    var text = `[${no}](${playerUrl}?v_name=${no}-)`;
+    console.log(text);
+    copyToClipboard(text);
+    // toast('Copied!');
 
-        const fullUrl = new URL(playerUrl);
-        let hostname = fullUrl.hostname;
-        let uid = fullUrl.pathname;
-        let data = {
-            title: no,
-            site: hostname,
-            uid: uid
-        };
-        let cover = document.querySelector("meta[property='og:image']").getAttribute("content");
-        if (cover) {
-            data.cover = cover;
-        }
-        data.wrapper = window.location.href.replace(/\?.*/, '');
-        console.log(data);
-        forkIt(data);
-    });
+    const fullUrl = new URL(playerUrl);
+    let hostname = fullUrl.hostname;
+    let uid = fullUrl.pathname;
+    let data = {
+        title: no,
+        site: hostname,
+        uid: uid,
+        auto_sync_cover: true
+    };
+    console.log(data);
+    let cover = document.querySelector("meta[property='og:image']").getAttribute("content");
+    if (cover) {
+        data.cover = cover;
+    }
+    console.log(data);
+    // data.wrapper = window.location.href.replace(/\?.*/, '');
+    console.log(data);
+    forkIt(data);
+    // });
 }
 
 function forkJavAS() {
@@ -104,6 +112,35 @@ function forkJavAS() {
     // 减少倒计时
     // document.querySelector('#countdown').innerHTML = '1';
     // document.querySelector('#download').click();
+}
+
+function forkTkTube(){
+    let vid = document.querySelector(`input[name=video_id]`)?.value;
+    let playerUrl = `https://tktube.com/embed/${vid}`;
+    let no = window.location.pathname.replace(/(.*)\/$/, '$1').split('/').pop();
+    var text = `[${no}](${playerUrl}?v_name=${no}-)`;
+    console.log(text);
+    copyToClipboard(text);
+    toast('Copied!');
+
+    const fullUrl = new URL(playerUrl);
+    let hostname = fullUrl.hostname;
+    let uid = fullUrl.pathname;
+    let data = {
+        title: no,
+        site: hostname,
+        uid: uid,
+        auto_sync_cover: true
+    };
+    console.log(data);
+    let cover = document.head.querySelector("[property~='og:image']").getAttribute('content');
+    if (cover) {
+        data.cover = cover;
+    }
+    console.log(data);
+    data.wrapper = window.location.href.replace(/\?.*/, '');
+    console.log(data);
+    forkIt(data);
 }
 
 function forkJavTk() {
@@ -260,7 +297,12 @@ function forkIt(data) {
         url += `${key}=${value}&`;
     }
     console.log('Fork to: ', url);
-    GM_openInTab(url, false);
+    try {
+        GM_openInTab(url, false);
+    }catch (e){
+        console.log(e);
+        window.open(url, "__blank");
+    }
 }
 
 // function copyToClipboard(text) {
