@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.8
+// @version        0.9
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
 // @match          https://jav.guru/*
 // @match          https://javchill.com/*
 // @match          https://javcl.com/*
+// @match          https://tktube.com/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          none
 // @require        https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -31,13 +32,35 @@
             break;
         case 'javcl.com':
             injectCl();
-            break
+            break;
+        case 'tktube.com':
+            injectTk();
+            break;
     }
 })();
 
+function injectTk() {
+    runWhenLoaded('.content', div => {
+        if (document.querySelector('.block-video')) {
+            // 播放页，不处理缩放
+            runWhenLoaded('.block-video>.table', ad => {
+                ad.style['display'] = 'none';
+            });
+            return
+        }
+        div.style['max-width'] = '90%';
+    });
+    runWhenLoaded('.item .thumb', _ => {
+        document.querySelectorAll('.item .thumb').forEach(cover => {
+            cover.setAttribute('data-webp',
+                cover.getAttribute('data-webp').replace(/([0-9]+x.*)/, 'preview_720p.mp4.jpg'))
+        });
+    });
+}
+
 function injectCl() {
     runWhenLoaded('.page-section>.container', div => {
-        if(document.querySelector('.container>.mb-3')){
+        if (document.querySelector('.container>.mb-3')) {
             // 播放页，不处理
             return
         }
