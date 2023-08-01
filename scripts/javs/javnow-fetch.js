@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.11
+// @version      0.12
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://*.watchjavnow.xyz/v/*
@@ -10,6 +10,7 @@
 // @match        https://javcl.me/v/*
 // @match        https://www.ffem.club/v/*
 // @match        https://javlove.club/v*
+// @match        https://javtiful.com/embed/*
 // @grant        GM.setClipboard
 // @grant        GM_download
 // @grant        GM_xmlhttpRequest
@@ -20,6 +21,7 @@
 // @connect      ff-03.com
 // @connect      ff-04.com
 // @connect      ff-05.com
+// @connect      cloudflarestorage.com
 // @connect      *
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javnow-fetch.js
@@ -28,6 +30,12 @@
 
 (function () {
     console.log('Ready to inject.');
+    if (document.location.hostname === 'javtiful.com') {
+        console.log('Javtiful');
+        fetchJavtiful();
+        return
+    }
+
     runWhenLoaded('svg', (playIcon) => {
         playIcon.addEventListener('click', () => {
             console.log('Play icon clicked.');
@@ -38,20 +46,33 @@
         var divs = document.querySelectorAll('div');
         var ad = divs[divs.length - 1];
         console.log(ad);
-        if (ad.style['opacity'] !== '' || ad.style['opacity']==='0.01') {
+        if (ad.style['opacity'] !== '' || ad.style['opacity'] === '0.01') {
             ad.style['display'] = 'none';
         }
     });
 })();
 
-function addCopyBtn() {
-    runWhenLoaded('#vstr', playerDiv => {
+function fetchJavtiful() {
+    runWhenLoaded('#vid_play', playIcon => {
+        playIcon.addEventListener('click', () => {
+            console.log('Play icon clicked.');
+            addCopyBtn("body", () => {
+                console.log('Copy btn clicked');
+                runWhenLoaded('#hls-video');
+            });
+        });
+    });
+}
+
+function addCopyBtn(parent = "#vstr") {
+    runWhenLoaded(parent, playerDiv => {
         var btn = document.createElement("button");
         btn.id = 'btnCopy';
         btn.innerHTML = "Copy";
         btn.style['width'] = 'auto';
         btn.style['color'] = 'white';
         btn.style['background'] = 'transparent';
+        btn.style['position'] = 'absolute';
         btn.classList.add('jw-icon-inline');
         playerDiv.appendChild(btn);
         playerDiv.style['min-height'] = '95%';
@@ -76,16 +97,28 @@ function onCopyClick() {
         onload: function (response) {
             var finalUrl = response.finalUrl;
             console.log('FinalUrl: ', finalUrl);
-            var contentLength = response.responseHeaders.match(/\r\ncontent-length: .*\r\n/)[0];
-            contentLength = contentLength.replace(/\r\n/g, '').replace('content-length: ', '');
-            contentLength = parseInt(contentLength);
-            contentLength = `${(contentLength / 1024 / 1024).toFixed(2)}m`;
-            document.querySelector('#btnCopy').innerHTML = `Copy (${contentLength})`;
-            console.log(`Video size: ${contentLength}`);
+            if (response.responseText) {
+                var contentLength = response.responseHeaders.match(/\r\ncontent-length: .*\r\n/)[0];
+                contentLength = contentLength.replace(/\r\n/g, '').replace('content-length: ', '');
+                contentLength = parseInt(contentLength);
+                contentLength = `${(contentLength / 1024 / 1024).toFixed(2)}m`;
+                document.querySelector('#btnCopy').innerHTML = `Copy (${contentLength})`;
+                console.log(`Video size: ${contentLength}`);
+            }else {
+                document.querySelector('#btnCopy').innerHTML = `Copy (--)`;
+                let a = document.createElement('a');
+                a.href = finalUrl;
+                a.style['position'] = 'fixed';
+                a.style['top'] = '5%';
+                a.innerText = 'FileLink';
+                a.style['color'] = 'white';
+                document.body.appendChild(a);
+            }
 
             // doDownload(finalUrl, videoName);
             // -480p.mp4
-            var ext = finalUrl.split('-').pop();
+            // var ext = finalUrl.split('-').pop();
+            var ext = '.' + (new URL(finalUrl)).pathname.split('.').pop();
             videoName = `${videoName}-${ext}`;
             GM.setClipboard(videoName);
             console.log('Video name copied!');

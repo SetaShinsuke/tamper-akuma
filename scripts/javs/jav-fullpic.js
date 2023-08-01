@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.11
+// @version        0.12
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -44,12 +44,13 @@
 })();
 
 function injectFul() {
+    let player = document.querySelector('#player');
+    if (player) {
+        // 播放页面，忽略
+        console.log('播放页，不缩放封面');
+        return
+    }
     runWhenLoaded('.container-lg', mainDiv => {
-        let player = document.querySelector('#player');
-        if (player) {
-            // 播放页面，忽略
-            return
-        }
         mainDiv.style['max-width'] = '100%';
         document.querySelectorAll('section .card')?.forEach(card => {
             let coverUrl = card.querySelector('img').getAttribute('data-src');
