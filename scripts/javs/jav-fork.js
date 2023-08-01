@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.14
+// @version      0.15
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
