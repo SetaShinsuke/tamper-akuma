@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.10
+// @version        0.11
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -9,6 +9,7 @@
 // @match          https://javchill.com/*
 // @match          https://javcl.com/*
 // @match          https://tktube.com/*
+// @match          https://javtiful.com/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          none
 // @require        https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -36,8 +37,32 @@
         case 'tktube.com':
             injectTk();
             break;
+        case 'javtiful.com':
+            injectFul();
+            break;
     }
 })();
+
+function injectFul() {
+    runWhenLoaded('.container-lg', mainDiv => {
+        let player = document.querySelector('#player');
+        if (player) {
+            // 播放页面，忽略
+            return
+        }
+        mainDiv.style['max-width'] = '100%';
+        document.querySelectorAll('section .card')?.forEach(card => {
+            let coverUrl = card.querySelector('img').getAttribute('data-src');
+            // card.querySelector('.video-views').setAttribute('href', cover);
+            let a = document.createElement('a');
+            a.href = coverUrl;
+            a.innerText = 'Pic';
+            a.classList.add('video-addtime');
+            a.style.textDecoration = 'none';
+            card.querySelector('.video-views').appendChild(a);
+        });
+    });
+}
 
 function injectTk() {
     // 界面宽度
@@ -59,7 +84,7 @@ function injectTk() {
                 let cover = item.querySelector('.thumb');
                 let fullPic = cover.getAttribute('data-webp');
                 let title = item.querySelector('.title');
-                if(!/國產精品/.test(title.innerText)){
+                if (!/國產精品/.test(title.innerText)) {
                     fullPic = cover.getAttribute('data-webp').replace(/([0-9]+x.*)/, 'preview_720p.mp4.jpg');
                 }
                 cover.style['height'] = 'auto';
@@ -77,12 +102,12 @@ function injectTk() {
     };
     setFullPic();
     runWhenLoaded('.pagination a', _ => {
-       document.querySelectorAll('.pagination a').forEach(pag => {
-           pag.addEventListener('click', _ =>{
-               console.log('click: ', pag);
-               setTimeout(setFullPic, 2500);
-           });
-       });
+        document.querySelectorAll('.pagination a').forEach(pag => {
+            pag.addEventListener('click', _ => {
+                console.log('click: ', pag);
+                setTimeout(setFullPic, 2500);
+            });
+        });
     });
 }
 

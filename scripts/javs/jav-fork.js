@@ -8,6 +8,7 @@
 // @match        https://jav.guru/*/*/*
 // @match        https://vanfem.com/v/*
 // @match        http://javtk.com/*
+// @match        https://javtk.com/*
 // @match        https://javcl.com/*
 // @match        https://javgiga.com/*
 // @match        https://asianclub.tv/f/*
@@ -26,7 +27,7 @@ const HOST = 'http://192.168.50.166:9292';
     'use strict';
     switch (window.location.hostname) {
         case 'javgg.net':
-            fetchJavGG();
+            forkJavGG();
             break;
         case 'jav.guru':
             alert('todo');
@@ -34,25 +35,25 @@ const HOST = 'http://192.168.50.166:9292';
         case 'vanfem.com':
             // todo: 在这里操作
             // enableConsole();
-            fetchJavGuru();
+            forkJavGuru();
             break
         case 'javtk.com':
-            fetchJavTk();
+            forkJavTk();
             break
         case 'javcl.com':
-            fetchJavCl();
+            forkJavCl();
             break
         case 'asianclub.tv':
-            fetchJavAS();
+            forkJavAS();
             break
         case 'javgiga.com':
-            fetchGiga();
+            forkGiga();
             break
     }
     // });
 })();
 
-function fetchJavAS() {
+function forkJavAS() {
     // 隐藏上层遮罩
     var divs = document.querySelectorAll('div');
     console.log('隐藏AD遮罩');
@@ -74,8 +75,11 @@ function fetchJavAS() {
     // document.querySelector('#download').click();
 }
 
-function fetchJavTk() {
-    var iframe = document.querySelector('#iframeMovie');
+function forkJavTk() {
+    let playerDiv = document.querySelector('.play-video');
+    // todo: 获取视频地址 javTK
+    let links_code = playerDiv.querySelector('#links')?.getAttribute('value');
+    let iframe = playerDiv.querySelector('iframe');
     if (!iframe) {
         alert('Video link not found!');
         return
@@ -88,7 +92,7 @@ function fetchJavTk() {
     toast('Copied!');
 }
 
-function fetchGiga() {
+function forkGiga() {
     let a = document.querySelector(`a[href*='javlove.club']`);
     if (!a) {
         alert('Video link not found!');
@@ -112,7 +116,7 @@ function fetchGiga() {
     forkIt(data);
 }
 
-function fetchJavCl() {
+function forkJavCl() {
     var iframe = document.querySelector('iframe');
     if (!iframe) {
         alert('Video link not found!');
@@ -141,7 +145,7 @@ function fetchJavCl() {
     forkIt(data);
 }
 
-function fetchJavGuru() {
+function forkJavGuru() {
     // todo: 点击等等
     alert('?');
     var v = document.querySelector('#vstr');
@@ -163,7 +167,7 @@ function fetchJavGuru() {
     // alert(uid);
 }
 
-function fetchJavGG() {
+function forkJavGG() {
     var btn = document.querySelector('.dooplay_player_option.on');
     if (!btn) {
         var btns = document.querySelectorAll('.dooplay_player_option');
@@ -184,11 +188,11 @@ function fetchJavGG() {
         btn.click();
     }
     setTimeout(() => {
-        fetchGG()
+        forkGG()
     }, 3000)
 }
 
-function fetchGG() {
+function forkGG() {
     var videoFrame = document.querySelector('.rptss');
     if (!videoFrame) {
         alert('Video link not found!');

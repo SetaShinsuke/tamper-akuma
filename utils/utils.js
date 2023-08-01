@@ -178,3 +178,14 @@ function addButton(text, styles = {}, onClick = null) {
     document.body.appendChild(button);
     return button.id
 }
+
+// span -> a
+function span2a(span, href){
+    var a = document.createElement('a');
+    a.innerText = span.innerText;
+    a.title = span.title
+    a.href = href;
+    a.classList = span.classList;
+    span.parentNode.appendChild(a);
+    span.style.display = 'none';
+}
