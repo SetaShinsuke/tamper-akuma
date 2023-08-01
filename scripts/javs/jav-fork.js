@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.13
+// @version      0.14
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -80,13 +80,11 @@ function forkTiful() {
         uid: uid,
         auto_sync_cover: true
     };
-    console.log(data);
     let cover = document.querySelector("meta[property='og:image']").getAttribute("content");
     if (cover) {
         data.cover = cover;
     }
-    console.log(data);
-    // data.wrapper = window.location.href.replace(/\?.*/, '');
+    data.wrapper = window.location.href.replace(/\?.*/, '');
     console.log(data);
     forkIt(data);
     // });
@@ -132,12 +130,10 @@ function forkTkTube(){
         uid: uid,
         auto_sync_cover: true
     };
-    console.log(data);
     let cover = document.head.querySelector("[property~='og:image']").getAttribute('content');
     if (cover) {
         data.cover = cover;
     }
-    console.log(data);
     data.wrapper = window.location.href.replace(/\?.*/, '');
     console.log(data);
     forkIt(data);
@@ -183,6 +179,7 @@ function forkGiga() {
     if (cover) {
         data.cover = cover;
     }
+    data.wrapper = window.location.href.replace(/\?.*/, '');
     console.log(data);
     forkIt(data);
 }
@@ -213,6 +210,8 @@ function forkJavCl() {
     if (cover) {
         data.cover = cover;
     }
+    data.wrapper = window.location.href.replace(/\?.*/, '');
+    console.log(data);
     forkIt(data);
 }
 
@@ -288,6 +287,8 @@ function forkGG() {
     if (cover) {
         data.cover = cover;
     }
+    data.wrapper = window.location.href.replace(/\?.*/, '');
+    console.log(data);
     forkIt(data);
 }
 
