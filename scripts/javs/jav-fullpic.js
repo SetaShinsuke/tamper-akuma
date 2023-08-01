@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.9
+// @version        0.10
 // @description    Click 👁 to see full picture.
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -40,6 +40,7 @@
 })();
 
 function injectTk() {
+    // 界面宽度
     runWhenLoaded('.content', div => {
         if (document.querySelector('.block-video')) {
             // 播放页，不处理缩放
@@ -50,11 +51,38 @@ function injectTk() {
         }
         div.style['max-width'] = '90%';
     });
-    runWhenLoaded('.item .thumb', _ => {
-        document.querySelectorAll('.item .thumb').forEach(cover => {
-            cover.setAttribute('data-webp',
-                cover.getAttribute('data-webp').replace(/([0-9]+x.*)/, 'preview_720p.mp4.jpg'))
+
+    // 大图
+    let setFullPic = _ => {
+        runWhenLoaded('.list-videos .item .thumb', _ => {
+            document.querySelectorAll('.list-videos .item').forEach(item => {
+                let cover = item.querySelector('.thumb');
+                let fullPic = cover.getAttribute('data-webp');
+                let title = item.querySelector('.title');
+                if(!/國產精品/.test(title.innerText)){
+                    fullPic = cover.getAttribute('data-webp').replace(/([0-9]+x.*)/, 'preview_720p.mp4.jpg');
+                }
+                cover.style['height'] = 'auto';
+                cover.src = fullPic;
+                cover.setAttribute('data-webp', fullPic);
+                // 链接
+                // let a = item.querySelector('a');
+                // let link = a.href;
+                // console.log(link);
+                // a.removeAttribute('href');
+                // cover.setAttribute('href', link);
+                // title.setAttribute('href', link);
+            });
         });
+    };
+    setFullPic();
+    runWhenLoaded('.pagination a', _ => {
+       document.querySelectorAll('.pagination a').forEach(pag => {
+           pag.addEventListener('click', _ =>{
+               console.log('click: ', pag);
+               setTimeout(setFullPic, 2500);
+           });
+       });
     });
 }
 
