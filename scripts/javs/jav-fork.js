@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -12,6 +12,7 @@
 // @match        https://javcl.com/*
 // @match        https://javgiga.com/*
 // @match        https://asianclub.tv/f/*
+// @match        https://javtiful.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @run-at       context-menu
 // @grant        GM_openInTab
@@ -49,9 +50,39 @@ const HOST = 'http://192.168.50.166:9292';
         case 'javgiga.com':
             forkGiga();
             break
+        case 'javtiful.com':
+            forkTiful();
+            break
     }
     // });
 })();
+
+function forkTiful() {
+    runWhenLoaded('#video-section .share-btn', shareBtn => {
+        let playerUrl = shareBtn.getAttribute('data-embed-url');
+        let no = window.location.pathname.split('/').pop();
+        var text = `[${no}](${playerUrl}?v_name=${no}-)`;
+        console.log(text);
+        copyToClipboard(text);
+        toast('Copied!');
+
+        const fullUrl = new URL(playerUrl);
+        let hostname = fullUrl.hostname;
+        let uid = fullUrl.pathname;
+        let data = {
+            title: no,
+            site: hostname,
+            uid: uid
+        };
+        let cover = document.querySelector("meta[property='og:image']").getAttribute("content");
+        if (cover) {
+            data.cover = cover;
+        }
+        data.wrapper = window.location.href.replace(/\?.*/, '');
+        console.log(data);
+        forkIt(data);
+    });
+}
 
 function forkJavAS() {
     // 隐藏上层遮罩
@@ -85,7 +116,10 @@ function forkJavTk() {
         return
     }
     var playerUrl = iframe.src;
-    var no = document.querySelector('.img-fluid.lozad').alt;
+    var no = document.querySelector('title').innerText.match(/(.*?-\S+)\s/);
+    if (no.length > 1) {
+        no = no[1];
+    }
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
     copyToClipboard(text);
