@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.15
+// @version      0.16
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -115,7 +115,8 @@ function forkJavAS() {
 function forkTkTube(){
     let vid = document.querySelector(`input[name=video_id]`)?.value;
     let playerUrl = `https://tktube.com/embed/${vid}`;
-    let no = window.location.pathname.replace(/(.*)\/$/, '$1').split('/').pop();
+    // let no = window.location.pathname.replace(/(.*)\/$/, '$1').split('/').pop();
+    let no = document.querySelector('.headline h1').innerText.split(/\s/)[0];
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
     copyToClipboard(text);
