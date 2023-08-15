@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.16
+// @version      0.17
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -112,11 +112,16 @@ function forkJavAS() {
     // document.querySelector('#download').click();
 }
 
-function forkTkTube(){
+function forkTkTube() {
     let vid = document.querySelector(`input[name=video_id]`)?.value;
     let playerUrl = `https://tktube.com/embed/${vid}`;
     // let no = window.location.pathname.replace(/(.*)\/$/, '$1').split('/').pop();
     let no = document.querySelector('.headline h1').innerText.split(/\s/)[0];
+    let tags = null;
+    if (/モザイク破壊/.test(no)) {
+        tags = 'unreduce';
+    }
+    no = no.replace(/【.*】/, '');
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
     copyToClipboard(text);
@@ -131,6 +136,10 @@ function forkTkTube(){
         uid: uid,
         auto_sync_cover: true
     };
+    console.log('tags: ', tags);
+    if (tags) {
+        data.tags = tags;
+    }
     let cover = document.head.querySelector("[property~='og:image']").getAttribute('content');
     if (cover) {
         data.cover = cover;
@@ -301,7 +310,7 @@ function forkIt(data) {
     console.log('Fork to: ', url);
     try {
         GM_openInTab(url, false);
-    }catch (e){
+    } catch (e) {
         console.log(e);
         window.open(url, "__blank");
     }
