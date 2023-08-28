@@ -5,6 +5,7 @@
 // @description  领取浪花
 // @author       Akuma
 // @match        https://manga.bilibili.com/blackboard/activity-tfoshYo7Qx.html?*auto_take=true*
+// @match        https://manga.bilibili.com/blackboard/activity-GD55upVIp5.html?*auto_take=true*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_xmlhttpRequest
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -12,7 +13,7 @@
 // @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm-tmp-tasks.js
 // ==/UserScript==
 
-var INJECT_TIMEOUT = 5_000;
+var INJECT_TIMEOUT = 10_000;
 var API_TAKE = `https://manga.bilibili.com/wd40?op=TakeTask`;
 // var API_TAKE = `https://manga.bilibili.com/wd40`;
 var HEADERS = {};
@@ -23,7 +24,15 @@ var TASK_3 = 300052;
 (function () {
     'use strict';
     console.log('Starting inject...');
-    setTimeout(inject, INJECT_TIMEOUT);
+    if (/GD55upVIp5/.test(window.location.pathname)) {
+        // 主活动页
+        setTimeout(_ => {
+            var customWindow = window.open('', '_self', '');
+            customWindow.close();
+        }, 5000);
+    } else {
+        setTimeout(inject, INJECT_TIMEOUT);
+    }
 })();
 
 async function inject() {
@@ -39,7 +48,9 @@ async function inject() {
         "Referer": referer,
         "Origin": referer
     };
-    take(TASK_1);
+    setTimeout(_ => {
+        take(TASK_1);
+    }, 1000);
     setTimeout(_ => {
         take(TASK_2);
     }, 2000);
@@ -50,7 +61,7 @@ async function inject() {
             setTimeout(() => {
                 var customWindow = window.open('', '_self', '');
                 customWindow.close();
-            }, 5_000);
+            }, 10_000);
         });
     }, 3000);
 }
