@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.17
+// @version      0.18
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -68,7 +68,7 @@ function forkTiful() {
     let no = window.location.pathname.split('/').pop();
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
-    copyToClipboard(text);
+    // copyToClipboard(text);
     // toast('Copied!');
 
     const fullUrl = new URL(playerUrl);
@@ -78,7 +78,8 @@ function forkTiful() {
         title: no,
         site: hostname,
         uid: uid,
-        auto_sync_cover: true
+        auto_sync_cover: true,
+        tags: 'hd'
     };
     let cover = document.querySelector("meta[property='og:image']").getAttribute("content");
     if (cover) {
@@ -105,7 +106,7 @@ function forkJavAS() {
     var text = `[${no}](${window.location.href.split('?')[0]}?v_name=${no}-)`;
     console.log(text);
     // 复制
-    copyToClipboard(text);
+    // copyToClipboard(text);
     toast('Copied!');
     // 减少倒计时
     // document.querySelector('#countdown').innerHTML = '1';
@@ -124,7 +125,7 @@ function forkTkTube() {
     no = no.replace(/【.*】/, '');
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
-    copyToClipboard(text);
+    // copyToClipboard(text);
     toast('Copied!');
 
     const fullUrl = new URL(playerUrl);
@@ -165,7 +166,7 @@ function forkJavTk() {
     }
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
-    copyToClipboard(text);
+    // copyToClipboard(text);
     toast('Copied!');
 }
 
@@ -204,7 +205,7 @@ function forkJavCl() {
     var no = document.querySelector('.mb-1')?.innerText;
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
-    copyToClipboard(text);
+    // copyToClipboard(text);
     toast('Copied!');
 
     const fullUrl = new URL(playerUrl);
@@ -281,7 +282,7 @@ function forkGG() {
     var playerUrl = videoFrame.src;
     var no = document.location.pathname.replace('/jav/', '').replace('/javs/', '').replace('/', '-');
     var text = `[${no.slice(0, -1)}](${playerUrl}?v_name=${no})`;
-    copyToClipboard(text);
+    // copyToClipboard(text);
     toast('Copied!');
 
     const fullUrl = new URL(playerUrl);
