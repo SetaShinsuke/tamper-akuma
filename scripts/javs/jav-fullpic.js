@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.12
-// @description    Click 👁 to see full picture.
+// @version        0.13
+// @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
 // @match          https://jav.guru/*
@@ -35,7 +35,7 @@
             injectCl();
             break;
         case 'tktube.com':
-            injectTk();
+            injectTube();
             break;
         case 'javtiful.com':
             injectFul();
@@ -44,6 +44,26 @@
 })();
 
 function injectFul() {
+    // 搜索快捷键
+    runWhenLoaded(`input[name='search_query']`, inputSearch => {
+        document.addEventListener('keydown', e => {
+            const btnSearch = document.querySelector(`button.search-here`);
+            if(e.code !== 'Slash'){
+                return
+            }
+            console.log(`Keydown, key code: ${e.code}`);
+            // 按下斜杠"/"
+            if (document.querySelector('.search-form-action')?.style?.visibility !== 'visible') {
+                btnSearch?.click();
+            }
+            setTimeout(_=>{
+                inputSearch.focus();
+                inputSearch.select();
+            }, 250);
+        });
+    });
+
+    // 封面图
     let player = document.querySelector('#player');
     if (player) {
         // 播放页面，忽略
@@ -60,12 +80,26 @@ function injectFul() {
             a.innerText = 'Pic';
             a.classList.add('video-addtime');
             a.style.textDecoration = 'none';
-            card.querySelector('.video-views').appendChild(a);
+            card.querySelector('.video-views')?.appendChild(a);
         });
     });
 }
 
-function injectTk() {
+function injectTube() {
+    //搜索快捷键
+    runWhenLoaded(`.search-text>input`, inputSearch => {
+        document.addEventListener('keydown', e => {
+            if(e.code !== 'Slash'){
+                return
+            }
+            console.log(`Keydown, key code: ${e.code}`);
+            // 按下斜杠"/"
+            setTimeout(_=>{
+                inputSearch.focus();
+                inputSearch.select();
+            }, 250);
+        });
+    });
     // 界面宽度
     runWhenLoaded('.content', div => {
         if (document.querySelector('.block-video')) {
