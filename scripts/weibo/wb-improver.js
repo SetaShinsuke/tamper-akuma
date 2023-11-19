@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WBImprover
 // @namespace    http://tampermonkey.net/
-// @version      0.8
+// @version      0.9
 // @description  优化微博页面
 // @author       Akuma
 // @match        https://weibo.com/*
@@ -40,8 +40,8 @@
 
     // 视频->收藏
     runWhenLoaded(`[href^="/u/"]`, div => {
-        var uid = div.href.match(/\/u\/(.*)/)[1];
-        document.querySelector(`[href="/tv"]`).href = `/u/page/fav/${uid}`;
+        var uid = div?.href.match(/\/u\/(.*)/)[1];
+        document.querySelector(`[href="/tv"]`)?.href = `/u/page/fav/${uid}`;
     });
 
     // // 去掉图标
