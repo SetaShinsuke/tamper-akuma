@@ -1,18 +1,20 @@
 // ==UserScript==
 // @name         WBImprover
 // @namespace    http://tampermonkey.net/
-// @version      0.11
+// @version      0.12
 // @description  优化微博页面
 // @author       Akuma
 // @match        https://weibo.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @require      https://ghproxy.com/https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
+// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo/wb-improver.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/weibo/wb-improver.js
 // ==/UserScript==
 
+// github 镜像
+// @ require      https://ghproxy.com/https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 (function () {
     'use strict';
     console.log(`Weibo beautifier ready to inject...`);
