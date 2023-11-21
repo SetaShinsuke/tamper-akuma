@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.12
+// @version      0.13
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://*.watchjavnow.xyz/v/*
@@ -28,10 +28,13 @@
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javnow-fetch.js
 // ==/UserScript==
 
+let isHd = false;
+
 (function () {
     console.log('Ready to inject.');
     if (document.location.hostname === 'javtiful.com') {
         console.log('Javtiful');
+        isHd = true;
         fetchJavtiful();
         return
     }
@@ -104,7 +107,7 @@ function onCopyClick() {
                 contentLength = `${(contentLength / 1024 / 1024).toFixed(2)}m`;
                 document.querySelector('#btnCopy').innerHTML = `Copy (${contentLength})`;
                 console.log(`Video size: ${contentLength}`);
-            }else {
+            } else {
                 document.querySelector('#btnCopy').innerHTML = `Copy (--)`;
                 let a = document.createElement('a');
                 a.href = finalUrl;
@@ -119,7 +122,11 @@ function onCopyClick() {
             // -480p.mp4
             // var ext = finalUrl.split('-').pop();
             var ext = '.' + (new URL(finalUrl)).pathname.split('.').pop();
-            videoName = `${videoName}-${ext}`;
+            let resolution = '';
+            if (isHd) {
+                resolution = '-720p'
+            }
+            videoName = `Downloads\\Video\\${videoName}${resolution}-${ext}`;
             GM.setClipboard(videoName);
             console.log('Video name copied!');
             // window.open(`thunder://${videoUrl}`, '_blank').focus();
