@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.13
+// @version        0.14
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -48,7 +48,7 @@ function injectFul() {
     runWhenLoaded(`input[name='search_query']`, inputSearch => {
         document.addEventListener('keydown', e => {
             const btnSearch = document.querySelector(`button.search-here`);
-            if(e.code !== 'Slash'){
+            if (e.code !== 'Slash') {
                 return
             }
             console.log(`Keydown, key code: ${e.code}`);
@@ -56,10 +56,9 @@ function injectFul() {
             if (document.querySelector('.search-form-action')?.style?.visibility !== 'visible') {
                 btnSearch?.click();
             }
-            setTimeout(_=>{
-                inputSearch.focus();
-                inputSearch.select();
-            }, 250);
+            e.preventDefault();
+            inputSearch.focus();
+            inputSearch.select();
         });
     });
 
@@ -89,12 +88,12 @@ function injectTube() {
     //搜索快捷键
     runWhenLoaded(`.search-text>input`, inputSearch => {
         document.addEventListener('keydown', e => {
-            if(e.code !== 'Slash'){
+            if (e.code !== 'Slash') {
                 return
             }
             console.log(`Keydown, key code: ${e.code}`);
             // 按下斜杠"/"
-            setTimeout(_=>{
+            setTimeout(_ => {
                 inputSearch.focus();
                 inputSearch.select();
             }, 250);
