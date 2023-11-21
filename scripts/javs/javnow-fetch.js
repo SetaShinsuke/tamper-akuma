@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Javnow-Fetch
 // @namespace    http://tampermonkey.net/
-// @version      0.13
+// @version      0.14
 // @description  抓取视频链接
 // @author       Akuma
 // @match        https://*.watchjavnow.xyz/v/*
@@ -124,9 +124,9 @@ function onCopyClick() {
             var ext = '.' + (new URL(finalUrl)).pathname.split('.').pop();
             let resolution = '';
             if (isHd) {
-                resolution = '-720p'
+                resolution = '720p'
             }
-            videoName = `Downloads\\Video\\${videoName}${resolution}-${ext}`;
+            videoName = `Downloads\\Video\\${videoName}-${resolution}${ext}`;
             GM.setClipboard(videoName);
             console.log('Video name copied!');
             // window.open(`thunder://${videoUrl}`, '_blank').focus();
