@@ -24,6 +24,16 @@ function saveTextFile(text, fileName) {
     return textFile;
 }
 
+// 用正则表达式获取后缀名
+function getExtByRegex(fileName) {
+    // 匹配[.xxx]结尾且[xxx]中不包含[.]
+    let matches = fileName.match(/(\.[^.]+)$/);
+    if (matches.size > 1) {
+        return matches[1];
+    }
+    return undefined
+}
+
 function verifyFileName(fileName) {
     fileName = fileName.replace(/[\\\/\s+、，。]/g, '_')
     fileName = fileName.replace('（', '(').replace('）', ')').replace('：', ':');
@@ -172,15 +182,15 @@ function addButton(text, styles = {}, onClick = null) {
     Object.keys(styles).forEach(key => {
         button.style[key] = styles[key];
     });
-    if(onClick){
-      button.addEventListener('click', onClick);
+    if (onClick) {
+        button.addEventListener('click', onClick);
     }
     document.body.appendChild(button);
     return button.id
 }
 
 // span -> a
-function span2a(span, href){
+function span2a(span, href) {
     var a = document.createElement('a');
     a.innerText = span.innerText;
     a.title = span.title

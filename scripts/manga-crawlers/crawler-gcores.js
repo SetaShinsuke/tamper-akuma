@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-gcores
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Get pictures in gcores articles
 // @author       Akuma
 // @match        https://www.gcores.com/articles/*
@@ -38,7 +38,7 @@ function inject() {
     let author = document.querySelector('.avatar_text')?.innerText;
     // undefined ?? '' == ''
     let bookName = document.querySelector('.redirectEntry-portfolios h3')?.childNodes[0]?.textContent;
-    bookName = bookName??'';
+    bookName = bookName ?? '';
     bookName = verifyFileName(`[${bookName}][${author}]`);
     tasks['config']['book_name'] = bookName;
 
@@ -67,6 +67,12 @@ function inject() {
                 bookName = chapName;
             }
             tasks[chapName] = [];
+            // todo: 封面
+            let coverPath = resJson.data.attributes.cover;
+            tasks[chapName].push({
+                'url': `${IMAGE_HOST}` + coverPath,
+                'file_name': `000_cover${coverPath.match(/(\.[^.]+)$/)[1]}`
+            });
             // 图片列表
             let content;
             try {
