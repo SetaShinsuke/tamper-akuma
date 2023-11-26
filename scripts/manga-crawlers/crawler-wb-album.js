@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Crawler-Wb-Album
 // @namespace    http://tampermonkey.net/
-// @version      0.2
-// @description  爬取微博相册的图
+// @version      0.3
+// @description  爬取微博相册的图, 参数 pic_size 设置大小(orj360, mw2000, large, woriginal)
 // @author       Akuma
 // @match        https://photo.weibo.com/*/albums/detail/album_id/*/mode/3/*
 // @match        https://weibo.com/*/*
@@ -14,6 +14,8 @@
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-wb-album.js
 // ==/UserScript==
 
+// 微博图片尺寸:orj360, mw2000, large, woriginal
+
 (function () {
     'use strict';
     console.log('Ready to crawl.')
@@ -21,11 +23,13 @@
     if (/albums/.test(window.location.pathname)) {
         fetchAlbum();
     } else {
-        fetchPost();
+        let urlParams = new URLSearchParams(document.location.search);
+        let picSize = urlParams.get('pic_size');
+        fetchPost(picSize || 'woriginal');
     }
 })();
 
-function fetchPost() {
+function fetchPost(picSize) {
     var tasks = {};
     let author = document.querySelector(`header a[class*='head_cut']>span`)?.textContent;
     var bookName = verifyFileName(`${author}的WB`);
@@ -35,7 +39,7 @@ function fetchPost() {
 
     let postId = window.location.pathname.replaceAll('/', '_');
     let chapName = postId + '';
-    let contentMatch = document.querySelector(`div[class*='detail_wbtext']`)?.textContent?.match(/《(.*)》/);
+    let contentMatch = document.querySelector(`div[class*='detail_wbtext']`)?.textContent?.match(/《(.*?)》/);
     if (contentMatch?.length > 1) {
         // XXX作品_postId
         chapName = contentMatch[1] + chapName;
@@ -46,7 +50,7 @@ function fetchPost() {
     imgs = Array.from(imgs);
     var i = 0;
     imgs.forEach(img => {
-        var url = img.src.replace('/orj360', '/woriginal');
+        var url = img.src.replace('/orj360', `/${picSize}`);
         i += 1;
         var fileName = `${i}`.padStart(4, '0') + `.${url.split('.').pop()}`;
         tasks[chapName].push({'url': url, 'file_name': fileName});
