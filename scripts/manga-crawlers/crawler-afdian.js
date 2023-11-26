@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Crawl-Afdian
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  爬取爱发电的漫画
 // @author       Akuma
-// @match        https://afdian.net/album/*?save=true
+// @match        https://afdian.net/album/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_xmlhttpRequest
+// @run-at       context-menu
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-afdian.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-afdian.js
@@ -24,7 +25,9 @@ let HEADERS = {
 (function () {
     'use strict';
     console.log('Ready to crawl.')
-    setTimeout(getTasks, 2_000);
+    // setTimeout(getTasks, 2_000);
+    toast('正在爬取...');
+    getTasks();
 })();
 
 async function getTasks() {
