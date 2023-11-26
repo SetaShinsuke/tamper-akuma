@@ -1,15 +1,25 @@
 // ==UserScript==
 // @name         Crawl-Afdian
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  爬取爱发电的漫画
 // @author       Akuma
 // @match        https://afdian.net/album/*?save=true
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @grant        none
+// @grant        GM_xmlhttpRequest
+// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-afdian.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-afdian.js
 // ==/UserScript==
+
+const API_POST_DETAIL = `https://afdian.net/api/post/get-detail?post_id={POST_ID}`; // &album_id={ALBUM_ID}
+
+let referer = `${window.location.protocol}//${window.location.host}`;
+let HEADERS = {
+    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    "Referer": referer,
+    "Origin": referer
+};
 
 (function () {
     'use strict';
@@ -17,7 +27,7 @@
     setTimeout(getTasks, 2_000);
 })();
 
-function getTasks() {
+async function getTasks() {
     var tasks = {};
     var bookNameOrg = document.querySelector('.tit').innerText;
     var bookName = verifyFileName(bookNameOrg);
@@ -37,6 +47,22 @@ function getTasks() {
     tasks[chapName] = [];
 
     var imgs = document.querySelectorAll('.article-box>p>img');
+    if (!imgs || imgs.length === 0) { // 可能在img-box里(而非article-box)
+        try {
+            let albumId = window.location.pathname.match(/\/album\/(.*)\/(.*)/)[1];
+            let postId = window.location.pathname.match(/\/album\/(.*)\/(.*)/)[2];
+            await fetchPostDetail(postId).then(pics => {
+                imgs = pics.map(pic => {
+                    return {'src': pic};
+                });
+            });
+        } catch (e) {
+            console.log(e);
+            alert('No pics found!');
+            return
+        }
+    }
+
     var i = 0;
     imgs.forEach(img => {
         // 'https://pic1.afdiancdn.com/user/6f4f9c4a967e11e9aec452540025c377/common/1affc42bed4cdacc35cec60cc43220e3_w800_h1163_s371.jpg?imageView2/2/w/640'
@@ -59,39 +85,24 @@ function getTasks() {
     btnNext.focus();
 }
 
-function verifyFileName(fileName) {
-    fileName = fileName.replace('\\', '_').replace('/', '_');
-    fileName = fileName.replace('（', '(').replace('）', ')')
-        .replace(' ', '_').replace('：', ':');
-    var reg = /[/·. :*?"<>|]/g;
-    fileName = fileName.replace(reg, '-');
-    if (fileName.length > 150) {
-        fileName = fileName.substring(0, 100);
-    } //# 文件名超长
-    return fileName;
-}
-
-// 保存.txt
-function saveTextFile(text, fileName) {
-    var data = new Blob([text], {type: 'text/plain'});
-    // // If we are replacing a previously generated file we need to
-    // // manually revoke the object URL to avoid memory leaks.
-    // if (textFile !== null) {
-    //     window.URL.revokeObjectURL(textFile);
-    // }
-    let textFile = window.URL.createObjectURL(data);
-
-    var link = document.createElement('a');
-    link.setAttribute('download', fileName);
-    link.href = textFile;
-    document.body.appendChild(link);
-
-    // wait for the link to be added to the document
-    window.requestAnimationFrame(function () {
-        var event = new MouseEvent('click');
-        link.dispatchEvent(event);
-        document.body.removeChild(link);
+// 从接口获取帖子详情
+function fetchPostDetail(postId) {
+    return new Promise((resolve, reject) => {
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: API_POST_DETAIL.replace('{POST_ID}', postId),
+            headers: HEADERS,
+            onerror: function (error) {
+                console.log(`Get post detail error: `, error);
+                // reject(error);
+            },
+            onload: function (response) {
+                // console.log(response.responseText);
+                let resJson = JSON.parse(response.responseText);
+                console.log(resJson);
+                let pics = resJson.data.post.pics;
+                resolve(pics);
+            }
+        });
     });
-
-    return textFile;
 }

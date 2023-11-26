@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawler-CPP
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Crawl manga from cpp
 // @author       Akuma
 // @match        https://www.allcpp.cn/s/*
@@ -20,7 +20,13 @@ var API_SERIAL_INFO = 'https://works.allcpp.cn/rest/serial/{serial_id}';
 var API_CHAPTER_DETAIL = 'https://works.allcpp.cn/rest/works/{chapter_id}';
 var API_SERIAL_DETAIL = 'https://works.allcpp.cn/rest/serial/{serial_id}/contribute?index=1&size=50&sort=1';
 var PIC_HOST = 'https://imagecdn3.allcpp.cn/upload';
-var HEADERS = {};
+
+let referer = `${window.location.protocol}//${window.location.host}`;
+let HEADERS = {
+    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    "Referer": referer,
+    "Origin": referer
+};
 
 (function () {
     'use strict';
@@ -29,12 +35,6 @@ var HEADERS = {};
 })();
 
 async function inject() {
-    let referer = `${window.location.protocol}//${window.location.host}`
-    HEADERS = {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        "Referer": referer,
-        "Origin": referer
-    }
 
     var tasks = {};
     tasks['config'] = {};
