@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wb2Mobile
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Right click to mobile web
 // @author       Akuma
 // @match        https://weibo.com/*/*
@@ -23,5 +23,5 @@ function inject() {
     var statusId = window.location.pathname.split('/').pop();
     var url = `https://m.weibo.cn/status/${statusId}`;
     console.log(`Web wb url: ${url}`);
-    window.open(url, '_self').focus();
+    window.open(url, '_self');
 }

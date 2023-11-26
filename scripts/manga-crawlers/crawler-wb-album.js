@@ -1,12 +1,15 @@
 // ==UserScript==
-// @name         Crawl-Wb-Album
+// @name         Crawler-Wb-Album
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  爬取微博相册的图
 // @author       Akuma
 // @match        https://photo.weibo.com/*/albums/detail/album_id/*/mode/3/*
+// @match        https://weibo.com/*/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
+// @run-at       context-menu
+// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-wb-album.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-wb-album.js
 // ==/UserScript==
@@ -14,12 +17,55 @@
 (function () {
     'use strict';
     console.log('Ready to crawl.')
-    setTimeout(getTasks, 2_000);
+    let type = 'post';
+    if (/albums/.test(window.location.pathname)) {
+        fetchAlbum();
+    } else {
+        fetchPost();
+    }
 })();
 
-function getTasks() {
+function fetchPost() {
     var tasks = {};
-    var bookName = document.querySelector('strong').innerText
+    let author = document.querySelector(`header a[class*='head_cut']>span`)?.textContent;
+    var bookName = verifyFileName(`${author}的WB`);
+    tasks['config'] = {};
+    tasks['config']['referer'] = `${window.location.protocol}//${window.location.host}`;
+    tasks['config']['book_name'] = bookName;
+
+    let postId = window.location.pathname.replaceAll('/', '_');
+    let chapName = postId + '';
+    let contentMatch = document.querySelector(`div[class*='detail_wbtext']`)?.textContent?.match(/《(.*)》/);
+    if (contentMatch?.length > 1) {
+        // XXX作品_postId
+        chapName = contentMatch[1] + chapName;
+    }
+    console.log('chapter name: ' + chapName);
+    tasks[chapName] = [];
+    var imgs = document.querySelectorAll(`div[class*='picture-box'] img`);
+    imgs = Array.from(imgs);
+    var i = 0;
+    imgs.forEach(img => {
+        var url = img.src.replace('/orj360', '/woriginal');
+        i += 1;
+        var fileName = `${i}`.padStart(4, '0') + `.${url.split('.').pop()}`;
+        tasks[chapName].push({'url': url, 'file_name': fileName});
+    });
+    console.log(tasks);
+
+    // 保存
+    var save_name = `tasks_${bookName}_${chapName}_${(new Date).getTime()}.json`;
+    console.log(save_name);
+    saveTextFile(JSON.stringify(tasks), save_name);
+    // 复制所有图片链接，以备手动下载
+    let downloadLinks = tasks[chapName].map(task => task.url).join('\n');
+    console.log('Download links:\n', downloadLinks);
+    copyToClipboard(downloadLinks);
+}
+
+function fetchAlbum() {
+    var tasks = {};
+    var bookName = document.querySelector('strong').innerText;
     tasks['config'] = {};
     tasks['config']['referer'] = `${window.location.protocol}//${window.location.host}`;
     tasks['config']['book_name'] = bookName;
@@ -41,28 +87,4 @@ function getTasks() {
     var save_name = `tasks_${(new Date).getTime()}.json`;
     console.log(save_name);
     saveTextFile(JSON.stringify(tasks), save_name);
-}
-
-function saveTextFile(text, fileName) {
-    var data = new Blob([text], {type: 'text/plain'});
-    // // If we are replacing a previously generated file we need to
-    // // manually revoke the object URL to avoid memory leaks.
-    // if (textFile !== null) {
-    //     window.URL.revokeObjectURL(textFile);
-    // }
-    let textFile = window.URL.createObjectURL(data);
-
-    var link = document.createElement('a');
-    link.setAttribute('download', fileName);
-    link.href = textFile;
-    document.body.appendChild(link);
-
-    // wait for the link to be added to the document
-    window.requestAnimationFrame(function () {
-        var event = new MouseEvent('click');
-        link.dispatchEvent(event);
-        document.body.removeChild(link);
-    });
-
-    return textFile;
 }
