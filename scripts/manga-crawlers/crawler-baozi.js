@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-baozi
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Crawl manga pics form baozimh.com
 // @author       Akuma
 // @match        https://cn.czmanga.com/comic/chapter/*
@@ -36,6 +36,7 @@ function getTasks() {
 
     let chapName = document.querySelector(`.header .title`).textContent;
     let chapIndex = window.location.pathname.match(/\/0_(.*).html/)[1];
+    chapIndex = parseInt(chapIndex) + 1;
     chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
 
     tasks[chapName] = [];
