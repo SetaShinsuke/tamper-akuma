@@ -38,8 +38,8 @@ function getTasks() {
     tasks['config']['book_name'] = bookName;
 
     let chapName = document.querySelector(`.comic-chap-title span.chap-title`).textContent;
-    let chapIndex = window.location.pathname.match(/\/cid\/(.?)(\??)/);
-    chapName = `${chapIndex}`.padStart(4, '0') + chapName;
+    let chapIndex = window.location.pathname.match(/\/cid\/(.?)(\??)/)[1];
+    chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
 
     tasks[chapName] = [];
     let i = 0;
