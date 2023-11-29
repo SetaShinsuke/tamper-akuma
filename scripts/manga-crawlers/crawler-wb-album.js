@@ -2,7 +2,7 @@
 // @name         Crawler-Wb-Album
 // @namespace    http://tampermonkey.net/
 // @version      0.3
-// @description  爬取微博相册的图, 参数 pic_size 设置大小(orj360, mw2000, large, woriginal)
+// @description  爬取微博相册的图, 参数 pic_size 设置大小(orj360, mw690, mw2000, large, woriginal)
 // @author       Akuma
 // @match        https://photo.weibo.com/*/albums/detail/album_id/*/mode/3/*
 // @match        https://weibo.com/*/*

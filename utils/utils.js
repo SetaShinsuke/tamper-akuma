@@ -25,7 +25,7 @@ function saveTextFile(text, fileName) {
 }
 
 // 用正则表达式获取后缀名
-function getExtByRegex(fileName) {
+function getExtByName(fileName) {
     // 匹配[.xxx]结尾且[xxx]中不包含[.]
     let matches = fileName.match(/(\.[^.]+)$/);
     if (matches.size > 1) {
