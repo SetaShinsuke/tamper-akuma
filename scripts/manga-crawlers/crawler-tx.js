@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://m.ac.qq.com/chapter/index/id/*/cid/*
@@ -25,7 +25,7 @@ let HEADERS = {
     addButton('获取图片', {'top': '10%'}, (e => {
         // 滚到页面底部让它加载图片
         window.scrollTo(0, document.body.scrollHeight);
-        setTimeout(_=>{
+        setTimeout(_ => {
             getTasks();
         }, 1500);
     }), 0.5);
@@ -43,7 +43,10 @@ function getTasks() {
 
     let chapName = document.querySelector(`.comic-chap-title span.chap-title`).textContent;
     let chapIndex = window.location.pathname.match(/\/cid\/(.?)(\??)/)[1];
-    chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
+    // '第7话 - 2/36'
+    let indexName = document.querySelector('.float-bar-title>.progress').textContent;
+    indexName = indexName.replace(/ - .*/, '')
+    chapName = `${chapIndex}`.padStart(4, '0') + `_${indexName}_` + chapName;
 
     tasks[chapName] = [];
     let i = 0;
