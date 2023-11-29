@@ -51,8 +51,9 @@ function getUrlpics(picTree) {
 // `.comics-chapters a` href
 // https://cn.baozimh.com/comic/heguangzhiyuanhui-tanjiu
 // 图片列表
-// `amp-img` [data-src]
+// `.comic-contain amp-img` [data-src]
 // https://cn.czmanga.com/comic/chapter/heguangzhiyuanhui-tanjiu/0_14.html
+// 和光志愿会：[1-5] [6-12] [13-17]
 
 
 // --- 笔趣阁 bq8.org
