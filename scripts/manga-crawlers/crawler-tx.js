@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://m.ac.qq.com/chapter/index/id/*/cid/*
@@ -23,7 +23,11 @@ let HEADERS = {
     'use strict';
     console.log('Starting inject...');
     addButton('获取图片', {'top': '10%'}, (e => {
-        getTasks();
+        // 滚到页面底部让它加载图片
+        window.scrollTo(0, document.body.scrollHeight);
+        setTimeout(_=>{
+            getTasks();
+        }, 1500);
     }), 0.5);
 })();
 
