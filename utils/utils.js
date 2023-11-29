@@ -28,7 +28,7 @@ function saveTextFile(text, fileName) {
 function getExtByName(fileName) {
     // 匹配[.xxx]结尾且[xxx]中不包含[.]
     let matches = fileName.match(/(\.[^.]+)$/);
-    if (matches.size > 1) {
+    if (matches.length > 1) {
         // xxxx.jpg/800
         return matches[1].replace(/\/.*/, '');
     }
