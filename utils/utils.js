@@ -198,6 +198,7 @@ function addButton(text, styles = {}, onClick = null, preHover = 1) {
         button.addEventListener('click', onClick);
     }
     if (preHover < 1) {
+        button.style['opacity'] = preHover;
         button.addEventListener('mouseover', e => {
             button.style['opacity'] = '1';
         });
