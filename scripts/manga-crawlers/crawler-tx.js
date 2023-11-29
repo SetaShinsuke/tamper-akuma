@@ -22,9 +22,12 @@ let HEADERS = {
 (function () {
     'use strict';
     console.log('Starting inject...');
-    addButton('获取图片', onclick = (e => {
+    let btnId = addButton('获取图片', {
+        'bottom': '1%',
+        'left': '1%'
+    },onclick = (e => {
         getTasks();
-    }));
+    }), preHover = 0.5);
 })();
 
 function getTasks() {

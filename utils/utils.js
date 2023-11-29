@@ -166,16 +166,27 @@ function setTimeoutInRange(task, range, ...arguments) {
     return setTimeout(task, timeout, ...arguments);
 }
 
-// 添加按钮, 并返回 id
-function addButton(text, styles = {}, onClick = null) {
+/**
+ * 添加按钮, 并返回 id
+ * @param text 显示名称
+ * @param styles 样式
+ * @param onClick 点击监听
+ * @param preHover hover 之前默认的透明度
+ * @returns {string} 按钮ID
+ */
+function addButton(text, styles = {}, onClick = null, preHover = 1) {
     var button = document.createElement('button');
     button.innerHTML = text;
     button.id = `button_${(new Date).getTime()}`;
     button.style['color'] = 'white';
     button.style['background'] = '#409eff';
     button.style['position'] = 'fixed';
-    button.style['top'] = '1%';
-    button.style['right'] = '1%';
+    if (!styles['inset'] && !styles['bottom']) {
+        button.style['top'] = '1%';
+    }
+    if (!styles['inset'] && !styles['left']) {
+        button.style['right'] = '1%';
+    }
     button.style['padding'] = '16px';
     button.style['border-radius'] = '4px';
     button.style['font-size'] = '16px';
@@ -185,6 +196,14 @@ function addButton(text, styles = {}, onClick = null) {
     });
     if (onClick) {
         button.addEventListener('click', onClick);
+    }
+    if (preHover < 1) {
+        button.addEventListener('mouseover', e => {
+            button.style['opacity'] = '1';
+        });
+        button.addEventListener('mouseout', e => {
+            button.style['opacity'] = `${preHover}`;
+        });
     }
     document.body.appendChild(button);
     return button.id
