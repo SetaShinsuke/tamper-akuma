@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Crawl manga pics from tencent
 // @author       Akuma
-// @match        https://m.ac.qq.com/chapter/index/id/*/cid/*
+// @match        https://ac.qq.com/ComicView/index/id/*/cid/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -18,40 +18,64 @@ let HEADERS = {
     "Referer": referer,
     "Origin": referer
 };
+// 不再match移动端: https://m.ac.qq.com/chapter/index/id/*/cid/*
+
+// 1. 滚动每个 img 然后爬取（弃用）
+// 2. 直接调用 DATA，然后 decode
 
 (function () {
     'use strict';
     console.log('Starting inject...');
-    addButton('获取图片', {'top': '10%'}, (e => {
-        // 滚到页面底部让它加载图片
-        window.scrollTo(0, document.body.scrollHeight);
-        setTimeout(_ => {
-            getTasks();
-        }, 1500);
-    }), 0.5);
+    let onClick = e => {
+        // scrollToCrawl();
+        let info = getInfo();
+        getTasks(info);
+    };
+    addButton('获取图片', {'top': '10%'}, onClick, 0.5);
 })();
 
-function getTasks() {
-    // do stuff
-    var tasks = {};
-    var bookName = document.querySelector('.comic-title').childNodes[0].textContent
-        .replace(/[\n]/, '').replaceAll(' ', '');
+function getInfo() {
+    var bookName = document.querySelector('#chapter').getAttribute('title');
     bookName = verifyFileName(bookName);
+
+    let chapName = document.querySelector('#comicTitle>span.title-comicHeading').textContent;
+    let chapIndex = window.location.pathname.match(/\/cid\/(.?)(\??)/)[1];
+    chapName = `${chapIndex}`.padStart(4, '0') + `_` + chapName;
+
+    // 从 DATA 里直接获取 picture:[]
+    console.log(DATA);
+    let picUrls = [];
+    try {
+        let picData = atob(DATA).match(/"picture.*?]/)[0];
+        picUrls = JSON.parse(`{${picData}}`).picture.map(it => it.url);
+    } catch (e) {
+        console.log(e);
+        alert(e);
+    }
+    return {
+        bookName: bookName,
+        chapName: chapName,
+        picUrls: picUrls
+    }
+}
+
+
+function getTasks(info) {
+    console.log(info);
+
+    var tasks = {};
+    var bookName = info.bookName;
     tasks['config'] = {};
     tasks['config']['referer'] = referer;
     tasks['config']['book_name'] = bookName;
 
-    let chapName = document.querySelector(`.comic-chap-title span.chap-title`).textContent;
-    let chapIndex = window.location.pathname.match(/\/cid\/(.?)(\??)/)[1];
-    // '第7话 - 2/36'
-    let indexName = document.querySelector('.float-bar-title>.progress').textContent;
-    indexName = indexName.replace(/ - .*/, '')
-    chapName = `${chapIndex}`.padStart(4, '0') + `_${indexName}_` + chapName;
+    let chapName = info.chapName;
 
     tasks[chapName] = [];
     let i = 0;
-    document.querySelectorAll(`img.comic-pic`).forEach(img => {
-        let url = img.getAttribute('data-src');
+    info.picUrls.forEach(_url => {
+        // xxx/xx.jpg/800 -> xxx/xx.jpg/0
+        let url = _url.replace(/(\.[^.^\/]+)\/([^\/]+)$/, '$1/0');
         let ext = getExtByName(url);
         let fileName = `${i += 1}`.padStart(4, '0') + ext;
         tasks[chapName].push({'url': url, 'file_name': fileName});
@@ -64,3 +88,76 @@ function getTasks() {
     console.log(save_name);
     saveTextFile(JSON.stringify(tasks), save_name);
 }
+
+// async function scrollToCrawl() {
+//     // 滚到页面底部让它加载图片
+//     // window.scrollTo(0, document.body.scrollHeight);
+//     // document.querySelector('.main_control').scrollIntoView({behavior: "smooth"});
+//     toast("正在爬取图片...", 'top', 5_000);
+//     switch (window.location.hostname) {
+//         case 'ac.qq.com':
+//             await crawlWeb().then(info => getTasks(info));
+//             break;
+//         case 'm.ac.qq.com': // 不建议，因为瀑布流图片会错乱
+//             await crawMobile().then(info => getTasks(info));
+//             break;
+//     }
+// }
+//
+// function crawlWeb() {
+//     return new Promise((resolve, reject) => {
+//         var bookName = document.querySelector('#chapter').getAttribute('title');
+//         bookName = verifyFileName(bookName);
+//
+//         let chapName = document.querySelector('#comicTitle>span.title-comicHeading').textContent;
+//         let chapIndex = window.location.pathname.match(/\/cid\/(.?)(\??)/)[1];
+//         chapName = `${chapIndex}`.padStart(4, '0') + `_` + chapName;
+//
+//         let imgSelector = `#comicContain img:not(#adTop)`;
+//         let imgs = document.querySelectorAll(imgSelector);
+//         let i = 0;
+//         // 0.5 秒滚动一图，直到滚到底部
+//         let loop = setInterval(() => {
+//             console.log(`滚动到 ${i}`);
+//             imgs[i].scrollIntoView({behavior: "instant"});
+//             i += 1;
+//             if (i >= imgs.length) {
+//                 // 【注意！】必须滚动到底部，才能完全加载
+//                 let picUrls = Array.from(document.querySelectorAll(imgSelector)).map(img => img.src);
+//                 resolve({
+//                     bookName: bookName,
+//                     chapName: chapName,
+//                     picUrls: picUrls
+//                 });
+//                 console.log('已经滚动到底部!');
+//                 toast('爬取完毕,准备下载...');
+//                 clearInterval(loop);
+//             }
+//         }, 100); // 读图的速度似乎是70ms
+//     });
+// }
+//
+// function crawMobile() {
+//     return new Promise((resolve, reject) => {
+//         var bookName = document.querySelector('.comic-title').childNodes[0].textContent
+//             .replace(/[\n]/, '').replaceAll(' ', '');
+//         bookName = verifyFileName(bookName);
+//
+//         let chapName = document.querySelector(`.comic-chap-title span.chap-title`).textContent;
+//         let chapIndex = window.location.pathname.match(/\/cid\/(.?)(\??)/)[1];
+//         // '第7话 - 2/36'
+//         let indexName = document.querySelector('.float-bar-title>.progress').textContent;
+//         indexName = indexName.replace(/ - .*/, '')
+//         chapName = `${chapIndex}`.padStart(4, '0') + `_${indexName}_` + chapName;
+//
+//         let picUrls = document.querySelectorAll(`img.comic-pic`);
+//         picUrls = Array.from(picUrls).map(img => img.getAttribute('data-src'));
+//
+//         resolve({
+//             bookName: bookName,
+//             chapName: chapName,
+//             picUrls: picUrls
+//         });
+//     });
+// }
+
