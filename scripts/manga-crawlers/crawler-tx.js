@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -70,7 +70,10 @@ function getInfo() {
         bookName = verifyFileName(bookName);
 
         let chapName = document.querySelector('#comicTitle>span.title-comicHeading').textContent;
-        let chapIndex = window.location.pathname.match(/\/(cid|seqno)\/(.?)(\??)/)[2];
+        let chapIndex = document.querySelector(`.now-reading .tool_chapters_list_number`).textContent.match(/\[(.*)\]/)[1];
+        if (!chapIndex) {
+            chapIndex = window.location.pathname.match(/\/(cid|seqno)\/(.?)(\??)/)[2];
+        }
         chapName = `${chapIndex}`.padStart(4, '0') + `_` + chapName;
 
         // 从 DATA 里直接获取 picture:[]
@@ -102,7 +105,7 @@ function getPicsByScroll() {
         // 0.5 秒滚动一图，直到滚到底部
         let loop = setInterval(() => {
             console.log(`滚动到 ${i}`);
-            if(/pixel.gif/.test(imgs[i].src)){
+            if (/pixel.gif/.test(imgs[i].src)) {
                 console.log(`图片 [${i}] 未加载, 重试中...`);
                 return
             }
@@ -116,7 +119,7 @@ function getPicsByScroll() {
                 toast('滚动爬取完毕,准备下载...');
                 clearInterval(loop);
             }
-        }, 250); // 读图的速度似乎是70ms
+        }, 100); // 读图的速度似乎是70ms
     });
 }
 
