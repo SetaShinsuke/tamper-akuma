@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawler-Manhuagui
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Craw from manhuagui.com
 // @author       Akuma
 // @match        https://www.manhuagui.com/comic/*
@@ -40,7 +40,7 @@ function inject() {
     for (var i = 0; i < links.length; i++) {
         var url = links[i];
         var fileName = `${i + 1}`.padStart(2, '0') + '.'
-        var cSubs = coverUrl.split('?')[0].msplit('.');
+        var cSubs = coverUrl.split('?')[0].split('.');
         var ext = cSubs[cSubs.length - 1];
         fileName += `${ext}`;
         tasks[chapterName].push({'url': url, 'file_name': fileName, 'page': '' + i});
