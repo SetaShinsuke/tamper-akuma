@@ -68,3 +68,7 @@ function getUrlpics(picTree) {
 // `.text-center>div>img` [data-src]
 // https://m.cocolamanhua.com/manga/49x49-manyanxingkong/3
 
+// 智慧中小学
+// 获取pdf: document.querySelector(`iframe`).src.match(/\?file=(.*)&header/)[1]
+// https://basic.smartedu.cn/tchMaterial/detail?contentType=assets_document&contentId=9d79b19f-7b99-40ba-b6bb-d42d6f9374ca&catalogType=tchMaterial&subCatalog=tchMaterial
+
