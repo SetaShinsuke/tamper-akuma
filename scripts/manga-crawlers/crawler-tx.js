@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -109,7 +109,10 @@ function getPicsByScroll() {
                 console.log(`图片 [${i}] 未加载, 重试中...`);
                 return
             }
-            imgs[i].scrollIntoView({behavior: "instant"});
+            imgs[i].scrollIntoView({
+                behavior: "instant",
+                block: "end"
+            });
             i += 1;
             if (i >= imgs.length) {
                 // 【注意！】必须滚动到底部，才能完全加载
@@ -119,7 +122,7 @@ function getPicsByScroll() {
                 toast('滚动爬取完毕,准备下载...');
                 clearInterval(loop);
             }
-        }, 100); // 读图的速度似乎是70ms
+        }, 250); // 读图的速度似乎是70ms
     });
 }
 
