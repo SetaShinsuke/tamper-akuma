@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawler-Manhuagui
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Craw from manhuagui.com
 // @author       Akuma
 // @match        https://www.manhuagui.com/comic/*
@@ -15,7 +15,9 @@
 (function () {
     'use strict';
     console.log('Starting inject...');
-    inject();
+    addButton('爬取图片',{}, ()=>{
+        inject();
+    });
 })();
 
 function inject() {
