@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      0.10
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
 // @match        https://ac.qq.com/ComicView/index/id/*/seqno/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+// @run-at       document-end
 // @grant        GM_notification
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-tx.js
@@ -19,14 +20,17 @@ let HEADERS = {
 };
 // 不再match移动端: https://m.ac.qq.com/chapter/index/id/*/cid/*
 
-// 1. 滚动每个 img 然后爬取（弃用）
-// 2. 直接调用 DATA，然后 decode
+// 1. 直接调用 DATA，然后 decode
+// 2. 滚动每个 img 然后爬取
+// DATA 只有在 nonce 被修改之前可以解码出来，因此不能稳定成功
+// 禁用此地址后可解析DATA - https://ac.gtimg.com/media/js/ac.page.chapter.view_v2.7.0.js?v=202302281653
 
 let remain = 0; // 想要下载总共多少话，就在 query 里设置数值
 
 (function () {
     'use strict';
     console.log('Starting inject...');
+    console.log(nonce);
 
     // 地址栏设置了 remain，自动进行并继续任务
     let urlParams = new URLSearchParams(document.location.search);
@@ -70,7 +74,7 @@ function getInfo() {
         bookName = verifyFileName(bookName);
 
         let chapName = document.querySelector('#comicTitle>span.title-comicHeading').textContent;
-        chapName = verifyFileName(chapName).replace('#','_');
+        chapName = verifyFileName(chapName).replace('#', '_');
         let chapIndex = document.querySelector(`.now-reading .tool_chapters_list_number`).textContent.match(/\[(.*)\]/)[1];
         if (!chapIndex) {
             chapIndex = window.location.pathname.match(/\/(cid|seqno)\/(.?)(\??)/)[2];
@@ -81,8 +85,15 @@ function getInfo() {
         console.log(DATA);
         let picUrls = [];
         try {
-            let picData = atob(DATA).match(/"picture.*?]/)[0];
-            picUrls = JSON.parse(`{${picData}}`).picture.map(it => it.url);
+            let picData = getDataByDecode();
+            if(!picData){
+                console.log('尝试硬解DATA');
+                console.log(nonce);
+                picData = atob(DATA).match(/"picture.*?]/)[0];
+                picData = JSON.parse(`{${picData}}`);
+            }
+            picUrls = picData.picture.map(it => it.url);
+            console.log('成功从 DATA 获取数据!');
         } catch (e) {
             console.log(e);
             console.log('DATA 解码失败，尝试滚动爬取...');
@@ -120,7 +131,7 @@ function getPicsByScroll() {
                 let picUrls = Array.from(document.querySelectorAll(imgSelector)).map(img => img.src);
                 resolve(picUrls);
                 console.log('已经滚动到底部!');
-                toast('滚动爬取完毕,准备下载...');
+                toast('滚动爬取完毕,准备下载...', 5_000);
                 clearInterval(loop);
             }
         }, 250); // 读图的速度似乎是70ms
@@ -159,6 +170,46 @@ function getTasks(info) {
     var save_name = `tasks_${chapName}.json`;
     console.log(save_name);
     saveTextFile(JSON.stringify(tasks), save_name);
+}
+
+function getDataByDecode() {
+    if(typeof(nonce) !== 'string'){
+        return false;
+    }
+    function Base() {
+        var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        this.decode = function (c) {
+            var a = "",
+                b, d, h, f, g, e = 0;
+            for (c = c.replace(/[^A-Za-z0-9\+\/\=]/g, ""); e < c.length;) b = _keyStr.indexOf(c.charAt(e++)), d = _keyStr.indexOf(c.charAt(e++)), f = _keyStr.indexOf(c.charAt(e++)), g = _keyStr.indexOf(c.charAt(e++)), b = b << 2 | d >> 4, d = (d & 15) << 4 | f >> 2, h = (f & 3) << 6 | g, a += String.fromCharCode(b), 64 != f && (a += String.fromCharCode(d)), 64 != g && (a += String.fromCharCode(h));
+            return a = _utf8_decode(a)
+        };
+        var _utf8_decode = function (c) {
+            for (var a = "", b = 0, d = c1 = c2 = 0; b < c.length;) d = c.charCodeAt(b), 128 > d ? (a += String.fromCharCode(d), b++) : 191 < d && 224 > d ? (c2 = c.charCodeAt(b + 1), a += String.fromCharCode((d & 31) << 6 | c2 & 63), b += 2) : (c2 = c.charCodeAt(b + 1), c3 = c.charCodeAt(b + 2), a += String.fromCharCode((d & 15) << 12 | (c2 & 63) << 6 | c3 & 63), b += 3);
+            return a
+        }
+    }
+
+// T: DATA, N: nonce, W: window?
+// nonce 在 chapter_viewer.js 里被替换成了 Math.random()
+    var W = window;
+    var B = new Base(),
+        // T = W['DA' + 'TA'].split(''),
+        // N = W['n' + 'onc' + 'e'],
+        T = DATA.split(''),
+        N = nonce,
+        len, locate, str;
+    N = N.match(/\d+[a-zA-Z]+/g);
+    len = N.length;
+    while (len--) {
+        locate = parseInt(N[len]) & 255;
+        str = N[len].replace(/\d+/g, '');
+        T.splice(locate, str.length)
+    }
+    T = T.join('');
+    _v = JSON.parse(B.decode(T));
+    console.log(_v);
+    return _v;
 }
 
 // async function scrollToCrawl() {
