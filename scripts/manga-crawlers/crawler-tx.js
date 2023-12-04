@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.8
+// @version      0.9
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -70,6 +70,7 @@ function getInfo() {
         bookName = verifyFileName(bookName);
 
         let chapName = document.querySelector('#comicTitle>span.title-comicHeading').textContent;
+        chapName = verifyFileName(chapName).replace('#','_');
         let chapIndex = document.querySelector(`.now-reading .tool_chapters_list_number`).textContent.match(/\[(.*)\]/)[1];
         if (!chapIndex) {
             chapIndex = window.location.pathname.match(/\/(cid|seqno)\/(.?)(\??)/)[2];
