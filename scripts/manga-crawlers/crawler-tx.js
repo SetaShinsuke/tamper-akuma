@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.11
+// @version      0.12
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -191,8 +191,9 @@ function getNonce() {
 }
 
 function getDataByDecode() {
-    let realNonce = getNonce();
-    if (typeof (realNonce) !== 'string') {
+    // window.nonce 是被修改过的, getNonce() 搞到的是原始 nonce
+    let nonce = getNonce();
+    if (typeof (nonce) !== 'string') {
         return false;
     }
 
