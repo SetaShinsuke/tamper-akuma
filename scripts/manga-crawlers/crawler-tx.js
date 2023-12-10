@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.10
+// @version      0.11
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -86,7 +86,7 @@ function getInfo() {
         let picUrls = [];
         try {
             let picData = getDataByDecode();
-            if(!picData){
+            if (!picData) {
                 console.log('尝试硬解DATA');
                 console.log(nonce);
                 picData = atob(DATA).match(/"picture.*?]/)[0];
@@ -172,10 +172,30 @@ function getTasks(info) {
     saveTextFile(JSON.stringify(tasks), save_name);
 }
 
+// 去 <script> 里找 nonce
+function getNonce() {
+    let nonce = null;
+    let scripts = document.body.getElementsByTagName('script');
+    Array.from(scripts).forEach(script => {
+        let jsText = script.innerText;
+        if (/^\n\s+window\["n/.test(jsText)) {
+            let result = {};
+            jsText = jsText.replace(/(^[ \t\r\n]+|[ \t\r\n]+$)/g, '')
+            console.log(jsText);
+            new Function('window', jsText)(result);
+            console.log(result);
+            nonce = result['nonce'];
+        }
+    });
+    return nonce;
+}
+
 function getDataByDecode() {
-    if(typeof(nonce) !== 'string'){
+    let realNonce = getNonce();
+    if (typeof (realNonce) !== 'string') {
         return false;
     }
+
     function Base() {
         var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         this.decode = function (c) {
