@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.12
+// @version      0.13
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -30,7 +30,7 @@ let remain = 0; // 想要下载总共多少话，就在 query 里设置数值
 (function () {
     'use strict';
     console.log('Starting inject...');
-    console.log(nonce);
+    console.log(`Fake nonce: ${nonce}`);
 
     // 地址栏设置了 remain，自动进行并继续任务
     let urlParams = new URLSearchParams(document.location.search);
@@ -172,6 +172,17 @@ function getTasks(info) {
     saveTextFile(JSON.stringify(tasks), save_name);
 }
 
+function getDataByDecode() {
+    // window.nonce 是被修改过的, getNonce() 搞到的是原始 nonce
+    let nonce = getNonce();
+    if (typeof (nonce) !== 'string') {
+        return false;
+    }
+    let data = decode(DATA, getNonce());
+    consol.log(data);
+    return data;
+}
+
 // 去 <script> 里找 nonce
 function getNonce() {
     let nonce = null;
@@ -190,48 +201,66 @@ function getNonce() {
     return nonce;
 }
 
-function getDataByDecode() {
-    // window.nonce 是被修改过的, getNonce() 搞到的是原始 nonce
-    let nonce = getNonce();
-    if (typeof (nonce) !== 'string') {
-        return false;
-    }
-
-    function Base() {
-        var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        this.decode = function (c) {
-            var a = "",
-                b, d, h, f, g, e = 0;
-            for (c = c.replace(/[^A-Za-z0-9\+\/\=]/g, ""); e < c.length;) b = _keyStr.indexOf(c.charAt(e++)), d = _keyStr.indexOf(c.charAt(e++)), f = _keyStr.indexOf(c.charAt(e++)), g = _keyStr.indexOf(c.charAt(e++)), b = b << 2 | d >> 4, d = (d & 15) << 4 | f >> 2, h = (f & 3) << 6 | g, a += String.fromCharCode(b), 64 != f && (a += String.fromCharCode(d)), 64 != g && (a += String.fromCharCode(h));
-            return a = _utf8_decode(a)
-        };
-        var _utf8_decode = function (c) {
-            for (var a = "", b = 0, d = c1 = c2 = 0; b < c.length;) d = c.charCodeAt(b), 128 > d ? (a += String.fromCharCode(d), b++) : 191 < d && 224 > d ? (c2 = c.charCodeAt(b + 1), a += String.fromCharCode((d & 31) << 6 | c2 & 63), b += 2) : (c2 = c.charCodeAt(b + 1), c3 = c.charCodeAt(b + 2), a += String.fromCharCode((d & 15) << 12 | (c2 & 63) << 6 | c3 & 63), b += 3);
-            return a
-        }
-    }
-
-// T: DATA, N: nonce, W: window?
-// nonce 在 chapter_viewer.js 里被替换成了 Math.random()
-    var W = window;
-    var B = new Base(),
-        // T = W['DA' + 'TA'].split(''),
-        // N = W['n' + 'onc' + 'e'],
-        T = DATA.split(''),
-        N = nonce,
-        len, locate, str;
-    N = N.match(/\d+[a-zA-Z]+/g);
-    len = N.length;
+function decode(raw, _nonce) {
+    var a = String.fromCharCode((1 << 7) - 31);
+    var key = ['d' + a + 't' + a, 'mp' + 'mvr'].join('-');
+    var nonce = _nonce || window.nonce;
+    raw = raw.split('');
+    nonce = nonce.match(/\d+[a-zA-Z]+/g);
+    var len = nonce.length;
     while (len--) {
-        locate = parseInt(N[len]) & 255;
-        str = N[len].replace(/\d+/g, '');
-        T.splice(locate, str.length)
+        var offset = parseInt(nonce[len]) & 255;
+        var noise = nonce[len].replace(/\d+/g, '');
+        raw.splice(offset, noise.length);
     }
-    T = T.join('');
-    _v = JSON.parse(B.decode(T));
-    console.log(_v);
-    return _v;
+    // var _data = ek.encoding.decodeBase64(raw.join(''));
+    var _data = atob(raw.join(''));
+    // console.log(_data);
+    return JSON.parse(_data);
 }
+
+// function getDataByDecode() {
+//     // window.nonce 是被修改过的, getNonce() 搞到的是原始 nonce
+//     let nonce = getNonce();
+//     if (typeof (nonce) !== 'string') {
+//         return false;
+//     }
+//
+//     function Base() {
+//         var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+//         this.decode = function (c) {
+//             var a = "",
+//                 b, d, h, f, g, e = 0;
+//             for (c = c.replace(/[^A-Za-z0-9\+\/\=]/g, ""); e < c.length;) b = _keyStr.indexOf(c.charAt(e++)), d = _keyStr.indexOf(c.charAt(e++)), f = _keyStr.indexOf(c.charAt(e++)), g = _keyStr.indexOf(c.charAt(e++)), b = b << 2 | d >> 4, d = (d & 15) << 4 | f >> 2, h = (f & 3) << 6 | g, a += String.fromCharCode(b), 64 != f && (a += String.fromCharCode(d)), 64 != g && (a += String.fromCharCode(h));
+//             return a = _utf8_decode(a)
+//         };
+//         var _utf8_decode = function (c) {
+//             for (var a = "", b = 0, d = c1 = c2 = 0; b < c.length;) d = c.charCodeAt(b), 128 > d ? (a += String.fromCharCode(d), b++) : 191 < d && 224 > d ? (c2 = c.charCodeAt(b + 1), a += String.fromCharCode((d & 31) << 6 | c2 & 63), b += 2) : (c2 = c.charCodeAt(b + 1), c3 = c.charCodeAt(b + 2), a += String.fromCharCode((d & 15) << 12 | (c2 & 63) << 6 | c3 & 63), b += 3);
+//             return a
+//         }
+//     }
+//
+// // T: DATA, N: nonce, W: window?
+// // nonce 在 chapter_viewer.js 里被替换成了 Math.random()
+//     var W = window;
+//     var B = new Base(),
+//         // T = W['DA' + 'TA'].split(''),
+//         // N = W['n' + 'onc' + 'e'],
+//         T = DATA.split(''),
+//         N = nonce,
+//         len, locate, str;
+//     N = N.match(/\d+[a-zA-Z]+/g);
+//     len = N.length;
+//     while (len--) {
+//         locate = parseInt(N[len]) & 255;
+//         str = N[len].replace(/\d+/g, '');
+//         T.splice(locate, str.length)
+//     }
+//     T = T.join('');
+//     _v = JSON.parse(B.decode(T));
+//     console.log(_v);
+//     return _v;
+// }
 
 // async function scrollToCrawl() {
 //     // 滚到页面底部让它加载图片
