@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.14
+// @version      0.15
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -178,7 +178,7 @@ function getDataByDecode() {
     if (typeof (nonce) !== 'string') {
         return false;
     }
-    let data = decode(DATA, getNonce());
+    let data = decode(DATA, nonce);
     console.log(data);
     return data;
 }
