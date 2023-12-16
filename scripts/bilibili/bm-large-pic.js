@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CheckLargePic
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Right click to check large pic
 // @author       Akuma
 // @match        https://manga.hdslb.com/bfs/manga/*
@@ -44,9 +44,9 @@ function inject() {
             console.log(`Get image token error: `, error);
         },
         onload: function (response) {
-            console.log(response);
+            // console.log(response);
             res = response;
-            // console.log(response.responseText);
+            console.log(response.responseText);
             var resJson = JSON.parse(response.responseText);
             var code = resJson.code;
             if (code !== 0) {
