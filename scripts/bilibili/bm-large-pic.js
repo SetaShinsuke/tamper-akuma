@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         CheckLargePic
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Right click to check large pic
 // @author       Akuma
 // @match        https://manga.hdslb.com/bfs/manga/*
+// @match        https://i0.hdslb.com/bfs/manga-static/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_xmlhttpRequest
 // @grant        GM_openInTab
