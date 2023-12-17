@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.18
+// @version      0.20
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -15,7 +15,6 @@
 // @match        https://tktube.com/videos/*
 // @match        https://javtiful.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @run-at       context-menu
 // @grant        GM_openInTab
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-fork.js
@@ -27,39 +26,46 @@ const HOST = 'http://192.168.50.166:9292';
 (function () {
     // addButton("获取链接",{},()=>{
     'use strict';
-    switch (window.location.hostname) {
-        case 'javgg.net':
-            forkJavGG();
-            break;
-        case 'jav.guru':
-            alert('todo');
-            break;
-        case 'vanfem.com':
-            // todo: 在这里操作
-            // enableConsole();
-            forkJavGuru();
-            break
-        case 'javtk.com':
-            forkJavTk();
-            break
-        case 'javcl.com':
-            forkJavCl();
-            break
-        case 'asianclub.tv':
-            forkJavAS();
-            break
-        case 'javgiga.com':
-            forkGiga();
-            break
-        case 'tktube.com':
-            forkTkTube()
-            break
-        case 'javtiful.com':
-            forkTiful();
-            break
-    }
+    inject();
     // });
 })();
+
+function inject() {
+    let onClick = _ => {
+        switch (window.location.hostname) {
+            case 'javgg.net':
+                forkJavGG();
+                break;
+            case 'jav.guru':
+                alert('todo');
+                break;
+            case 'vanfem.com':
+                // todo: 在这里操作
+                // enableConsole();
+                forkJavGuru();
+                break
+            case 'javtk.com':
+                forkJavTk();
+                break
+            case 'javcl.com':
+                forkJavCl();
+                break
+            case 'asianclub.tv':
+                forkJavAS();
+                break
+            case 'javgiga.com':
+                forkGiga();
+                break
+            case 'tktube.com':
+                forkTkTube()
+                break
+            case 'javtiful.com':
+                forkTiful();
+                break
+        }
+    }
+    addButton(`FORK IT!`, {'left': '1%', 'bottom': '1%'}, onClick, 0);
+}
 
 function forkTiful() {
     // runWhenLoaded('#video-section .share-btn', shareBtn => {

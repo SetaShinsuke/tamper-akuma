@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawler-Manhuagui
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Craw from manhuagui.com
 // @author       Akuma
 // @match        https://www.manhuagui.com/comic/*
@@ -41,9 +41,8 @@ function inject() {
     var links = [coverUrl];
     // var imgs = Array.from(document.getElementById('mangaMoreBox').getElementsByTagName('img')).map(it => it.src);
     let data = getDataFromScript();
-    let imgs = data.files.map(f => {
-       return IMG_HOST + data.path + f + `?e=${j.sl.e}&m=${j.sl.m}`;
-    });
+    let imgs = data.files.map(f => IMG_HOST + data.path + f + `?e=${data.sl.e}&m=${data.sl.m}`);
+    console.log(imgs);
     imgs.forEach(it => links.push(it));
     for (var i = 0; i < links.length; i++) {
         var url = links[i];
@@ -67,15 +66,15 @@ function getDataFromScript() {
     Array.from(scripts).forEach(script => {
         let jsText = script.innerText;
         if (/^[\n\s]?window\["/.test(jsText)) {
-            console.log(jsText);
+            // console.log(jsText);
             let matches = jsText.match(/function\((.*?)\){(.*)}\((.*)\)\)/);
-            console.log(matches);
+            // console.log(matches);
             let funcPar = matches[1];
             let funcContent = matches[2];
             let par = matches[3];
-            console.log(`par: \n${par}`);
+            // console.log(`par: \n${par}`);
             eval(`function decodeData(${funcPar}){${funcContent}}`);
-            console.log(decodeData);
+            // console.log(decodeData);
             let result = eval(`decodeData(${par})`);
             let jsonStr = result.match(/SMH.imgData\((.*)\).preInit\(\);/)[1];
             dataJson = JSON.parse(jsonStr);
