@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawl-Dashu
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  爬取大树漫画的漫画
 // @author       Akuma
 // @match        https://www.dashuhuwai.com/comic/*/*.html*
@@ -41,6 +41,10 @@ function getTasks() {
     return new Promise((onFetched, onFetchFail) => {
         let bookName = getBookName();
         let chapName = getChapName();
+        let chapIndex = getChapIndex();
+        if (chapIndex) {
+            chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
+        }
         // 异步获取 picUrls
         getPicUrls().then(picUrls => {
             let info = {
@@ -66,6 +70,13 @@ function getBookName() {
     return bookName;
 }
 
+function getChapIndex() {
+    // chapIndex
+    let chapIndex = myvue._data.bookchapterid + 1;
+    console.log(`chapIndex: ${chapIndex}`);
+    return chapIndex;
+}
+
 function getChapName() {
     // chapName
     let chapName = myvue._data.bookchaptertitle;
@@ -75,7 +86,7 @@ function getChapName() {
 
 
 function getPicUrls() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         // 图片列表在JS代码里，并且这部分代码被加密了
         // https://res.xiaoqinre.com/images/comic/646/1290950/1587399540Jk6CM4SQU8YNnNGC.jpg
         // var funcStr = myvue.$mount.toString();
