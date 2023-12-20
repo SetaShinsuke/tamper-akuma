@@ -1,5 +1,20 @@
 // @require https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 
+function getReferer() {
+    let referer = `${window.location.protocol}//${window.location.host}`;
+    console.log(`getReferer(): ${referer}`);
+    return referer;
+}
+
+function getQueryInt(name) {
+    let params = new URLSearchParams(document.location.search);
+    let num = parseInt(params.get(name));
+    if (isNaN(num)) {
+        num = -1;
+    }
+    return num;
+}
+
 function saveTextFile(text, fileName) {
     var data = new Blob([text], {type: 'text/plain'});
     // // If we are replacing a previously generated file we need to
