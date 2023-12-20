@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawl-Dashu
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  爬取大树漫画的漫画
 // @author       Akuma
 // @match        https://www.dashuhuwai.com/comic/*/*.html*
@@ -14,10 +14,13 @@
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-dashu.js
 // ==/UserScript==
 
+const DO_SAVE = true;
+
 (function () {
     'use strict';
     console.log('Ready to crawl.')
     let remain = getQueryInt('remain');
+    console.log(`remain: ${remain}`);
     let onClick = _ => {
         getTasks().then(_ => {
             let nextPage = getNextChapUrl();
@@ -45,7 +48,7 @@ function getTasks() {
                 chapName: chapName,
                 picUrls: picUrls
             }
-            forkMangaChap(info, false);
+            forkMangaChap(info, DO_SAVE);
             // tasks.json 已完成
             onFetched();
         }).catch(err => {
@@ -57,14 +60,14 @@ function getTasks() {
 }
 
 function getBookName() {
-    // todo: bookName
+    // bookName
     let bookName = myvue._data.booktitle;
     console.log(`bookName: ${bookName}`);
     return bookName;
 }
 
 function getChapName() {
-    // todo: chapName
+    // chapName
     let chapName = myvue._data.bookchaptertitle;
     console.log(`chapName: ${chapName}`);
     return chapName;
@@ -93,13 +96,13 @@ function getPicUrls() {
 
         // todo: picUrls
         let picUrls = picTree;
-        console.log(`picUrls: ${picUrls}`);
+        console.log(`picUrls: \n`, picUrls);
         resolve(picUrls);
     });
 }
 
 function getNextChapUrl() {
-    // todo: 下一页的地址
+    // 下一页的地址
     let nextPage = document.querySelector(`.next a.tan`).href;
     console.log(`nextPage: ${nextPage}`);
     return nextPage;
