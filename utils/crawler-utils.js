@@ -4,7 +4,7 @@
  * forkMangaChap()
  * 根据 info 组装成 tasks.json
  * 依赖 utils.js 里面的 getExtByName() 和 saveTextFile()
- * @param chapInfo: bookName, chapName, picUrls
+ * @param chapInfo: bookName, chapIndex, chapName, picUrls
  * @param doSave: true: 默认名保存(chapName); false: 不保存; string: 修改保存名
  * @param extraConfigs: configs 额外配置 configs
  */
@@ -15,6 +15,10 @@ function forkMangaChap(chapInfo, doSave = true, extraConfigs = null) {
     let info = chapInfo;
     var bookName = info.bookName;
     let chapName = info.chapName;
+    let chapIndex = info.chapIndex;
+    if (chapIndex) {
+        chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
+    }
     let tasks = {};
     // config
     let referer = `${window.location.protocol}//${window.location.host}`;

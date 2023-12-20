@@ -20,7 +20,7 @@ const DO_SAVE = true;
     'use strict';
     console.log('Ready to crawl.')
     let remain = getQueryInt('remain');
-    console.log(`remain: ${remain}`);
+    console.log(`remain: ` + remain);
     let onClick = _ => {
         getTasks().then(_ => {
             let nextPage = getNextChapUrl();
@@ -33,23 +33,18 @@ const DO_SAVE = true;
         console.log('Nothing remain');
         return
     }
-    toast(`自动进行任务，剩余: ${remain}`);
+    toast(`自动进行任务，剩余: ` + remain);
     onClick();
 })();
 
 function getTasks() {
     return new Promise((onFetched, onFetchFail) => {
-        let bookName = getBookName();
-        let chapName = getChapName();
-        let chapIndex = getChapIndex();
-        if (chapIndex) {
-            chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
-        }
         // 异步获取 picUrls
         getPicUrls().then(picUrls => {
             let info = {
-                bookName: bookName,
-                chapName: chapName,
+                bookName: getBookName(),
+                chapIndex: getChapIndex(),
+                chapName: getChapName(),
                 picUrls: picUrls
             }
             forkMangaChap(info, DO_SAVE);
@@ -66,24 +61,23 @@ function getTasks() {
 function getBookName() {
     // bookName
     let bookName = myvue._data.booktitle;
-    console.log(`bookName: ${bookName}`);
+    console.log(`bookName: ` + bookName);
     return bookName;
 }
 
 function getChapIndex() {
     // chapIndex
     let chapIndex = myvue._data.bookchapterid + 1;
-    console.log(`chapIndex: ${chapIndex}`);
+    console.log(`chapIndex: ` + chapIndex);
     return chapIndex;
 }
 
 function getChapName() {
     // chapName
     let chapName = myvue._data.bookchaptertitle;
-    console.log(`chapName: ${chapName}`);
+    console.log(`chapName: ` + chapName);
     return chapName;
 }
-
 
 function getPicUrls() {
     return new Promise(resolve => {
@@ -115,6 +109,6 @@ function getPicUrls() {
 function getNextChapUrl() {
     // 下一页的地址
     let nextPage = document.querySelector(`.next a.tan`).href;
-    console.log(`nextPage: ${nextPage}`);
+    console.log(`nextPage: ` + nextPage);
     return nextPage;
 }
