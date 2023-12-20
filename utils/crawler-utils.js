@@ -36,8 +36,6 @@ function forkMangaChap(chapInfo, doSave = true, extraConfigs = null) {
     tasks[chapName] = [];
     let i = 0;
     info.picUrls.forEach(_url => {
-        // xxx/xx.jpg/800 -> xxx/xx.jpg/0
-        // let url = _url.replace(/(\.[^.^\/]+)\/([^\/]+)$/, '$1/0');
         let url = _url;
         let ext = getExtByName(url);
         let fileName = `${i += 1}`.padStart(4, '0') + ext;
@@ -67,6 +65,7 @@ function forkMangaChap(chapInfo, doSave = true, extraConfigs = null) {
  * @returns {number|*}: 跳转后还剩几个页面
  */
 function resumeNextChap(nextPageUrl, remain, timeout = 3_000) {
+    console.log(`next: ${nextPageUrl}\nremain: ${remain}`);
     let nextUrl = new URL(nextPageUrl);
     if (nextUrl.host.length === 0 || isNaN(remain) || remain <= 0) {
         console.log('任务结束');
