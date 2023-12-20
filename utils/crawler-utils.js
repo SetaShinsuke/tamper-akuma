@@ -7,6 +7,7 @@
  * @param chapInfo: bookName, chapIndex, chapName, picUrls
  * @param doSave: true: 默认名保存(chapName); false: 不保存; string: 修改保存名
  * @param extraConfigs: configs 额外配置 configs
+ * @returns tasks: task json
  */
 function forkMangaChap(chapInfo, doSave = true, extraConfigs = null) {
     if (!getExtByName || !saveTextFile) {
@@ -51,7 +52,7 @@ function forkMangaChap(chapInfo, doSave = true, extraConfigs = null) {
     // 保存
     if (!doSave) {
         console.log(`不保存 tasks.json`);
-        return;
+        return tasks;
     }
     var save_name = `tasks_${chapName}.json`;
     if (typeof doSave === 'string' || doSave instanceof String) {
@@ -59,6 +60,7 @@ function forkMangaChap(chapInfo, doSave = true, extraConfigs = null) {
     }
     console.log(save_name);
     saveTextFile(JSON.stringify(tasks), save_name);
+    return tasks;
 }
 
 /**

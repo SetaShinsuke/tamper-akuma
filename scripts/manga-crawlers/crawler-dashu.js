@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawl-Dashu
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  爬取大树漫画的漫画
 // @author       Akuma
 // @match        https://www.dashuhuwai.com/comic/*/*.html*
@@ -22,7 +22,7 @@ const DO_SAVE = true;
     let remain = getQueryInt('remain');
     console.log(`remain: ` + remain);
     let onClick = _ => {
-        getTasks().then(_ => {
+        getTasks(DO_SAVE).then(tasks => {
             let nextPage = getNextChapUrl();
             resumeNextChap(nextPage, remain);
         });
@@ -37,7 +37,7 @@ const DO_SAVE = true;
     onClick();
 })();
 
-function getTasks() {
+function getTasks(doSave) {
     return new Promise((onFetched, onFetchFail) => {
         // 异步获取 picUrls
         getPicUrls().then(picUrls => {
@@ -47,9 +47,9 @@ function getTasks() {
                 chapName: getChapName(),
                 picUrls: picUrls
             }
-            forkMangaChap(info, DO_SAVE);
+            let tasks = forkMangaChap(info, doSave);
             // tasks.json 已完成
-            onFetched();
+            onFetched(tasks);
         }).catch(err => {
             console.log(`getPicUrls fail:`);
             console.error(err);
