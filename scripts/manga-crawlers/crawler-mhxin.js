@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-mhxin
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  desc
 // @author       Akuma
 // @match        https://www.mhxin.com/manhua/*
@@ -77,7 +77,8 @@ function getBookName() {
 
 function getChapIndex() {
     // chapIndex
-    let chapIndex = window.location.pathname.match(/\/(.*).html/)[1].split('/').pop();
+    // let chapIndex = window.location.pathname.match(/\/(.*).html/)[1].split('/').pop();
+    let chapIndex = null;
     console.log(`chapIndex: ` + chapIndex);
     console.log(`注意 vol_heads 以此网站的 ID 为准!`)
     return chapIndex;
