@@ -68,7 +68,7 @@ function forkMangaChap(chapInfo, doSave = true, extraConfigs = null) {
  */
 function resumeNextChap(nextPageUrl, remain, timeout = 3_000) {
     let nextUrl = new URL(nextPageUrl);
-    if (nextUrl.host.length === 0 || remain === 0 || isNaN(remain)) {
+    if (nextUrl.host.length === 0 || isNaN(remain) || remain <= 0) {
         console.log('任务结束');
         return remain;
     }
