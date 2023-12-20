@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-mhxin
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.4
 // @description  desc
 // @author       Akuma
 // @match        https://www.mhxin.com/manhua/*
@@ -19,10 +19,21 @@ const DO_SAVE = true;
     'use strict';
     console.log('Ready to crawl.')
     let remain = getQueryInt('remain');
+    if (remain < 0) { // 检查 hash
+        try {
+            remain = window.location.hash.match(/#remain=(\d+)/)[1];
+            remain = parseInt(remain);
+        } catch (e) {
+            console.log(`Get hash error: `);
+            console.log(e);
+            remain = -1;
+        }
+    }
     console.log(`remain: ` + remain);
     let onClick = _ => {
         getTasks(DO_SAVE).then(tasks => {
             let nextPage = getNextChapUrl();
+            nextPage = `${nextPage}#remain=${remain - 1}`;
             resumeNextChap(nextPage, remain);
         });
     };
