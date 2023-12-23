@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-baozi
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  desc
 // @author       Akuma
 // @match        https://cn.czmanga.com/comic/chapter/*
@@ -43,7 +43,11 @@ function injectChapPage() {
     console.log(`remain: ` + remain);
     let onClick = _ => {
         // 滚到页面底部让它加载图片
-        window.scrollTo(0, document.body.scrollHeight);
+        // window.scrollTo(0, document.body.scrollHeight);
+        document.querySelector('.next_chapter').scrollIntoView({
+            behavior: "instant",
+            block: "end"
+        });
         setTimeout(
             _ => {
                 getTasks(DO_SAVE).then(tasks => {
