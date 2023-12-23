@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-90mh
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  desc
 // @author       Akuma
 // @match        http://www.90mh.org/manhua/*
@@ -23,7 +23,7 @@ const DO_SAVE = true;
     let onClick = _ => {
         getTasks(DO_SAVE).then(tasks => {
             let nextPage = getNextChapUrl();
-            resumeNextChap(nextPage, remain);
+            resumeNextChap(nextPage, remain, 1500);
         });
     };
     addButton('获取图片', {'top': '10%'}, onClick, 0.5);
