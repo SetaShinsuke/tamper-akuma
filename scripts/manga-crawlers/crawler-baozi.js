@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-baozi
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  desc
 // @author       Akuma
 // @match        https://cn.czmanga.com/comic/chapter/*
