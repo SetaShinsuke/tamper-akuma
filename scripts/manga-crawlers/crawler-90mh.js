@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-90mh
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  desc
 // @author       Akuma
 // @match        http://www.90mh.org/manhua/*
@@ -28,9 +28,8 @@ class CrawlerImpl extends CrawlerBase {
 
     findChapIndex() {
         return new Promise((resolve, reject) => {
-            let chapIndex = null;
+            let chapIndex = parseInt(window.location.pathname.match(/\/(\d+).html/)[1]);
             if (/baozoulinjia/.test(window.location.pathname)) {
-                chapIndex = parseInt(window.location.pathname.match(/\/(\d+).html/)[1]);
                 chapIndex = chapIndex - 1259;
             }
             console.log(`chapIndex: ` + chapIndex);
