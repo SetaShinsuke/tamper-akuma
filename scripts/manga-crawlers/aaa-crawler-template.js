@@ -1,17 +1,3 @@
-// ==UserScript==
-// @name         crawler-90mh
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  desc
-// @author       Akuma
-// @match        http://*/*
-// @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @grant        none
-// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/crawler-base.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-90mh.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-90mh.js
-// ==/UserScript==
 
 let DO_SAVE = true;
 let NEXT_TIMEOUT = 3_000;
@@ -45,7 +31,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findBookName() {
         return new Promise((resolve, reject) => {
-            let bookName = document.querySelector('.title h1 a').innerText;
+            let bookName = -;
             console.log(`bookName: ` + bookName);
             resolve(bookName);
         });
@@ -53,11 +39,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findChapIndex() {
         return new Promise((resolve, reject) => {
-            let chapIndex = null;
-            if(/baozoulinjia/.test(window.location.pathname)){
-                chapIndex = parseInt(window.location.pathname.match(/\/(\d+).html/)[1]);
-                chapIndex = chapIndex - 1259;
-            }
+            let chapIndex = -;
             console.log(`chapIndex: ` + chapIndex);
             resolve(chapIndex);
         });
@@ -65,8 +47,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findChapName() {
         return new Promise((resolve, reject) => {
-            let chapName = document.querySelector('.title h2').innerText;
-            chapName = verifyFileName(chapName);
+            let chapName = -;
             console.log(`chapName: ` + chapName);
             resolve(chapName);
         });
@@ -74,7 +55,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findPicUrls() {
         return new Promise((resolve, reject) => {
-            let picUrls = chapterImages.map(path => `http://js.tingliu.cc/${chapterPath}${path}`);
+            let picUrls = -;
             console.log(`picUrls: ` + picUrls);
             resolve(picUrls);
         });
@@ -82,7 +63,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findNextChapUrl() {
         return new Promise((resolve, reject) => {
-            let nextPage = nextChapterData.url;
+            let nextChapUrl = -;
             console.log(`nextChapUrl: ` + nextChapUrl);
             resolve(nextChapUrl);
         });

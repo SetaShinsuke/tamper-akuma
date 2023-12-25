@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         crawler-gcores
+// @name         crawler-gcores-articles
 // @namespace    http://tampermonkey.net/
 // @version      0.2
 // @description  Get pictures in gcores articles
@@ -9,8 +9,8 @@
 // @grant        GM_xmlhttpRequest
 // @run-at       context-menu
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-gcores.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-gcores.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-gcores-articles.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-gcores-articles.js
 // ==/UserScript==
 
 // https://www.gcores.com/gapi/v1/articles/166772
