@@ -17,32 +17,7 @@ let DO_SAVE = true;
 let NEXT_TIMEOUT = 3_000;
 let EX_CONFIGS = {};
 
-(function () {
-    'use strict';
-    console.log('Ready to crawl.');
-    inject();
-})();
-
-function inject() {
-    // do stuff
-    let crawler = new CrawlerImpl();
-    let remain = crawler.getRemainCount();
-    let onClick = () => {
-        crawler.forkTasks(DO_SAVE, EX_CONFIGS).then(tasks => {
-            crawler.resumeNextChap(remain, NEXT_TIMEOUT);
-        });
-    }
-    addButton('获取图片', {'top': '10%'}, onClick, 0.5);
-    if (remain <= 0) {
-        console.log('Nothing remain');
-        return
-    }
-    toast(`自动进行任务，剩余: ` + remain);
-    onClick();
-}
-
 class CrawlerImpl extends CrawlerBase {
-
     findBookName() {
         return new Promise((resolve, reject) => {
             let bookName = document.querySelector('.title h1 a').innerText;
@@ -54,7 +29,7 @@ class CrawlerImpl extends CrawlerBase {
     findChapIndex() {
         return new Promise((resolve, reject) => {
             let chapIndex = null;
-            if(/baozoulinjia/.test(window.location.pathname)){
+            if (/baozoulinjia/.test(window.location.pathname)) {
                 chapIndex = parseInt(window.location.pathname.match(/\/(\d+).html/)[1]);
                 chapIndex = chapIndex - 1259;
             }
@@ -88,3 +63,29 @@ class CrawlerImpl extends CrawlerBase {
         });
     }
 }
+
+// ---------- 正片开始 --------------------------------------------------
+(function () {
+    'use strict';
+    console.log('Ready to crawl.');
+    inject();
+})();
+
+function inject() {
+    // do stuff
+    let crawler = new CrawlerImpl();
+    let remain = crawler.getRemainCount();
+    let onClick = () => {
+        crawler.forkTasks(DO_SAVE, EX_CONFIGS).then(tasks => {
+            crawler.resumeNextChap(remain, NEXT_TIMEOUT);
+        });
+    }
+    addButton('获取图片', {'top': '10%'}, onClick, 0.5);
+    if (remain <= 0) {
+        console.log('Nothing remain');
+        return
+    }
+    toast(`自动进行任务，剩余: ` + remain);
+    onClick();
+}
+

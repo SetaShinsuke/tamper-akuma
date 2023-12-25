@@ -1,3 +1,5 @@
+// 依赖 utils.js 里面的 getExtByName() 和 saveTextFile()
+
 class CrawlerBase {
     constructor() {
     }
@@ -136,7 +138,7 @@ class CrawlerBase {
      */
     async resumeNextChap(remain, timeout = 3_000) {
         let nextPageUrl = "";
-        await self.findNextChapUrl(url => {
+        await self.findNextChapUrl.then(url => {
             nextPageUrl = url;
         });
         console.log(`next: ${nextPageUrl}\nremain: ${remain}`);

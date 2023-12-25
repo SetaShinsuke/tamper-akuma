@@ -3,6 +3,50 @@ let DO_SAVE = true;
 let NEXT_TIMEOUT = 3_000;
 let EX_CONFIGS = {};
 
+class CrawlerImpl extends CrawlerBase {
+
+    findBookName() {
+        return new Promise((resolve, reject) => {
+            let bookName = 'todo';
+            console.log(`bookName: ` + bookName);
+            resolve(bookName);
+        });
+    }
+
+    findChapIndex() {
+        return new Promise((resolve, reject) => {
+            let chapIndex = 'todo';
+            console.log(`chapIndex: ` + chapIndex);
+            resolve(chapIndex);
+        });
+    }
+
+    findChapName() {
+        return new Promise((resolve, reject) => {
+            let chapName = 'todo';
+            console.log(`chapName: ` + chapName);
+            resolve(chapName);
+        });
+    }
+
+    findPicUrls() {
+        return new Promise((resolve, reject) => {
+            let picUrls = 'todo';
+            console.log(`picUrls: ` + picUrls);
+            resolve(picUrls);
+        });
+    }
+
+    findNextChapUrl() {
+        return new Promise((resolve, reject) => {
+            let nextChapUrl = 'todo';
+            console.log(`nextChapUrl: ` + nextChapUrl);
+            resolve(nextChapUrl);
+        });
+    }
+}
+
+// ---------- 正片开始 --------------------------------------------------
 (function () {
     'use strict';
     console.log('Ready to crawl.');
@@ -25,47 +69,4 @@ function inject() {
     }
     toast(`自动进行任务，剩余: ` + remain);
     onClick();
-}
-
-class CrawlerImpl extends CrawlerBase {
-
-    findBookName() {
-        return new Promise((resolve, reject) => {
-            let bookName = -;
-            console.log(`bookName: ` + bookName);
-            resolve(bookName);
-        });
-    }
-
-    findChapIndex() {
-        return new Promise((resolve, reject) => {
-            let chapIndex = -;
-            console.log(`chapIndex: ` + chapIndex);
-            resolve(chapIndex);
-        });
-    }
-
-    findChapName() {
-        return new Promise((resolve, reject) => {
-            let chapName = -;
-            console.log(`chapName: ` + chapName);
-            resolve(chapName);
-        });
-    }
-
-    findPicUrls() {
-        return new Promise((resolve, reject) => {
-            let picUrls = -;
-            console.log(`picUrls: ` + picUrls);
-            resolve(picUrls);
-        });
-    }
-
-    findNextChapUrl() {
-        return new Promise((resolve, reject) => {
-            let nextChapUrl = -;
-            console.log(`nextChapUrl: ` + nextChapUrl);
-            resolve(nextChapUrl);
-        });
-    }
 }
