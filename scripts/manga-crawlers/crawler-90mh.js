@@ -56,7 +56,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findNextChapUrl() {
         return new Promise((resolve, reject) => {
-            let nextPage = nextChapterData.url;
+            let nextChapUrl = nextChapterData.url;
             console.log(`nextChapUrl: ` + nextChapUrl);
             resolve(nextChapUrl);
         });

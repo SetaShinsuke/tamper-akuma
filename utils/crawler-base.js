@@ -138,7 +138,7 @@ class CrawlerBase {
      */
     async resumeNextChap(remain, timeout = 3_000) {
         let nextPageUrl = "";
-        await self.findNextChapUrl().then(url => {
+        await this.findNextChapUrl().then(url => {
             nextPageUrl = url;
         });
         console.log(`next: ${nextPageUrl}\nremain: ${remain}`);
