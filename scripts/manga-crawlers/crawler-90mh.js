@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         crawler-90mh
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  desc
 // @author       Akuma
-// @match        http://*/*
+// @match        http://www.90mh.org/manhua/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
