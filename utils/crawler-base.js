@@ -1,3 +1,4 @@
+// @require https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/crawler-base.js
 // 依赖 utils.js 里面的 getExtByName() 和 saveTextFile()
 
 class CrawlerBase {
@@ -71,7 +72,7 @@ class CrawlerBase {
             }
             let indexStr = '';
             if (info.chapIndex) {
-                indexStr = `${chapIndex}`.padStart(4, '0') + '_';
+                indexStr = `${info.chapIndex}`.padStart(4, '0') + '_';
             }
             var save_name = `tasks_${indexStr}${info.chapName}.json`;
             if (typeof doSave === 'string' || doSave instanceof String) {
