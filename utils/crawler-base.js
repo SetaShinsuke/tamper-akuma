@@ -69,7 +69,11 @@ class CrawlerBase {
                 onFetched(tasks);
                 return;
             }
-            var save_name = `tasks_${info.chapName}.json`;
+            let indexStr = '';
+            if (info.chapIndex) {
+                indexStr = `${chapIndex}`.padStart(4, '0') + '_';
+            }
+            var save_name = `tasks_${indexStr}${info.chapName}.json`;
             if (typeof doSave === 'string' || doSave instanceof String) {
                 save_name = `tasks${doSave}.json`;
             }
