@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         InjectXmlHttpRequest
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Use tampermonkey request API in any page.
 // @author       Akuma
 // @match        https://manga.bilibili.com/*/mc*

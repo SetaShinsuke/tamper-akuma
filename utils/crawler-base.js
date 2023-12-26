@@ -139,7 +139,9 @@ class CrawlerBase {
             let ext = getExtByName(url);
             let fileName = '';
             if (hasNames) {
-                fileName = info.fileNames[i] + ext;
+                // 加上 url 里的文件名
+                let orgName = getFileNameByUrl(url);
+                fileName = info.fileNames[i] + `_${orgName}` + ext;
                 console.log(`info.fileName[${i}]: ${fileName}`);
                 i += 1;
             } else { // 默认使用序号命名

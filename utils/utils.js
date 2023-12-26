@@ -50,6 +50,16 @@ function getExtByName(fileName) {
     return undefined
 }
 
+function getFileNameByUrl(url){
+    // 匹配[.xxx]结尾且[xxx]中不包含[.]
+    let matches = url.match(/\/([^\/]+\.[^.]+)$/);
+    if (matches.length > 1) {
+        // xxxx.jpg/800
+        return matches[1].replace(/\/.*/, '');
+    }
+    return undefined
+}
+
 function verifyFileName(fileName) {
     fileName = fileName.replace(/[\\\/\s+、，。]/g, '_')
     fileName = fileName.replace('（', '(').replace('）', ')').replace('：', ':');
