@@ -1,12 +1,15 @@
 // ==UserScript==
 // @name         crawler-gcores-radio
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  desc
 // @author       Akuma
 // @match        https://www.gcores.com/albums/*
+// @match        https://www.gcores.com/radios/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+// @run-at       context-menu
 // @grant        GM_xmlhttpRequest
+// @connect      protected.gcores.com
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/crawler-base.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-gcores-radio.js
@@ -55,6 +58,7 @@ class CrawlerGcsAlbum extends CrawlerBase {
     findChapName() {
         return new Promise((resolve, reject) => {
             let chapName = document.querySelector('.albumDetail_content h1').innerText;
+            chapName = verifyFileName(chapName);
             console.log(`chapName: ` + chapName);
             resolve(chapName);
         });
@@ -62,7 +66,8 @@ class CrawlerGcsAlbum extends CrawlerBase {
 
     findFileNames() {
         return new Promise((resolve, reject) => {
-            let fileNames = Array.from(document.querySelectorAll('.albumRadios h3 a')).map(a => {
+            // :not(.is_locked) 未解锁的节目
+            let fileNames = Array.from(document.querySelectorAll('.albumRadios .albumRadio:not(.is_locked) h3 a')).map(a => {
                 return verifyFileName(a.innerText);
             });
             console.log(`fileNames: \n`, fileNames);
@@ -74,12 +79,20 @@ class CrawlerGcsAlbum extends CrawlerBase {
         return new Promise(async (resolve, reject) => {
             let picUrls = [];
 
-            for (const li of Array.from(document.querySelectorAll('.albumRadios .albumRadio'))) {
+            for (const li of Array.from(document.querySelectorAll('.albumRadios .albumRadio:not(.is_locked)'))) {
                 let a = li.querySelector('h3 a');
                 let radioId = a.href.split('radios/').pop();
                 let cate = li.querySelector('.albumRadio_title .u_color-category').innerText;
                 let isProtected = VIP_CATES.includes(cate);
+                let radioName = li.querySelector('h3>a')?.innerText;
+                // 付费的 cate，并且不是试听集
+                isProtected = isProtected && !/试听/.test(radioName);
                 console.log(`radioId: ${radioId}, isProtected: ${isProtected}`);
+                // 等待
+                let randomMs = randomInRange(1_000, 5_000);
+                console.log(`随机等待 ${randomMs}ms 后开始获取`);
+                await sleep(randomMs);
+                // 等待结束
                 await getRadioUrl(radioId, isProtected).then(fileUrl => {
                     picUrls.push(fileUrl);
                 });
@@ -94,24 +107,37 @@ class CrawlerGcsAlbum extends CrawlerBase {
 (function () {
     'use strict';
     console.log('Ready to crawl.');
-    inject();
+    if (/\/radios\//.test(window.location.pathname)) {
+        injectRadioPage();
+    } else if (/\/albums\//.test(window.location.pathname)) {
+        injectAlbumPage();
+    }
 })();
 
-function inject() {
+function injectAlbumPage() {
     let crawler = new CrawlerGcsAlbum();
-    let onClick = () => {
-        crawler.forkTasks(DO_SAVE, EX_CONFIGS).then(tasks => {
-            // crawler.resumeNextChap(remain, NEXT_TIMEOUT);
-        });
-    }
-    addButton('获取文件', {'top': '10%'}, onClick, 0.5);
+    crawler.forkTasks(DO_SAVE, EX_CONFIGS)
+}
+
+function injectRadioPage() {
+    let name = document.querySelector('h1.originalPage_title')?.innerText;
+    name = name || document.querySelector('.gpf_header_info_text>p>a').innerText;
+    name = verifyFileName(name);
+    // 获取文件
+    let radioId = window.location.pathname.match(/\/radios\/(\d+)/)[1];
+    let cate = document.querySelector('.story_container a.u_color-category')?.innerText;
+    cate = cate || document.querySelector('.gpf_header_title>a')?.innerText;
+    let isProtected = VIP_CATES.includes(cate);
+    isProtected = isProtected && !/试听/.test(name);
+    getRadioUrl(radioId, isProtected).then(fileUrl => {
+        copyToClipboard(name);
+        toast('文件名已复制!');
+        window.open(fileUrl, '_blank');
+    });
 }
 
 function getRadioUrl(radioId, isProtected) {
     return new Promise(async (resolve, reject) => {
-        let randomMs = randomInRange(1_000, 5_000);
-        console.log(`随机等待 ${randomMs}ms 后开始获取`);
-        await sleep(randomMs);
         let requestUrl = API_RADIO + radioId;
         if (isProtected) {
             // 付费内容
