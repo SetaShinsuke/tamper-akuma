@@ -6,6 +6,20 @@ function getReferer() {
     return referer;
 }
 
+function sleep(ms){
+    return new Promise(resolve => {
+       setTimeout(()=>{
+           resolve();
+       }, ms);
+    });
+}
+
+function randomInRange(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
 function getQueryInt(name) {
     let params = new URLSearchParams(document.location.search);
     let num = parseInt(params.get(name));

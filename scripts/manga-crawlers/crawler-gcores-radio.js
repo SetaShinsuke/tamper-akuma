@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-gcores-radio
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  desc
 // @author       Akuma
 // @match        https://www.gcores.com/albums/*
@@ -108,7 +108,10 @@ function inject() {
 }
 
 function getRadioUrl(radioId, isProtected) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        let randomMs = randomInRange(1_000, 5_000);
+        console.log(`随机等待 ${randomMs}ms 后开始获取`);
+        await sleep(randomMs);
         let requestUrl = API_RADIO + radioId;
         if (isProtected) {
             // 付费内容
