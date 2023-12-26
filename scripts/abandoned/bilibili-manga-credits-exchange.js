@@ -74,7 +74,7 @@ function onReady() {
     if (isDisabled || !firstExpected || credits < 0 || !btn) {
         console.log('兑换按钮不可用');
         // 没刷出来，重新加载
-        // todo: 按时间改变刷新频率
+        // 按时间改变刷新频率
         var timeout = 30_000;
         if (minutes >= 0 && minutes < 2) {
             timeout = TIMEOUT_DEFAULT;
@@ -118,7 +118,7 @@ function onReady() {
             }, 100);
         }, 200);
     }
-    // todo: 兑换完成, 跳转到不刷新的页面
+    // 兑换完成, 跳转到不刷新的页面
     var resultUrl = window.location.origin + '' + window.location.pathname;
 
     // 点击空白，隐藏数量弹窗
@@ -133,6 +133,6 @@ function clickExchange() {
         btnExchange.click();
         // alert('点击兑换!');
         // console.log(btnExchange);
-        // todo: 验证兑换是否成功!!
+        // 验证兑换是否成功!!
     }
 }

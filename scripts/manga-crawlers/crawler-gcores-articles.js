@@ -67,7 +67,7 @@ function inject() {
                 bookName = chapName;
             }
             tasks[chapName] = [];
-            // todo: 封面
+            // 封面
             let coverPath = resJson.data.attributes.cover;
             tasks[chapName].push({
                 'url': `${IMAGE_HOST}` + coverPath,

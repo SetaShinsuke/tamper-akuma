@@ -29,7 +29,7 @@ const ACCOUNT_STEAM_ALT = 4;
 })();
 
 function inject() {
-    // todo: 跳转到 pihub - Acq 添加页
+    // 跳转到 pihub - Acq 添加页
     let hostname = document.location.hostname;
     console.log(`Host: ${hostname}`);
     switch (hostname) {

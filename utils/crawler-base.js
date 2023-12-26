@@ -25,6 +25,12 @@ class CrawlerBase {
         });
     }
 
+    // 指定文件名，但是不包含扩展名，扩展名由 url 决定
+    findFileNames() {
+        return new Promise((resolve, reject) => {
+        });
+    }
+
     findNextChapUrl() {
         return new Promise((resolve, reject) => {
         });
@@ -38,8 +44,7 @@ class CrawlerBase {
                 remain = window.location.hash.match(/#remain=(\d+)/)[1];
                 remain = parseInt(remain);
             } catch (e) {
-                console.log(`Get hash error: `);
-                console.log(e);
+                console.log(`Get hash error, ignore.`);
                 remain = -1;
             }
         }
@@ -60,6 +65,9 @@ class CrawlerBase {
             }).catch(e => onFetchFail(e));
             await this.findPicUrls().then(picUrls => {
                 info.picUrls = picUrls;
+            }).catch(e => onFetchFail(e));
+            await this.findFileNames().then(fileNames => {
+                info.fileNames = fileNames;
             }).catch(e => onFetchFail(e));
             console.log(`info: \n`, info);
             let tasks = this.#forkMangaChap(info, extraConfigs);
@@ -101,6 +109,7 @@ class CrawlerBase {
         var bookName = info.bookName;
         let chapName = info.chapName;
         let chapIndex = info.chapIndex;
+        let fileNames = info.fileNames;
         if (chapIndex) {
             chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
         }
@@ -124,10 +133,18 @@ class CrawlerBase {
         // 图片列表
         tasks[chapName] = [];
         let i = 0;
+        let hasNames = info.fileNames?.length === info.picUrls.length;
         info.picUrls.forEach(_url => {
             let url = _url;
             let ext = getExtByName(url);
-            let fileName = `${i += 1}`.padStart(4, '0') + ext;
+            let fileName = '';
+            if (hasNames) {
+                fileName = info.fileNames[i] + ext;
+                console.log(`info.fileName[${i}]: ${fileName}`);
+                i += 1;
+            } else { // 默认使用序号命名
+                fileName = `${i += 1}`.padStart(4, '0') + ext;
+            }
             tasks[chapName].push({'url': url, 'file_name': fileName});
         });
 

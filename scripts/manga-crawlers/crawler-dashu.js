@@ -99,7 +99,7 @@ function getPicUrls() {
         // var picTree = []
         eval(eval(jsString));
 
-        // todo: picUrls
+        // picUrls
         let picUrls = picTree;
         console.log(`picUrls: \n`, picUrls);
         resolve(picUrls);
