@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.15
+// @version      0.16
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -53,6 +53,14 @@ let remain = 0; // 想要下载总共多少话，就在 query 里设置数值
     toast(`自动进行任务，剩余: ${remain}`);
     onClick();
 })();
+
+function roastOff() {
+    runWhenLoaded('#icoBarShow', toastSwitch => {
+        if (/roastState=1/.test(document.cookie)) {
+            toastSwitch.click();
+        }
+    });
+}
 
 function followAction() {
     let nextUrl = new URL(document.querySelector('#nextChapter').href);
