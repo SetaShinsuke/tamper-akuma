@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      0.16
+// @version      0.17
 // @description  Crawl manga pics from tencent
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -31,6 +31,8 @@ let remain = 0; // 想要下载总共多少话，就在 query 里设置数值
     'use strict';
     console.log('Starting inject...');
     console.log(`Fake nonce: ${nonce}`);
+    // 自动关弹幕
+    roastOff();
 
     // 地址栏设置了 remain，自动进行并继续任务
     let urlParams = new URLSearchParams(document.location.search);
@@ -56,8 +58,11 @@ let remain = 0; // 想要下载总共多少话，就在 query 里设置数值
 
 function roastOff() {
     runWhenLoaded('#icoBarShow', toastSwitch => {
-        if (/roastState=1/.test(document.cookie)) {
+        let isOn = /roastState=1/.test(document.cookie);
+        console.log('弹幕是否开启: ' + isOn);
+        if (isOn) {
             toastSwitch.click();
+            console.log('弹幕已关闭');
         }
     });
 }
