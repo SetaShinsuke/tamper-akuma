@@ -7,32 +7,38 @@ class CrawlerBase {
 
     findBookName() {
         return new Promise((resolve, reject) => {
+            resolve(null);
         });
     }
 
     findChapIndex() {
         return new Promise((resolve, reject) => {
+            resolve(null);
         });
     }
 
     findChapName() {
         return new Promise((resolve, reject) => {
+            resolve(null);
         });
     }
 
     findPicUrls() {
         return new Promise((resolve, reject) => {
+            resolve(null);
         });
     }
 
     // 指定文件名，但是不包含扩展名，扩展名由 url 决定
     findFileNames() {
         return new Promise((resolve, reject) => {
+            resolve(null);
         });
     }
 
     findNextChapUrl() {
         return new Promise((resolve, reject) => {
+            resolve(null);
         });
     }
 
@@ -52,6 +58,7 @@ class CrawlerBase {
     }
 
     forkTasks(doSave, extraConfigs = {}) {
+        console.log(`forkTasks`);
         return new Promise(async (onFetched, onFetchFail) => {
             let info = {};
             await this.findBookName().then(bookName => {
@@ -82,12 +89,12 @@ class CrawlerBase {
             if (info.chapIndex) {
                 indexStr = `${info.chapIndex}`.padStart(4, '0') + '_';
             }
-            var save_name = `tasks_${indexStr}${info.chapName}.json`;
+            var saveName = `tasks_${indexStr}${info.chapName}.json`;
             if (typeof doSave === 'string' || doSave instanceof String) {
-                save_name = `tasks${doSave}.json`;
+                saveName = `tasks${doSave}.json`;
             }
-            console.log(save_name);
-            saveTextFile(JSON.stringify(tasks), save_name);
+            console.log(saveName);
+            saveTextFile(JSON.stringify(tasks), saveName);
             // tasks.json 已完成
             onFetched(tasks);
         });

@@ -70,7 +70,7 @@ class CrawlerImpl extends CrawlerBase {
                     picUrls = urls;
                 });
             }
-            console.log(`picUrls: ` + picUrls);
+            console.log(`picUrls: \n`, picUrls);
             resolve(picUrls);
         });
     }
