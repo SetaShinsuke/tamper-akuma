@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-afdian
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  爬取afdian的漫画
 // @author       Akuma
 // @match        https://afdian.net/album/*
@@ -50,7 +50,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findChapName() {
         return new Promise((resolve, reject) => {
-            let chapName = document.querySelector('.title-box').innerText.replace(`${bookNameOrg} `, '');
+            let chapName = document.querySelector('.title-box').innerText;
             chapName = verifyFileName(chapName);
             console.log(`chapName: ` + chapName);
             resolve(chapName);
