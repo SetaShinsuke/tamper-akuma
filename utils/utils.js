@@ -6,11 +6,11 @@ function getReferer() {
     return referer;
 }
 
-function sleep(ms){
+function sleep(ms) {
     return new Promise(resolve => {
-       setTimeout(()=>{
-           resolve();
-       }, ms);
+        setTimeout(() => {
+            resolve();
+        }, ms);
     });
 }
 
@@ -59,12 +59,16 @@ function getExtByName(fileName) {
     let matches = fileName.match(/(\.[^.]+)$/);
     if (matches.length > 1) {
         // xxxx.jpg/800
-        return matches[1].replace(/\/.*/, '');
+        let ext = matches[1].replace(/\/.*/, '');
+        if (ext.toLowerCase() === '.jpeg') {
+            ext = '.jpg'
+        }
+        return ext;
     }
     return undefined
 }
 
-function getFileNameByUrl(url){
+function getFileNameByUrl(url) {
     // 匹配[.xxx]结尾且[xxx]中不包含[.]
     let matches = url.match(/\/([^\/]+\.[^.]+)$/);
     if (matches.length > 1) {

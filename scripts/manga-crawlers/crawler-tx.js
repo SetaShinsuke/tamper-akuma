@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-tx
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  desc
 // @author       Akuma
 // @match        https://ac.qq.com/ComicView/index/id/*/cid/*
@@ -113,7 +113,7 @@ function inject() {
 
 function roastOff() {
     runWhenLoaded('#icoBarShow', toastSwitch => {
-        let isOn = /roastState=1/.test(document.cookie);
+        let isOn = !/roastState=0/.test(document.cookie);
         console.log('弹幕是否开启: ' + isOn);
         if (isOn) {
             toastSwitch.click();

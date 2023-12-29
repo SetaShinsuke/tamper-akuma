@@ -32,7 +32,7 @@ class CrawlerImpl extends CrawlerBase {
     findPicUrls() {
         return new Promise((resolve, reject) => {
             let picUrls = 'todo';
-            console.log(`picUrls: ` + picUrls);
+            console.log(`picUrls: \n`, picUrls);
             resolve(picUrls);
         });
     }
