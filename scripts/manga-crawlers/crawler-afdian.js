@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-afdian
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  爬取afdian的漫画
 // @author       Akuma
 // @match        https://afdian.net/album/*
@@ -82,15 +82,15 @@ class CrawlerImpl extends CrawlerBase {
 (function () {
     'use strict';
     console.log('Ready to crawl.');
-    if(/\/album\/(.*?)\/(.*)/.test(window.location.pathname)){
+    if (/\/album\/(.*?)\/(.*)/.test(window.location.pathname)) {
         // 帖子页
         inject();
-    }else{
+    } else {
         // todo: 章节列表页
     }
 })();
 
-function inject() {
+async function inject() {
     // do stuff
     let crawler = new CrawlerImpl();
     let remain = crawler.getRemainCount();
@@ -105,6 +105,7 @@ function inject() {
         return
     }
     toast(`自动进行任务，剩余: ` + remain);
+    await sleep(1_000);
     onClick();
 }
 

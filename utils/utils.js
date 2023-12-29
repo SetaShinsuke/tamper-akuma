@@ -8,6 +8,7 @@ function getReferer() {
 
 function sleep(ms) {
     return new Promise(resolve => {
+        console.log(`等待 ${ms/1000.0} s`);
         setTimeout(() => {
             resolve();
         }, ms);
