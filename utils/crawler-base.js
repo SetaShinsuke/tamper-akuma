@@ -173,7 +173,10 @@ class CrawlerBase {
             nextPageUrl = url;
         });
         console.log(`next: ${nextPageUrl}\nremain: ${remain}`);
-        let nextUrl = new URL(nextPageUrl);
+        let nextUrl = new URL('undefined:');
+        if(nextPageUrl){
+            nextUrl = new URL(nextPageUrl);
+        }
         if (nextUrl.host.length === 0 || isNaN(remain) || remain <= 0) {
             console.log('任务结束');
             return remain;
