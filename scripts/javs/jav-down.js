@@ -21,10 +21,15 @@
 // body: {video_id: xxx}
 let API_TIFUL = `https://javtiful.com/ajax/get_cdn`;
 
+let referer = getReferer();
+var HEADERS = {
+    "Referer": referer
+};
+
 (function () {
     'use strict';
     console.log('Starting inject...');
-    let onclick = async event => {
+    let onClick = async event => {
         let fileName = getQuery('v_name');
         let resolution = '-720P';
         let size = '--m';
@@ -39,12 +44,12 @@ let API_TIFUL = `https://javtiful.com/ajax/get_cdn`;
             case 'javtiful.com':
                 break;
         }
-        let ext = getExtByName(videoUrl);
+        let ext = getExtByUrl(videoUrl);
         event.target.innerText = `下载视频(${size})`;
         let idmLink = `akuma-idm://${videoUrl}?file_name___${fileName}${resolution}${ext}`;
         console.log(`link:\n`, idmLink);
     };
-    addButton('下载视频', {}, onclick());
+    addButton('下载视频', {}, onClick);
 })();
 
 function fetchTubeUrl() {
@@ -57,7 +62,7 @@ function fetchTubeUrl() {
                 var finalUrl = response.finalUrl;
                 console.log('FinalUrl: ', finalUrl);
                 await fetchFileSize(finalUrl).then(size => {
-                    resolve(url, size);
+                    resolve(finalUrl, size);
                 });
             },
             onerror: function (err) {
@@ -79,8 +84,10 @@ function fetchFileSize(finalUrl) {
         GM_xmlhttpRequest({
             method: 'head',
             url: finalUrl,
+            headers: HEADERS,
             onload: function (response) {
                 console.log(response);
+                unsafeWindow.res = response;
                 if (response.responseText) {
                     var contentLength = response.responseHeaders.match(/\r\ncontent-length: .*\r\n/)[0];
                     contentLength = contentLength.replace(/\r\n/g, '').replace('content-length: ', '');
@@ -89,6 +96,8 @@ function fetchFileSize(finalUrl) {
                     // document.querySelector('#btnCopy').innerHTML = `Copy (${contentLength})`;
                     console.log(`Video size: ${contentLength}`);
                     resolve(contentLength);
+                } else {
+                    resolve('??m');
                 }
             },
             onerror: function (err) {

@@ -61,6 +61,10 @@ function saveTextFile(text, fileName) {
     return textFile;
 }
 
+function getExtByUrl(url) {
+    return getExtByName((new URL(url)).pathname);
+}
+
 // 用正则表达式获取后缀名
 function getExtByName(fileName) {
     // 匹配[.xxx]结尾且[xxx]中不包含[.]
