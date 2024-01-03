@@ -9,8 +9,8 @@
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/crawler-base.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/mhxin.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/mhxin.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-mhxin.js
+// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/crawler-mhxin.js
 // ==/UserScript==
 
 let DO_SAVE = true;
