@@ -8,7 +8,7 @@ function getReferer() {
 
 function sleep(ms) {
     return new Promise(resolve => {
-        console.log(`等待 ${ms/1000.0}s`);
+        console.log(`等待 ${ms / 1000.0}s`);
         setTimeout(() => {
             resolve();
         }, ms);
@@ -19,6 +19,13 @@ function randomInRange(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
+}
+
+function getQuery(name) {
+    let params = new URLSearchParams(document.location.search);
+    let par = params.get(name);
+    console.log(`Get query [${name}]: `, par);
+    return par;
 }
 
 function getQueryInt(name) {
