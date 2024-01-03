@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.14
+// @version        0.15
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -21,6 +21,10 @@
     'use strict';
     // setTimeout(onReady, TIMEOUT);
     console.log(`Starting JavFullPic injection...`);
+    if (/\/embed\//.test(window.location.pathname)) {
+        console.log('Fullpic: skip embed pages.');
+        return;
+    }
     switch (document.location.hostname) {
         case 'javgg.net':
             injectGG();
