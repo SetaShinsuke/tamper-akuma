@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         crawler-mhxin
+// @name         mhxin
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.1
 // @description  desc
 // @author       Akuma
 // @match        https://www.mhxin.com/manhua/*
@@ -72,10 +72,34 @@ function inject() {
     // do stuff
     let crawler = new CrawlerImpl();
     let remain = crawler.getRemainCount();
-    let onClick = () => {
-        crawler.forkTasks(DO_SAVE, EX_CONFIGS).then(tasks => {
-            crawler.resumeNextChap(remain, NEXT_TIMEOUT);
+    let onClick = async () => {
+        let info = {};
+        await crawler.findChapName().then(chapName => {
+            info.chapName = chapName;
         });
+        await crawler.findPicUrls().then(picUrls => {
+            info.picUrls = picUrls;
+        });
+        console.log(`info: \n`, info);
+        let bat = '';
+        let i = 0;
+        info.picUrls.forEach(pic => {
+            let folder = `"C:\\Users\\24783\\Downloads\\Video\\${info.chapName}"`;
+            let fileName = `${i+=1}`.padStart(4, '0') + getExtByName(pic);
+            bat += `"C:\\Program Files (x86)\\Internet Download Manager\\IDMan.exe" /n /p ${folder} /f ${fileName} /d ${pic}`;
+            bat += " & ";
+        });
+        bat += 'pause';
+        console.log(bat);
+        saveTextFile(bat, `tasks_${info.chapName}.bat`);
+        // saveGbkFile(bat, `tasks_${info.chapName}.txt`);
+        // crawler.forkTasks(false, EX_CONFIGS).then(tasks => {
+        //     let batch = '';
+        //     tasks.forEach(task=>{
+        //
+        //     });
+        //     crawler.resumeNextChap(remain, NEXT_TIMEOUT);
+        // });
     }
     addButton('获取图片', {'top': '10%'}, onClick, 0.5);
     if (remain <= 0) {
