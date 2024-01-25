@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.17
+// @version        0.18
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -149,8 +149,12 @@ function injectTube() {
         });
     });
     runWhenLoaded('#list_videos_common_videos_list .headline h1', headline => {
-        headline.setAttribute('cursor', 'pointer');
-        headline.addEventListener('click', setFullPic);
+        console.log(headline);
+        headline.style['cursor'] = 'pointer';
+        headline.addEventListener('click', e => {
+            console.log('Headline clicked');
+            setFullPic();
+        });
     });
 }
 

@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
+// @match        https://tktube.com/*/embed/*
 // @match        https://javtiful.com/embed/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM.setClipboard
