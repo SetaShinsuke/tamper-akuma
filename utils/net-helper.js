@@ -1,8 +1,6 @@
 // @grant        GM_xmlhttpRequest
 // @require https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
 
-let n = new NetHelper();
-
 class NetHelper {
     constructor() {
         let referer = `${window.location.protocol}//${window.location.host}`;

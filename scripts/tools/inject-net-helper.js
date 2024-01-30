@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  desc
 // @author       Akuma
-// @match        https://manga.bilibili.com/
+// @match        https://manga.bilibili.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_xmlhttpRequest
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -21,4 +21,5 @@
 
 function inject() {
     // do stuff
+    unsafeWindow.netHelper = new NetHelper();
 }
