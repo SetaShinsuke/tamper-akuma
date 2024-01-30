@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         inject-net-helper
+// @name         _inject-net-helper
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  desc

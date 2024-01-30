@@ -27,7 +27,7 @@ class NetHelper {
         return this.#doRequest('POST', url, data);
     }
 
-    put(url, data) {
+    put(url, data = {}) {
         return this.#doRequest('PUT', url, data);
     }
 
@@ -36,12 +36,13 @@ class NetHelper {
         let dataString = '';
         Object.keys(_data).forEach(k => {
             let d = _data[k];
-            if (Array.isArray(d)) {
-                d = JSON.stringify(d);
-            }
+            // if (Array.isArray(d)) {
+            //     d = JSON.stringify(d);
+            // }
             dataString += `${k}=${d}&`;
         });
         dataString = dataString.slice(0, -1);
+        console.log(`dataString: \n`, dataString);
         // 返回 Promise
         return new Promise((resolve, reject) => {
             let _dataType = this.dataType;
@@ -62,6 +63,7 @@ class NetHelper {
                         console.log(`${_method} success: \n`, resJson);
                         resolve(resJson);
                     } else {
+                        console.log(response);
                         resolve(response);
                     }
                 },
