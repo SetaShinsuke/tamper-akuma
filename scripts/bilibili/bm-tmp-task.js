@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         BM_TMP_TASK
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  领取浪花
+// @version      0.2
+// @description  领取战令
 // @author       Akuma
 // @match        https://manga.bilibili.com/blackboard/activity-3MYGl2GxHY.html?*auto_take=true*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -44,7 +44,7 @@ async function inject() {
     let finTasks = [];
     data = {"task_ids": taskIds};
     await netHelper.post(BM_FIN_TASKS, data).then(resJson => {
-        finTasks = resJson.data.tasks.filter(t => t.status === 1);
+        finTasks = resJson.data.tasks.filter(t => t.status === 1).map(t => t.task_id);
     });
     console.log(`已完成的任务: \n`, finTasks);
 
@@ -58,5 +58,7 @@ async function inject() {
     }
 
     console.log(`任务全部提交, 准备关闭页面`);
-    // todo: 关闭
+    // 关闭
+    await sleep(INJECT_TIMEOUT);
+    window.close();
 }
