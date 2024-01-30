@@ -16,22 +16,33 @@ class NetHelper {
     }
 
     head(url) {
-        this.#doRequest('HEAD', url);
+        return this.#doRequest('HEAD', url);
     }
 
     get(url) {
-        this.#doRequest('GET', url);
+        return this.#doRequest('GET', url);
     }
 
-    post(url, data) {
-        this.#doRequest('POST', url, data);
+    post(url, data = {}) {
+        return this.#doRequest('POST', url, data);
     }
 
     put(url, data) {
-        this.#doRequest('PUT', url, data);
+        return this.#doRequest('PUT', url, data);
     }
 
     #doRequest(_method, _url, _data = {}) {
+        // 处理 data
+        let dataString = '';
+        Object.keys(_data).forEach(k => {
+            let d = _data[k];
+            if (Array.isArray(d)) {
+                d = JSON.stringify(d);
+            }
+            dataString += `${k}=${d}&`;
+        });
+        dataString = dataString.slice(0, -1);
+        // 返回 Promise
         return new Promise((resolve, reject) => {
             let _dataType = this.dataType;
             let _onProgress = this._onProgress;
@@ -40,7 +51,7 @@ class NetHelper {
                 url: _url,
                 headers: this.headers,
                 dataType: _dataType, // 接收格式
-                data: _data,
+                data: dataString,
                 onerror: function (error) {
                     console.log(`${_method} error: \n`, error);
                     reject(error);

@@ -15,11 +15,12 @@
 
 (function () {
     'use strict';
-    console.log('Starting inject...');
+    console.log('Starting inject NETTER...');
     inject();
+    console.log(`NETTER injected!`);
 })();
 
 function inject() {
     // do stuff
-    unsafeWindow.netHelper = new NetHelper();
+    unsafeWindow.NETTER = new NetHelper();
 }
