@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         BM_TMP_TASK
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  领取战令
 // @author       Akuma
+// @match        https://manga.bilibili.com/blackboard/activity-6rhkV9678d.html?*auto_take=true*
 // @match        https://manga.bilibili.com/blackboard/activity-3MYGl2GxHY.html?*auto_take=true*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_xmlhttpRequest
@@ -25,7 +26,14 @@ let BM_REWARD = `https://manga.bilibili.com/twirp/activity.v1.Common/GetTaskRewa
     'use strict';
     console.log('Starting inject...');
     await sleep(INJECT_TIMEOUT);
-    inject();
+    // 红包页面
+    if(/3MYGl2GxHY/.test(window.location.pathname)){
+        console.log(`红包页，准备跳转到活动主页面`);
+        let actUrl = `https://manga.bilibili.com/blackboard/activity-3MYGl2GxHY.html?auto_take=true`;
+        window.open(actUrl, '_self');
+    }else {
+        inject();
+    }
 })();
 
 async function inject() {
