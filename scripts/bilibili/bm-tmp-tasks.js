@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM_TMP_TASK
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  领取战令
 // @author       Akuma
 // @match        https://manga.bilibili.com/blackboard/activity-3MYGl2GxHY.html?*auto_take=true*
