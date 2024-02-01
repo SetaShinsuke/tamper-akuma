@@ -15,6 +15,12 @@ function sleep(ms) {
     });
 }
 
+function closeWindow() {
+    console.log(`Close custom window`);
+    var customWindow = window.open('', '_self', '');
+    customWindow.close();
+}
+
 function randomInRange(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);

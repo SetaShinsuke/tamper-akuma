@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         _inject-net-helper
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  desc
+// @version      0.2
+// @description  Use NETTER in console to send requests.
 // @author       Akuma
 // @match        https://manga.bilibili.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM_TMP_TASK
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  领取战令
 // @author       Akuma
 // @match        https://manga.bilibili.com/blackboard/activity-6rhkV9678d.html?*auto_take=true*
@@ -21,6 +21,7 @@ let ACT_ID = 1590003;
 let BM_TASKS = `https://manga.bilibili.com/twirp/activity.v1.Common/GetOnlineTaskInfo`;
 let BM_FIN_TASKS = `https://manga.bilibili.com/twirp/activity.v1.Common/GetUserTask`;
 let BM_REWARD = `https://manga.bilibili.com/twirp/activity.v1.Common/GetTaskReward`;
+let BM_PASS_REWARD = `https://manga.bilibili.com/twirp/activity.v1.Battlepass/GetReward`;
 
 (async function () {
     'use strict';
@@ -31,7 +32,8 @@ let BM_REWARD = `https://manga.bilibili.com/twirp/activity.v1.Common/GetTaskRewa
         console.log(`红包页，准备跳转到活动主页面`);
         await sleep(INJECT_TIMEOUT);
         let actUrl = `https://manga.bilibili.com/blackboard/activity-6rhkV9678d.html?auto_take=true`;
-        window.open(actUrl, '_self');
+        window.open(actUrl, '_blank');
+        closeWindow();
     }else {
         inject();
     }
@@ -66,8 +68,12 @@ async function inject() {
         });
     }
 
+    // 领取占领奖励
+    console.log(`领取战令奖励`);
+    await netHelper.post(BM_PASS_REWARD);
+
     console.log(`任务全部提交, 准备关闭页面`);
     // 关闭
     await sleep(INJECT_TIMEOUT);
-    window.close();
+    closeWindow();
 }
