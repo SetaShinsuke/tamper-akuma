@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM_TMP_TASK
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  领取战令
 // @author       Akuma
 // @match        https://manga.bilibili.com/blackboard/activity-6rhkV9678d.html?*auto_take=true*
@@ -23,6 +23,8 @@ let BM_FIN_TASKS = `https://manga.bilibili.com/twirp/activity.v1.Common/GetUserT
 let BM_REWARD = `https://manga.bilibili.com/twirp/activity.v1.Common/GetTaskReward`;
 let BM_PASS_REWARD = `https://manga.bilibili.com/twirp/activity.v1.Battlepass/GetReward`;
 
+let BM_PROFILE = `https://manga.bilibili.com/account-center/account-info`;
+
 (async function () {
     'use strict';
     console.log('Starting inject...');
@@ -32,8 +34,8 @@ let BM_PASS_REWARD = `https://manga.bilibili.com/twirp/activity.v1.Battlepass/Ge
         console.log(`红包页，准备跳转到活动主页面`);
         await sleep(INJECT_TIMEOUT);
         let actUrl = `https://manga.bilibili.com/blackboard/activity-6rhkV9678d.html?auto_take=true`;
-        window.open(actUrl, '_blank');
-        closeWindow();
+        window.open(actUrl, '_self');
+        // closeWindow();
     }else {
         inject();
     }
@@ -72,8 +74,10 @@ async function inject() {
     console.log(`领取战令奖励`);
     await netHelper.post(BM_PASS_REWARD);
 
-    console.log(`任务全部提交, 准备关闭页面`);
+    // console.log(`任务全部提交, 准备关闭页面`);
+    console.log(`任务全部提交, 准备跳转到个人页`);
     // 关闭
     await sleep(INJECT_TIMEOUT);
-    closeWindow();
+
+    window.open(BM_PROFILE, '_self');
 }
