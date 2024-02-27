@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.18
+// @version        0.19
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -11,11 +11,17 @@
 // @match          https://tktube.com/*
 // @match          https://javtiful.com/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @grant          none
+// @grant          GM_openInTab
+// @grant          GM_xmlhttpRequest
+// @connect        192.168.50.166
 // @require        https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
+// @require        https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
 // @updateURL      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-fullpic.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-fullpic.js
 // ==/UserScript==
+
+const API_SEARCH = `http://192.168.50.166:9292/api/javs?count=true&filter=`;
+const PI_JAV = `http://192.168.50.166:9292/pages/#/no_media/javs?filter=`;
 
 (function () {
     'use strict';
@@ -89,7 +95,36 @@ function injectFul() {
     });
 }
 
-function injectTube() {
+async function injectTube() {
+    // 播放页
+    if (/\/videos\/\d+/.test(window.location.pathname)) {
+        // 切换到截图tab
+        runWhenLoaded(`a[href="#tab_screenshots"]`, btnScr => {
+            btnScr.click();
+        });
+
+        // 搜索是否已经 fork
+        let no = document.querySelector('.headline h1').innerText.split(/\s/)[0];
+        let netHelper = new NetHelper();
+        let searchUrl = API_SEARCH + `${no}`;
+        console.log(`Check if forked: ${no}`);
+        let resJson = await netHelper.get(searchUrl);
+        console.log(`Already forked count: ${resJson.javs}`);
+        if (resJson.javs > 0) {
+            addButton('已Fork', {'bottom': '1%'}, _ => {
+                let piJav = PI_JAV + `${no}`;
+                try {
+                    GM_openInTab(piJav, false);
+                } catch (e) {
+                    console.log(e);
+                    window.open(piJav, "_blank");
+                }
+            });
+        } else {
+            let btnId = addButton('未Fork', {'bottom': '1%', 'background': 'grey'}, null, 0);
+        }
+    }
+
     //搜索快捷键
     runWhenLoaded(`.search-text>input`, inputSearch => {
         document.addEventListener('keydown', e => {

@@ -320,7 +320,7 @@ function forkIt(data) {
         GM_openInTab(url, false);
     } catch (e) {
         console.log(e);
-        window.open(url, "__blank");
+        window.open(url, "_blank");
     }
 }
 
