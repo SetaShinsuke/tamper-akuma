@@ -195,6 +195,31 @@ function runWhenLoaded(queryStr, task, timeout = 500, maxTimeout = 30_000) {
     }, maxTimeout);
 }
 
+// todo: 改成同步,未测试
+// let element = await waitForEle('.class').catch( e => console.log(e) );
+function waitForEle(queryStr, timeout = 500, maxTimeout = 30_000) {
+    return new Promise((resolve, reject) => {
+        var safeStop = null;
+        // 找到元素后开启任务
+        var intervalTask = setInterval(() => {
+            console.log('Doing interval...');
+            var element = document.querySelector(queryStr);
+            if (element) {
+                console.log(`Interval finished, id: ${intervalTask}`);
+                resolve(element);
+                clearTimeout(safeStop);
+                clearInterval(intervalTask);
+            }
+        }, timeout);
+        // 30s 后仍找不到元素，停止任务
+        safeStop = setTimeout(() => {
+            console.log(`查找元素超时，用时: ${parseInt(maxTimeout / 1000)}s\nQuery: ${queryStr}`);
+            reject('Cannot find ele: ' + queryStr);
+            clearInterval(intervalTask);
+        }, maxTimeout);
+    });
+}
+
 // SetInterval 但是限制时间
 function setIntervalWithin(_task, _timeout, _maxTimeout) {
     var intervalTask = setInterval(() => {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.19
+// @version        0.20
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -33,6 +33,13 @@ const PI_JAV = `http://192.168.50.166:9292/pages/#/no_media/javs?filter=`;
         return;
     }
     switch (document.location.hostname) {
+        case 'tktube.com':
+            injectTube();
+            break;
+        case 'javtiful.com':
+            injectFul();
+            break;
+        // region deprecated
         case 'javgg.net':
             injectGG();
             break;
@@ -45,16 +52,43 @@ const PI_JAV = `http://192.168.50.166:9292/pages/#/no_media/javs?filter=`;
         case 'javcl.com':
             injectCl();
             break;
-        case 'tktube.com':
-            injectTube();
-            break;
-        case 'javtiful.com':
-            injectFul();
-            break;
+        // endregion
     }
 })();
 
+// 通用
+async function checkForked(javNo) {
+    // 搜索是否已经 fork
+    let no = javNo;
+    let netHelper = new NetHelper();
+    let searchUrl = API_SEARCH + `${no}`;
+    console.log(`Check if forked: ${no}`);
+    let resJson = await netHelper.get(searchUrl);
+    console.log(`Already forked count: ${resJson.javs}`);
+    let btnId;
+    if (resJson.javs > 0) {
+        btnId = addButton('已Fork', {'bottom': '1%'}, _ => {
+            let piJav = PI_JAV + `${no}`;
+            try {
+                GM_openInTab(piJav, false);
+            } catch (e) {
+                console.log(e);
+                window.open(piJav, "_blank");
+            }
+        });
+    } else {
+        btnId = addButton('未Fork', {'bottom': '1%', 'background': 'grey'}, null, 0);
+    }
+    console.log(`CheckFork btn id: ${btnId}`);
+}
+
+// --------------------------
 function injectFul() {
+    // 播放页
+    if (/\/video\//.test(window.location.pathname)) {
+        let no = window.location.pathname.split('/').pop();
+        checkForked(no);
+    }
     // 搜索快捷键
     runWhenLoaded(`input[name='search_query']`, inputSearch => {
         document.addEventListener('keydown', e => {
@@ -95,34 +129,15 @@ function injectFul() {
     });
 }
 
-async function injectTube() {
+function injectTube() {
     // 播放页
     if (/\/videos\/\d+/.test(window.location.pathname)) {
         // 切换到截图tab
         runWhenLoaded(`a[href="#tab_screenshots"]`, btnScr => {
             btnScr.click();
         });
-
-        // 搜索是否已经 fork
         let no = document.querySelector('.headline h1').innerText.split(/\s/)[0];
-        let netHelper = new NetHelper();
-        let searchUrl = API_SEARCH + `${no}`;
-        console.log(`Check if forked: ${no}`);
-        let resJson = await netHelper.get(searchUrl);
-        console.log(`Already forked count: ${resJson.javs}`);
-        if (resJson.javs > 0) {
-            addButton('已Fork', {'bottom': '1%'}, _ => {
-                let piJav = PI_JAV + `${no}`;
-                try {
-                    GM_openInTab(piJav, false);
-                } catch (e) {
-                    console.log(e);
-                    window.open(piJav, "_blank");
-                }
-            });
-        } else {
-            let btnId = addButton('未Fork', {'bottom': '1%', 'background': 'grey'}, null, 0);
-        }
+        checkForked(no);
     }
 
     //搜索快捷键
@@ -193,6 +208,8 @@ async function injectTube() {
     });
 }
 
+
+// region deprecated sites
 function injectCl() {
     runWhenLoaded('.page-section>.container', div => {
         if (document.querySelector('.container>.mb-3')) {
@@ -297,3 +314,5 @@ function injectChill() {
         });
     });
 }
+
+// endregion

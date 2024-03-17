@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.22
+// @version      0.23
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -34,6 +34,13 @@ const HOST = 'http://192.168.50.166:9292';
 function inject() {
     let onClick = _ => {
         switch (window.location.hostname) {
+            case 'tktube.com':
+                forkTkTube()
+                break
+            case 'javtiful.com':
+                forkTiful();
+                break
+            // region //+deprecated sites
             case 'javgg.net':
                 forkJavGG();
                 break;
@@ -57,12 +64,7 @@ function inject() {
             case 'javgiga.com':
                 forkGiga();
                 break
-            case 'tktube.com':
-                forkTkTube()
-                break
-            case 'javtiful.com':
-                forkTiful();
-                break
+            // endregion
         }
     }
     addButton(`FORK IT!`, {'left': '1%', 'bottom': '1%'}, onClick, 0);
@@ -96,28 +98,6 @@ function forkTiful() {
     console.log(data);
     forkIt(data);
     // });
-}
-
-function forkJavAS() {
-    // 隐藏上层遮罩
-    var divs = document.querySelectorAll('div');
-    console.log('隐藏AD遮罩');
-    divs.forEach(ad => {
-        if (ad.style['opacity'] !== '') {
-            ad.style['display'] = 'none';
-        }
-    });
-    // 复制链接
-    var no = document.querySelector('h1').innerText;
-    no = no.replace(`.${no.split('.').pop()}`, '');
-    var text = `[${no}](${window.location.href.split('?')[0]}?v_name=${no}-)`;
-    console.log(text);
-    // 复制
-    // copyToClipboard(text);
-    toast('Copied!');
-    // 减少倒计时
-    // document.querySelector('#countdown').innerHTML = '1';
-    // document.querySelector('#download').click();
 }
 
 function forkTkTube() {
@@ -157,6 +137,7 @@ function forkTkTube() {
     forkIt(data);
 }
 
+// region //+deprecated sites
 function forkJavTk() {
     let playerDiv = document.querySelector('.play-video');
     // todo: 获取视频地址 javTK
@@ -309,6 +290,29 @@ function forkGG() {
     console.log(data);
     forkIt(data);
 }
+
+function forkJavAS() {
+    // 隐藏上层遮罩
+    var divs = document.querySelectorAll('div');
+    console.log('隐藏AD遮罩');
+    divs.forEach(ad => {
+        if (ad.style['opacity'] !== '') {
+            ad.style['display'] = 'none';
+        }
+    });
+    // 复制链接
+    var no = document.querySelector('h1').innerText;
+    no = no.replace(`.${no.split('.').pop()}`, '');
+    var text = `[${no}](${window.location.href.split('?')[0]}?v_name=${no}-)`;
+    console.log(text);
+    // 复制
+    // copyToClipboard(text);
+    toast('Copied!');
+    // 减少倒计时
+    // document.querySelector('#countdown').innerHTML = '1';
+    // document.querySelector('#download').click();
+}
+// endregion
 
 function forkIt(data) {
     let url = `${HOST}/pages/#/no_media/javs/new?`;
