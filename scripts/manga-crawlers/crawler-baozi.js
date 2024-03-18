@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-baozi
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  desc
 // @author       Akuma
 // @match        https://cn.czmanga.com/comic/chapter/*
@@ -56,7 +56,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findNextChapUrl() {
         return new Promise((resolve, reject) => {
-            let nextPage = document.querySelector('#next-chapter').href;
+            let nextChapUrl = document.querySelector('#next-chapter').href;
             console.log(`nextChapUrl: ` + nextChapUrl);
             resolve(nextChapUrl);
         });
