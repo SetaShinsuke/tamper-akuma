@@ -61,21 +61,17 @@ class CrawlerBase {
         console.log(`forkTasks`);
         return new Promise(async (onFetched, onFetchFail) => {
             let info = {};
-            await this.findBookName().then(bookName => {
-                info.bookName = bookName;
-            }).catch(e => onFetchFail(e));
-            await this.findChapIndex().then(chapIndex => {
-                info.chapIndex = chapIndex;
-            }).catch(e => onFetchFail(e));
-            await this.findChapName().then(chapName => {
-                info.chapName = chapName;
-            }).catch(e => onFetchFail(e));
-            await this.findPicUrls().then(picUrls => {
-                info.picUrls = picUrls;
-            }).catch(e => onFetchFail(e));
-            await this.findFileNames().then(fileNames => {
-                info.fileNames = fileNames;
-            }).catch(e => onFetchFail(e));
+            try {
+                info.bookName = await this.findBookName();
+                info.chapIndex = await this.findChapIndex();
+                info.chapName = await this.findChapName();
+                info.picUrls = await this.findPicUrls();
+                info.fileNames = await this.findFileNames();
+            } catch (e) {
+                onFetchFail(e);
+                return
+            }
+
             console.log(`info: \n`, info);
             let tasks = this.#forkMangaChap(info, extraConfigs);
 
@@ -174,7 +170,7 @@ class CrawlerBase {
         });
         console.log(`next: ${nextPageUrl}\nremain: ${remain}`);
         let nextUrl = new URL('undefined:');
-        if(nextPageUrl){
+        if (nextPageUrl) {
             nextUrl = new URL(nextPageUrl);
         }
         if (nextUrl.host.length === 0 || isNaN(remain) || remain <= 0) {
