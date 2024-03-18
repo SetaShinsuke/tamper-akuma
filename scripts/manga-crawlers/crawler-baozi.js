@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-baozi
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  desc
 // @author       Akuma
 // @match        https://cn.czmanga.com/comic/chapter/*
@@ -56,7 +56,7 @@ class CrawlerImpl extends CrawlerBase {
 
     findNextChapUrl() {
         return new Promise((resolve, reject) => {
-            let nextChapUrl = document.querySelector('#next-chapter').href;
+            let nextChapUrl = document.querySelector('#next-chapter')?.href;
             console.log(`nextChapUrl: ` + nextChapUrl);
             resolve(nextChapUrl);
         });
@@ -74,19 +74,20 @@ function inject() {
     // do stuff
     let crawler = new CrawlerImpl();
     let remain = crawler.getRemainCount();
-    let onClick = () => {
-        runWhenLoaded('#bottom', bottomDiv => {
-            bottomDiv.scrollIntoView({
-                behavior: "instant",
-                block: "end"
-            });
-            // 延迟后开始爬
-            setTimeout(() => {
-                crawler.forkTasks(DO_SAVE, EX_CONFIGS).then(tasks => {
-                    crawler.resumeNextChap(remain, NEXT_TIMEOUT);
-                });
-            }, 2_500);
+    let onClick = async () => {
+        let bottomDiv = await waitForEle('#bottom'); // 不catch了，让它崩
+        // runWhenLoaded('#bottom', bottomDiv => {
+        bottomDiv.scrollIntoView({
+            behavior: "instant",
+            block: "end"
         });
+        // 延迟后开始爬
+        setTimeout(() => {
+            crawler.forkTasks(DO_SAVE, EX_CONFIGS).then(tasks => {
+                crawler.resumeNextChap(remain, NEXT_TIMEOUT);
+            });
+        }, 2_500);
+        // });
     }
     addButton('获取图片', {'top': '10%'}, onClick, 0.5);
     if (remain <= 0) {
