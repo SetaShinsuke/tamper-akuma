@@ -33,13 +33,13 @@ class CrawlerImpl extends CrawlerBase {
         return new Promise((resolve, reject) => {
             let list = Array.from(document.querySelectorAll('.album_read_directory_item'));
             let chapIndex = undefined;
-            for (const i in list) {
+            for (let i = 0; i < list.length; i++) {
                 if (list[i].classList.contains('album_read_directory_current')) {
                     chapIndex = i + 1;
                     break;
                 }
             }
-            console.log(`chapIndex: ` + chapIndex);
+            console.log(`chapIndex: ${chapIndex}`);
             resolve(chapIndex);
         });
     }
@@ -63,9 +63,9 @@ class CrawlerImpl extends CrawlerBase {
     }
 
     findNextChapUrl() {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let list = Array.from(document.querySelectorAll('.album_read_directory_item'));
-            let nextIndex = this.findChapIndex();
+            let nextIndex = await this.findChapIndex();
             console.log(`nextIndex: `, nextIndex);
             let nextChapUrl = list[nextIndex]?.getAttribute('data-url');
             console.log(`nextChapUrl: ` + nextChapUrl);
@@ -86,7 +86,8 @@ function inject() {
     let remain = crawler.getRemainCount();
     let onClick = async () => {
         // 展开目录
-        document.querySelector('.album_read_source').click();
+        let btnVols = await waitForEle('.album_read_source');
+        btnVols.click();
         await sleep(1_000);
         crawler.forkTasks(DO_SAVE, EX_CONFIGS).then(tasks => {
             crawler.resumeNextChap(remain, NEXT_TIMEOUT);
