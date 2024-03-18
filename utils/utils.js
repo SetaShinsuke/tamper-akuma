@@ -174,7 +174,14 @@ function toast(text, _gravity = 'top', _timeout = 3000, _styles = {}) {
     return snackbar;
 }
 
-// 每秒找一次element，直到元素加载出来再运行
+/**
+ * 每500ms找一次element，直到元素加载出来再运行
+ * @see {waitForEle} for the sync version
+ * @param queryStr 查找的 query
+ * @param task 查找后执行的方法
+ * @param timeout 查询间隔
+ * @param maxTimeout 超时时间
+ */
 function runWhenLoaded(queryStr, task, timeout = 500, maxTimeout = 30_000) {
     var safeStop = null;
     // 找到元素后开启任务
@@ -195,8 +202,15 @@ function runWhenLoaded(queryStr, task, timeout = 500, maxTimeout = 30_000) {
     }, maxTimeout);
 }
 
-// todo: 改成同步,未测试
-// let element = await waitForEle('.class').catch( e => console.log(e) );
+/**
+ * @see {runWhenLoaded} for the async version
+ * @param queryStr 要查找的元素
+ * @param timeout 隔多久查询一次
+ * @param maxTimeout 超时时间
+ * @returns {Promise<unknown>} 返回查找的元素/undefined
+ * eg: let element = await waitForEle('.class').catch( e => console.log(e) );
+ * 建议不 catch 了，找不到就让它崩溃
+ */
 function waitForEle(queryStr, timeout = 500, maxTimeout = 30_000) {
     return new Promise((resolve, reject) => {
         var safeStop = null;
@@ -232,6 +246,18 @@ function setIntervalWithin(_task, _timeout, _maxTimeout) {
         clearInterval(intervalTask);
     }, _maxTimeout);
     return intervalTask;
+}
+
+function zawaarudo(seconds) {
+    console.log(`ザ·ワールド！時よ止まれ！`);
+    console.log(`Doooooo`);
+    let i = 0;
+    let counting = setInterval(_ => {
+        console.log(`${i++} 秒か`);
+        if(i >= seconds){
+            clearInterval(counting);
+        }
+    }, 1_000);
 }
 
 // SetTimeout 但是随机时间
