@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-wx
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  desc
 // @author       Akuma
 // @match        https://mp.weixin.qq.com/s?*
@@ -36,7 +36,7 @@ class CrawlerImpl extends CrawlerBase {
             for (let i = 0; i < list.length; i++) {
                 if (list[i].classList.contains('album_read_directory_current')) {
                     // 优先以 第xx话 里面的数字为准
-                    chapIndex = list[i].innerText.match(/第(\d+)/)[1] ?? i + 1;
+                    chapIndex = list[i].innerText.match(/(?:第|EP)(\d+)/)[1] ?? i + 1;
                     break;
                 }
             }
