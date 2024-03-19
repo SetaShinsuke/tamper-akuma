@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-wx
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.4
 // @description  desc
 // @author       Akuma
 // @match        https://mp.weixin.qq.com/s?*
@@ -35,7 +35,8 @@ class CrawlerImpl extends CrawlerBase {
             let chapIndex = undefined;
             for (let i = 0; i < list.length; i++) {
                 if (list[i].classList.contains('album_read_directory_current')) {
-                    chapIndex = i + 1;
+                    // 优先以 第xx话 里面的数字为准
+                    chapIndex = list[i].innerText.match(/第(\d+)/)[1] ?? i + 1;
                     break;
                 }
             }
@@ -71,7 +72,13 @@ class CrawlerImpl extends CrawlerBase {
     findNextChapUrl() {
         return new Promise(async (resolve, reject) => {
             let list = Array.from(document.querySelectorAll('.album_read_directory_item'));
-            let nextIndex = await this.findChapIndex();
+            let nextIndex = undefined;
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].classList.contains('album_read_directory_current')) {
+                    nextIndex = i + 1;
+                    break;
+                }
+            }
             console.log(`nextIndex: `, nextIndex);
             let nextChapUrl = list[nextIndex]?.getAttribute('data-url');
             console.log(`nextChapUrl: ` + nextChapUrl);
