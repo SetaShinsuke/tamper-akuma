@@ -1,6 +1,9 @@
 // @require https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/crawler-base.js
 // 依赖 utils.js 里面的 getExtByName() 和 saveTextFile()
-
+/**
+ * version 2.1: 允许自定义扩展名
+ * @see{}
+ */
 class CrawlerBase {
     constructor() {
     }
@@ -36,6 +39,13 @@ class CrawlerBase {
         });
     }
 
+    // 指定扩展名(.jpg)，不实现则由 url 决定
+    findFileExt() {
+        return new Promise(resolve => {
+            resolve(null);
+        });
+    }
+
     findNextChapUrl() {
         return new Promise((resolve, reject) => {
             resolve(null);
@@ -67,6 +77,7 @@ class CrawlerBase {
                 info.chapName = await this.findChapName();
                 info.picUrls = await this.findPicUrls();
                 info.fileNames = await this.findFileNames();
+                info.ext = await this.findFileExt();
             } catch (e) {
                 onFetchFail(e);
                 return
@@ -139,8 +150,9 @@ class CrawlerBase {
         let hasNames = info.fileNames?.length === info.picUrls.length;
         info.picUrls.forEach(_url => {
             let url = _url;
-            let ext = getExtByName(url);
+            let ext = info.ext ?? getExtByName(url);
             let fileName = '';
+            // 文件名
             if (hasNames) {
                 // 加上 url 里的文件名
                 let orgName = getFileNameByUrl(url);

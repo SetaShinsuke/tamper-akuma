@@ -62,6 +62,12 @@ class CrawlerImpl extends CrawlerBase {
         });
     }
 
+    findFileExt() {
+        return new Promise(resolve => {
+            resolve('.jpg')
+        });
+    }
+
     findNextChapUrl() {
         return new Promise(async (resolve, reject) => {
             let list = Array.from(document.querySelectorAll('.album_read_directory_item'));
