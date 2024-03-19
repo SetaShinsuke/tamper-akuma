@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-wx
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  desc
 // @author       Akuma
 // @match        https://mp.weixin.qq.com/s?*
