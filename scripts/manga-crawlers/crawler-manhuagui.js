@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-manhuagui
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.2
 // @description  desc
 // @author       Akuma
 // @match        https://www.manhuagui.com/comic/*
@@ -24,6 +24,8 @@ class CrawlerImpl extends CrawlerBase {
     findBookName() {
         return new Promise((resolve, reject) => {
             let bookName = verifyFileName(document.getElementsByTagName('h1')[0].innerText);
+            let chapName = verifyFileName(document.getElementsByTagName('h2')[0].innerText);
+            bookName = `${bookName}_${chapName}`;
             console.log(`bookName: ` + bookName);
             resolve(bookName);
         });
