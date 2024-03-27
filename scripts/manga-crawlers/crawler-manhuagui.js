@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-manhuagui
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  desc
 // @author       Akuma
 // @match        https://www.manhuagui.com/comic/*
@@ -75,7 +75,7 @@ class CrawlerImpl extends CrawlerBase {
 
 function inject() {
     // 启用右键菜单
-    document.onmousedown = null;
+    document.oncontextmenu = null
 
     let crawler = new CrawlerImpl();
     let remain = crawler.getRemainCount();
