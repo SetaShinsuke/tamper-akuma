@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BM-EP-index
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.8
 // @description  Hover to show episode index.
 // @author       Akuma
 // @match        https://manga.bilibili.com/detail/*
@@ -22,8 +22,9 @@
 function onReady() {
     if (document.location.pathname.includes('/detail')) {
         addIndexToDetailPage();
-    } else {
-        addIndexToReaderPage();
+    // } else {
+    // 阅读页不加了
+    //     addIndexToReaderPage();
     }
 }
 
@@ -37,7 +38,8 @@ function addIndexToReaderPage() {
             }
         }
         console.log('ord: ', ord);
-        document.querySelector('.info-hud.none-select.info-hud.p-absolute.info-layer').title = `Ord:${ord}`;
+        // document.querySelector('.info-hud.none-select.info-hud.p-absolute.info-layer').title = `Ord:${ord}`;
+        document.querySelector('.info-hud.none-select.info-hud').title = `Ord:${ord}`;
         console.log('Index added to Reader Page.');
 
     });
