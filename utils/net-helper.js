@@ -13,6 +13,8 @@ class NetHelper {
         this.dataType = 'json';
         this._onProgress = progress => {
         };
+        // 直接返回原数据，不转成 json
+        this.returnRaw = false;
     }
 
     head(url) {
@@ -43,6 +45,7 @@ class NetHelper {
         });
         dataString = dataString.slice(0, -1);
         console.log(`dataString: \n`, dataString);
+        let returnRaw = this.returnRaw;
         // 返回 Promise
         return new Promise((resolve, reject) => {
             let _dataType = this.dataType;
@@ -59,6 +62,11 @@ class NetHelper {
                 },
                 onload: function (response) {
                     // console.log(response);
+                    if (returnRaw) {
+                        console.log(response);
+                        resolve(response);
+                        return;
+                    }
                     if (/json/.test(_dataType)) {
                         try {
                             let resJson = JSON.parse(response.responseText);

@@ -18,6 +18,8 @@
 // ==/UserScript==
 
 let API_KOX_LOGIN = `https://kox.moe/login_do.php`;
+let DOWN_URL = `https://kox.moe/dl/__BOOK_ID__/10__EP_NO__/0/2/0/`;
+
 let KOX_ACCOUNTS = 'kox_accounts';
 let CURRENT_EP = 'current_ep';
 
@@ -26,16 +28,12 @@ let CURRENT_EP = 'current_ep';
     'use strict';
     console.log('Starting inject...');
     let netHelper = new NetHelper();
+    netHelper.returnRaw = true;
     // 初始化 accounts
     initAccountSettings();
     let currentEp = getCurrentEp();
     if (!currentEp) {
         alert('请设置开始下载的EP\nsetCurrentEp(ep)\n并刷新');
-        return;
-    }
-    let max = getQueryInt('auto_max');
-    if (currentEp >= max) {
-        console.log(`已达到 EP 上限!`);
         return;
     }
     // 按 account 的数量启动下载
@@ -54,7 +52,28 @@ let CURRENT_EP = 'current_ep';
         }
         await netHelper.post(API_KOX_LOGIN, data);
         console.log(`Login success!`);
+        // 找下载地址
+        let bookId = location.pathname.replace(/\/c\/(\d+).htm/, '$1');
+        let downUrl = DOWN_URL.replace('__BOOK_ID__', bookId).replace('__EP_NO__', currentEp);
+        console.log(`Down url: ${downUrl}`);
+
+        let response = await netHelper.head(downUrl);
+        let finalUrl = response.finalUrl;
+
+        window.open(downUrl, '_blank');
+        currentEp += 1;
+        setCurrentEp(currentEp);
+        let max = getQueryInt('auto_max');
+        if (currentEp >= max) {
+            console.log(`已达到 EP 上限!`);
+            break;
+        }
+        let timeout = 60;
+        console.log(`${timeout}s 后开始下一话`);
+        await sleep(timeout * 1000);
     }
+    console.log(`任务结束`);
+    console.log(`todo: 关闭浏览器`);
 })();
 
 function initAccountSettings() {
