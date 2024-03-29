@@ -11,6 +11,8 @@
 // @grant        GM_getValue
 // @grant        GM_deleteValue
 // @connect      kox.moe
+// @connect      free7.mxomo.com
+// @connect      free8.mxomo.com
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/manga-crawlers/mox-crawler.js
@@ -18,7 +20,8 @@
 // ==/UserScript==
 
 let API_KOX_LOGIN = `https://kox.moe/login_do.php`;
-let DOWN_URL = `https://kox.moe/dl/__BOOK_ID__/10__EP_NO__/0/2/0/`;
+let API_KOX_LOGOUT = `https://kox.moe/logout.php`;
+let DOWN_URL = `https://kox.moe/dl/__BOOK_ID__/1__EP_NO__/0/2/0/`;
 
 let KOX_ACCOUNTS = 'kox_accounts';
 let CURRENT_EP = 'current_ep';
@@ -34,6 +37,11 @@ let CURRENT_EP = 'current_ep';
     let currentEp = getCurrentEp();
     if (!currentEp) {
         alert('请设置开始下载的EP\nsetCurrentEp(ep)\n并刷新');
+        return;
+    }
+    let max = getQueryInt('auto_max');
+    if (currentEp >= max) {
+        console.log(`已达到 EP 上限!`);
         return;
     }
     // 按 account 的数量启动下载
@@ -54,23 +62,28 @@ let CURRENT_EP = 'current_ep';
         console.log(`Login success!`);
         // 找下载地址
         let bookId = location.pathname.replace(/\/c\/(\d+).htm/, '$1');
-        let downUrl = DOWN_URL.replace('__BOOK_ID__', bookId).replace('__EP_NO__', currentEp);
+        let epNo = `${currentEp}`.padStart(3, '0');
+        let downUrl = DOWN_URL.replace('__BOOK_ID__', bookId).replace('__EP_NO__', epNo);
         console.log(`Down url: ${downUrl}`);
 
-        let response = await netHelper.head(downUrl);
-        let finalUrl = response.finalUrl;
+        // let response = await netHelper.head(downUrl);
+        // let finalUrl = response.finalUrl;
+        // console.log(`Final url: ${finalUrl}`);
+        let finalUrl = downUrl + '';
 
-        window.open(downUrl, '_blank');
+        window.open(finalUrl, '_blank');
         currentEp += 1;
         setCurrentEp(currentEp);
-        let max = getQueryInt('auto_max');
+        let timeout = 30;
+        console.log(`${2 * timeout}s 后开始下一话`);
+        await sleep(timeout * 1000);
+        console.log(`退出登录`);
         if (currentEp >= max) {
             console.log(`已达到 EP 上限!`);
             break;
         }
-        let timeout = 60;
-        console.log(`${timeout}s 后开始下一话`);
-        await sleep(timeout * 1000);
+        await netHelper.get(API_KOX_LOGOUT);
+        await sleep(timeout);
     }
     console.log(`任务结束`);
     console.log(`todo: 关闭浏览器`);
@@ -105,8 +118,9 @@ function getKoxAccounts() {
     if (!accounts) {
         accounts = [];
         GM_setValue(KOX_ACCOUNTS, JSON.stringify(accounts));
+        accounts = '[]';
     }
-    return JSON.parse(accounts + '');
+    return JSON.parse(accounts);
 }
 
 function addKoxAccount(email, psw) {
