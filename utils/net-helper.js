@@ -58,10 +58,18 @@ class NetHelper {
                     reject(error);
                 },
                 onload: function (response) {
+                    // console.log(response);
                     if (/json/.test(_dataType)) {
-                        let resJson = JSON.parse(response.responseText);
-                        console.log(`${_method} success: \n`, resJson);
-                        resolve(resJson);
+                        try {
+                            let resJson = JSON.parse(response.responseText);
+                            console.log(`${_method} success: \n`, resJson);
+                            resolve(resJson);
+                        } catch (e) {
+                            console.log(response);
+                            console.log(`Parse response json error: `);
+                            console.log(e);
+                            resolve(response);
+                        }
                     } else {
                         console.log(response);
                         resolve(response);

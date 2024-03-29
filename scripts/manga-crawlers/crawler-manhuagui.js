@@ -75,7 +75,7 @@ class CrawlerImpl extends CrawlerBase {
 
 function inject() {
     // 启用右键菜单
-    document.oncontextmenu = null
+    document.oncontextmenu = null;
 
     let crawler = new CrawlerImpl();
     let remain = crawler.getRemainCount();
