@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         mox-crawler
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  desc
 // @author       Akuma
 // @match        https://kox.moe/c/*.htm*?auto_max=*
@@ -10,6 +10,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
+// @grant        GM_setClipboard
 // @connect      kox.moe
 // @connect      free7.mxomo.com
 // @connect      free8.mxomo.com
@@ -69,24 +70,24 @@ let CURRENT_EP = 'current_ep';
         let response = await netHelper.head(downUrl);
         let finalUrl = response.finalUrl;
         console.log(`Final url: ${finalUrl}`);
-        copyToClipboard(finalUrl);
-        alert(`下载链接已复制，请尽快粘贴到IDM！`);
+        GM_setClipboard(`${finalUrl}`);
+        alert(`下载链接已复制，请尽快粘贴到IDM！\nCurrent EP: ${currentEp}\n${email}`);
         // let finalUrl = downUrl + '';
 
         // window.open(finalUrl, '_blank');
-        console.log(`退出登录`);
-        await netHelper.get(API_KOX_LOGOUT);
         let timeout = 30;
         console.log(`${2 * timeout}s 后开始下一话`);
         toast(`${2 * timeout}s 后开始下一话`);
-        await sleep(timeout * 1000);
+        await sleep(2 * timeout * 1000);
+        console.log(`退出登录`);
+        await netHelper.get(API_KOX_LOGOUT);
+        toast(`已退出登录`);
         currentEp += 1;
         setCurrentEp(currentEp);
         if (currentEp >= max) {
             console.log(`已达到 EP 上限!`);
             break;
         }
-        await sleep(timeout);
     }
     console.log(`任务结束`);
     console.log(`todo: 关闭浏览器`);
