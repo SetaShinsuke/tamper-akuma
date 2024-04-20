@@ -1,17 +1,25 @@
 // ==UserScript==
-// @name         BM-EP-index
-// @namespace    http://tampermonkey.net/
-// @version      0.8
-// @description  Hover to show episode index.
-// @author       Akuma
-// @match        https://manga.bilibili.com/detail/*
-// @match        https://manga.bilibili.com/mc*
-// @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @grant        GM_xmlhttpRequest
-// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm-ep-index.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm-ep-index.js
+// @name            BM-EP-index
+// @namespace       http://tampermonkey.net/
+// @version         0.9
+// @description     显示章节index; 控制台addHead()记录为卷首话
+// @author          Akuma
+// @match           https://manga.bilibili.com/detail/*
+// @match           https://manga.bilibili.com/mc*
+// @icon            data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+// @grant           GM_xmlhttpRequest
+// @connect         192.168.50.166
+// @connect         manga.bilibili.com
+// @require         https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
+// @require         https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
+// @updateURL       https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm-ep-index.js
+// @downloadURL     https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/bm-ep-index.js
 // ==/UserScript==
+
+const API_GET_EP = `https://manga.bilibili.com/twirp/comic.v1.Comic/GetEpisode?device=pc&platform=web`;
+const API_ADD_HEAD = `http://192.168.50.166:9292/api/bm/[MANGA_ID]/vol_heads?mode=add&short_titles[]=[SHORT_TITLES]`;
+
+let netHelper;
 
 (function () {
     'use strict';
@@ -22,27 +30,27 @@
 function onReady() {
     if (document.location.pathname.includes('/detail')) {
         addIndexToDetailPage();
-    // } else {
-    // 阅读页不加了
-    //     addIndexToReaderPage();
+    } else {
+        netHelper = new NetHelper();
+        injectHeadSetter();
     }
 }
 
-function addIndexToReaderPage() {
-    runWhenLoaded('.episode-list>div>button', () => {
-        var ord = 0;
-        var btns = document.querySelectorAll('.episode-list>div>button')
-        for (var i = 0; i < btns.length; i++) {
-            if (btns[i].classList.contains('selected')) {
-                ord = i + 1;
-            }
-        }
-        console.log('ord: ', ord);
-        // document.querySelector('.info-hud.none-select.info-hud.p-absolute.info-layer').title = `Ord:${ord}`;
-        document.querySelector('.info-hud.none-select.info-hud').title = `Ord:${ord}`;
-        console.log('Index added to Reader Page.');
+function injectHeadSetter() {
+    unsafeWindow.addHead = addHead;
+}
 
-    });
+async function addHead() {
+    let epId = location.pathname.split('/').pop();
+    let resJson = await netHelper.post(API_GET_EP, {'id': epId});
+    let mangaId = resJson.data.comic_id;
+    let shortTitle = resJson.data.short_title;
+    // 添加
+    console.log(`添加卷首, mangaId: ${mangaId}, shortTitle: ${shortTitle}`);
+    let url = API_ADD_HEAD.replace(`[MANGA_ID]`, mangaId).replace(`[SHORT_TITLES]`, shortTitle);
+    console.log(url);
+    resJson = await netHelper.get(url);
+    console.log(resJson);
 }
 
 function addIndexToDetailPage() {
@@ -70,26 +78,4 @@ function st2Num(shortTitle) {
     });
     console.log(str);
     return parseInt(str);
-}
-
-function doPost() {
-    var res;
-    GM_xmlhttpRequest({
-        method: "POST",
-        url: "https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web",
-        data: "ep_id=379397",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-            "Referer": "https://manga.bilibili.com",
-            "Origin": "https://manga.bilibili.com"
-        },
-        onerror: function (error) {
-            console.log(error);
-        },
-        onload: function (response) {
-            console.log(response);
-            res = response;
-            console.log(res.resposeText);
-        }
-    });
 }
