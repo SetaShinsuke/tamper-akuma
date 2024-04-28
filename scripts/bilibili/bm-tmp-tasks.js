@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         bm-tmp-tasks
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  desc
 // @author       Akuma
-// @match        https://manga.bilibili.com/blackboard/activity-9RYT2EprHI.html?auto=true
+// @match        https://manga.bilibili.com/blackboard/activity-9RYT2EprHI.html?auto_take=true
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
