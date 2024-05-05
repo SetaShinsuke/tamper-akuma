@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-manhuagui
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.6
 // @description  desc
 // @author       Akuma
 // @match        https://www.manhuagui.com/comic/*
@@ -60,6 +60,10 @@ class CrawlerImpl extends CrawlerBase {
     findNextChapUrl() {
         return new Promise((resolve, reject) => {
             let data = getDataFromScript();
+            if (data.nextId === 0) {
+                resolve(null);
+                return
+            }
             let nextChapUrl = location.protocol + '//' + `${location.host}/comic/${data.bid}/${data.nextId}.html`;
             // let nextChapUrl = document.querySelector('.btn-red.nextC').href;
             console.log(`nextChapUrl: ` + nextChapUrl);
