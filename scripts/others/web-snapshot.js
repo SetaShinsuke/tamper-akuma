@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         web-snapshot
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  将网页保存为长图
 // @author       Akuma
-// @match        file:///C:/Users/24783/appdata/local/temp/29.html
+// @match        file:///C:/Users/*/appdata/local/temp/*.html
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        unsafeWindow
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
