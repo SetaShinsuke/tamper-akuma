@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         web-snapshot
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.4
 // @description  将网页保存为长图
 // @author       Akuma
 // @match        file:///C:/Users/24783/appdata/local/temp/29.html
@@ -39,9 +39,10 @@ async function snap(selector = '.markdown-body', width = SNAP_W) {
 }
 
 function updateStyle(div, width){
-    [...div.querySelectorAll('p')].forEach(p => {
-        p.style['text-indent'] = '2em';
-    });
+    // 缩进先不加了，容易乱
+    // [...div.querySelectorAll('p')].forEach(p => {
+    //     p.style['text-indent'] = '2em';
+    // });
     div.style['width'] = width;
 }
 
