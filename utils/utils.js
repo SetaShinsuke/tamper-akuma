@@ -139,7 +139,7 @@ function toast(text, _gravity = 'top', _timeout = 3000, _styles = {}) {
         snackbar.style['border-radius'] = "2px";
         snackbar.style['padding'] = "16px";
         snackbar.style['position'] = "fixed";
-        snackbar.style['z-index'] = "1";
+        snackbar.style['z-index'] = "2147483647";
         snackbar.style['left'] = "50%";
         snackbar.style['font-size'] = "17px";
         document.body.appendChild(snackbar);

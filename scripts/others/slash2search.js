@@ -2,9 +2,10 @@
 // @name         slash2search
 // @namespace    http://tampermonkey.net/
 // @version      0.2
-// @description  Slash to search
+// @description  desc
 // @author       Akuma
 // @match        https://*.wiktionary.org/*
+// @match        https://shyyp.net/search?q=*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -14,7 +15,8 @@
 
 // [搜索框, 搜索按钮(搜索框隐藏的情况), 被隐藏的部分]
 const DATA_MAP = {
-    "wiktionary.org": ["#searchInput", null, null]
+    "wiktionary.org": ["#searchInput", null, null],
+    "shyyp.net": ['#mainSearchInput', null, null]
 };
 
 (function () {

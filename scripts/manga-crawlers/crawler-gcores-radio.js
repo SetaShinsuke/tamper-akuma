@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-gcores-radio
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  desc
 // @author       Akuma
 // @match        https://www.gcores.com/albums/*
@@ -36,11 +36,16 @@ let HEADERS = {
 class CrawlerGcsAlbum extends CrawlerBase {
 
     findBookName() {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let bookName = 'GCores';
             // 会员内容
             if (/赠送/.test(document.querySelector('.albumDetail_actions').innerText)) {
                 bookName = 'GPASS';
+            }
+            let chapIndex = await this.findChapIndex();
+            let chapName = await this.findChapName();
+            if (chapIndex && chapName) {
+                bookName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
             }
             console.log(`bookName: ` + bookName);
             resolve(bookName);
@@ -67,8 +72,11 @@ class CrawlerGcsAlbum extends CrawlerBase {
     findFileNames() {
         return new Promise((resolve, reject) => {
             // :not(.is_locked) 未解锁的节目
+            let index = 0;
             let fileNames = Array.from(document.querySelectorAll('.albumRadios .albumRadio:not(.is_locked) h3 a')).map(a => {
-                return verifyFileName(a.innerText);
+                let name = verifyFileName(`${index}`.padStart(3, '0') + '_' + a.innerText);
+                index += 1;
+                return name;
             });
             console.log(`fileNames: \n`, fileNames);
             resolve(fileNames);
@@ -79,7 +87,13 @@ class CrawlerGcsAlbum extends CrawlerBase {
         return new Promise(async (resolve, reject) => {
             let picUrls = [];
 
-            for (const li of Array.from(document.querySelectorAll('.albumRadios .albumRadio:not(.is_locked)'))) {
+            let list = Array.from(document.querySelectorAll('.albumRadios .albumRadio:not(.is_locked)'));
+            let index = 0;
+            let total = list.length;
+            for (const li of list) {
+                let text = `${index += 1}/${total}`;
+                console.log(text);
+                toast(`正在获取: ${text}`);
                 let a = li.querySelector('h3 a');
                 let radioId = a.href.split('radios/').pop();
                 let cate = li.querySelector('.albumRadio_title .u_color-category').innerText;
