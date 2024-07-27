@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.20
+// @version        0.21
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -22,6 +22,8 @@
 
 const API_SEARCH = `http://192.168.50.166:9292/api/javs?count=true&filter=`;
 const PI_JAV = `http://192.168.50.166:9292/pages/#/no_media/javs?filter=`;
+
+const FAKE_AD_ID = 'zlVjUDdSLHIP';
 
 (function () {
     'use strict';
@@ -112,6 +114,13 @@ function injectFul() {
     if (player) {
         // 播放页面，忽略
         console.log('播放页，不缩放封面');
+        // 添加假的AD元素(来不及)
+        // let fakeDiv = document.createElement('div');
+        // fakeDiv.style.display = 'none';
+        // // fakeDiv.id = 'player';
+        // fakeDiv.id = FAKE_AD_ID;
+        // let container = document.body;
+        // container.insertBefore(fakeDiv, container.firstChild);
         return
     }
     runWhenLoaded('.container-lg', mainDiv => {
