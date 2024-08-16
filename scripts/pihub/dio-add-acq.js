@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -49,7 +49,7 @@ function injectSteam() {
     runWhenLoaded(`.game_area_purchase_game`, div => {
         let sku = document.location.pathname.match(/\/app\/(.*?)\//)[1];
         let name = document.querySelector('#appHubAppName').innerText;
-        name = name.replace(/'/, '%27').replace(/《(.*)》/, '$1')
+        name = name.replace(/《(.*)》/, '$1')
         let currency = document.querySelector(`[itemprop="priceCurrency"]`)?.content;
         if(!currency){
             currency = 'CNY';
@@ -84,7 +84,7 @@ function injectXbox() {
            // var sku = JSON.parse(document.querySelector(`#PageContent>div`).dataset['m']).pid;
            var sku = document.location.pathname.match(/store\/(.*)/)[1];
            var name = JSON.parse(document.querySelector(`#PageContent>div`).dataset['m']).prod;
-           name = name.replace(/'/, '%27').replace(/《(.*)》/, '$1')
+           name = name.replace(/《(.*)》/, '$1')
            var currency = 'USD';
            var region = 'US';
            var regionText = priceStr.split('$')[0];
@@ -122,7 +122,7 @@ function injectEpic() {
                 region = 'CN';
             }
             let name = data.name.replace(/《(.*)》/, '$1');
-            name = name.replace(/'/, '%27')
+            name = name.replace(`&#39;`, `'`)
             // var orgPrice = data.offers[0].priceSpecification.price*100;
             // if(data.offers.length > 1){
             //     orgPrice = data.offers[1].priceSpecification.price*100;
