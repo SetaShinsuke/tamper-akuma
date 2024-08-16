@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.23
+// @version      0.24
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -87,7 +87,7 @@ function forkTiful() {
         title: no,
         site: hostname,
         uid: uid,
-        auto_sync_cover: true,
+        auto_sync_cover: false,
         tags: 'hd'
     };
     let cover = document.querySelector("meta[property='og:image']").getAttribute("content");
@@ -122,7 +122,7 @@ function forkTkTube() {
         title: no,
         site: hostname,
         uid: uid,
-        auto_sync_cover: true
+        auto_sync_cover: false
     };
     console.log('tags: ', tags);
     if (tags) {
@@ -203,7 +203,7 @@ function forkJavCl() {
         title: no,
         site: hostname,
         uid: uid,
-        auto_sync_cover: true
+        auto_sync_cover: false
     };
     let cover = document.querySelector('.row img').getAttribute('data-src');
     if (cover) {
@@ -281,7 +281,7 @@ function forkGG() {
         title: no.slice(0, -1),
         site: hostname,
         uid: uid,
-        auto_sync_cover: true
+        auto_sync_cover: false
     };
     if (cover) {
         data.cover = cover;
