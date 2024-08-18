@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -16,7 +16,7 @@
 // @connect      *
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
-// @downloadURL    https://raw.githubuserconnettent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
+// @downloadURL  https://raw.githubuserconnettent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
 // ==/UserScript==
 
 // body: {video_id: xxx}
@@ -59,7 +59,7 @@ var HEADERS = {
         }
         // let idmLink = `akuma-idm://${videoUrl}?file_name___${fileName}${resolution}${ext}`;
         let idmLink = `akuma-idm://` + videoUrl + '-----' + fileName;
-        window.open(idmLink,'_self');
+        window.open(idmLink, '_self');
         console.log(`link:\n`, idmLink);
     };
 
@@ -74,6 +74,10 @@ var HEADERS = {
 function fetchTubeUrl(doSize = false) {
     return new Promise((resolve, reject) => {
         let url = flashvars.video_alt_url;
+        if (!url || url.length === 0) {
+            alert("Get URL fail!");
+            reject(new Error(`Video alt url is empty`));
+        }
         GM_xmlhttpRequest({
             method: 'head',
             url: url,
@@ -113,7 +117,7 @@ function fetchTifulUrl(doSize = false) {
             headers: HEADERS,
             data: `video_id=${videoId}`,
             onload: function (response) {
-                unsafeWindow.res = response;
+                // unsafeWindow.res = response;
                 console.log(response.responseText);
                 var resJson = JSON.parse(response.responseText);
                 let finalUrl = resJson.playlists;
@@ -147,6 +151,30 @@ function fetchFileSize(finalUrl) {
             method: 'get',
             url: finalUrl,
             headers: HEADERS,
+            onloadstart: function (response) {
+                console.log('on load start: ');
+                console.log(response);
+            },
+            onreadystatechange: function (response) {
+                // 0请求未初始化; 1连接已建立; 2请求已接收; 3请求处理中; 4请求已完成
+                console.log(`onreadystatechange`);
+                console.log(response)
+                unsafeWindow.res = response;
+                if (response.readyState === 2) {
+                    var contentLength = response.responseHeaders.match(/\ncontent-length:(.*)\n/);
+                    if (contentLength.length < 2) {
+                        console.log(`Error getting content length, headers: `);
+                        console.log(response.responseHeaders);
+                        return
+                    }
+                    contentLength = parseInt(contentLength[1]);
+                    contentLength = `${(contentLength / 1024 / 1024).toFixed(2)}m`;
+                    // document.querySelector('#btnCopy').innerHTML = `Copy (${contentLength})`;
+                    console.log(`Video size: ${contentLength}`);
+                    req.abort();
+                    resolve(contentLength);
+                }
+            },
             onprogress: function (progress) {
                 console.log(`total: `, progress.total);
                 let contentLength = parseInt(progress.total);
@@ -157,11 +185,8 @@ function fetchFileSize(finalUrl) {
                 console.log(`Video size: ${contentLength}`);
                 resolve(contentLength);
             },
-            onloadstart: function (response){
-              console.log('on load start: ');
-              console.log(response);
-            },
             onload: function (response) {
+                // 貌似失效了，现在改在 onReadyStateChange 里判断
                 console.log(`onload: `);
                 console.log(response);
                 // unsafeWindow.res = response;
@@ -181,6 +206,14 @@ function fetchFileSize(finalUrl) {
                 console.log(`获取视频大小出错:`);
                 console.log(err);
                 reject(err);
+            },
+            onabort: function (response) {
+                console.log(`onabort`);
+                console.log(response)
+            },
+            ontimeout: function (response) {
+                console.log(`ontimeout`);
+                console.log(response)
             }
         });
     });

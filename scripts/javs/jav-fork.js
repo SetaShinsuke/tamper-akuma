@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.24
+// @version      0.25
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -104,10 +104,18 @@ function forkTkTube() {
     let vid = document.querySelector(`input[name=video_id]`)?.value;
     let playerUrl = `https://tktube.com/embed/${vid}`;
     // let no = window.location.pathname.replace(/(.*)\/$/, '$1').split('/').pop();
-    let no = document.querySelector('.headline h1').innerText.split(/\s/)[0];
-    let tags = null;
+    let no = document.querySelector('.headline h1').innerText
+        .replace(/\[破壞版]\s*\(/, `【モザイク破壊】`)
+        .replace(/\[馬賽克破壞]\s*/, '【モザイク破壊】')
+        .replace(/【馬賽克破壞】\s*/, '【モザイク破壊】')
+        .replace(/\[流出版]\s*\(*/, '【unleak】')
+        .split(/\s/)[0];
+    let tags = [];
     if (/モザイク破壊/.test(no)) {
-        tags = 'unreduce';
+        tags.push('unreduce');
+    }
+    if (/unleak/.test(no)) {
+        tags.push('unleak')
     }
     no = no.replace(/【.*】/, '');
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
@@ -125,8 +133,8 @@ function forkTkTube() {
         auto_sync_cover: false
     };
     console.log('tags: ', tags);
-    if (tags) {
-        data.tags = tags;
+    if (tags?.length > 0) {
+        data.tags = tags.join('-');
     }
     let cover = document.head.querySelector("[property~='og:image']").getAttribute('content');
     if (cover) {
@@ -312,6 +320,7 @@ function forkJavAS() {
     // document.querySelector('#countdown').innerHTML = '1';
     // document.querySelector('#download').click();
 }
+
 // endregion
 
 function forkIt(data) {
