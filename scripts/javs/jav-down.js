@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -16,7 +16,7 @@
 // @connect      *
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
-// @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
+// @downloadURL    https://raw.githubuserconnettent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
 // ==/UserScript==
 
 // body: {video_id: xxx}
@@ -141,6 +141,7 @@ function fetchTifulUrl(doSize = false) {
 }
 
 function fetchFileSize(finalUrl) {
+    console.log(`Fetch file size, url: ${finalUrl}`);
     return new Promise((resolve, reject) => {
         let req = GM_xmlhttpRequest({
             method: 'get',
@@ -156,7 +157,12 @@ function fetchFileSize(finalUrl) {
                 console.log(`Video size: ${contentLength}`);
                 resolve(contentLength);
             },
+            onloadstart: function (response){
+              console.log('on load start: ');
+              console.log(response);
+            },
             onload: function (response) {
+                console.log(`onload: `);
                 console.log(response);
                 // unsafeWindow.res = response;
                 if (response.responseText) {

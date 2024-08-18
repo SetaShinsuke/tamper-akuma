@@ -45,6 +45,9 @@ class NetHelper {
         });
         dataString = dataString.slice(0, -1);
         console.log(`dataString: \n`, dataString);
+        if (dataString.length === 0) {
+            dataString = null
+        }
         let returnRaw = this.returnRaw;
         // 返回 Promise
         return new Promise((resolve, reject) => {
