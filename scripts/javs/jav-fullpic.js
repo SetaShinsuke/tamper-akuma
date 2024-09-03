@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.21
+// @version        0.22
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -10,6 +10,7 @@
 // @match          https://javcl.com/*
 // @match          https://tktube.com/*
 // @match          https://javtiful.com/*
+// @match          https://missav.com/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          GM_openInTab
 // @grant          GM_xmlhttpRequest
@@ -41,6 +42,9 @@ const FAKE_AD_ID = 'zlVjUDdSLHIP';
         case 'javtiful.com':
             injectFul();
             break;
+        case 'missav.com':
+            injectMis();
+            break
         // region deprecated
         case 'javgg.net':
             injectGG();
@@ -217,6 +221,30 @@ function injectTube() {
     });
 }
 
+function injectMis() {
+    // 搜索
+    runWhenLoaded(`a.rounded-md`, btnSearch => {
+        document.addEventListener('keydown', async e => {
+            if (e.code !== 'Slash') {
+                return
+            }
+            console.log(`Keydown, key code: ${e.code}`);
+            // 按下斜杠"/"
+            if (document.querySelector('input.bg-nord1')?.style?.visibility !== 'visible') {
+                btnSearch?.click();
+            }
+            e.preventDefault();
+            let inputSearch = await waitForEle('input.bg-nord1');
+            inputSearch.focus();
+            inputSearch.select();
+        });
+    });
+    // 检查是否已fork
+    let no = [].concat(document.querySelector('.mt-4 h1')?.innerText?.split(/\s/))[0];
+    if (no) {
+        checkForked(no);
+    }
+}
 
 // region deprecated sites
 function injectCl() {

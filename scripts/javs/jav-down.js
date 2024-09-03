@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
 // @match        https://tktube.com/*/embed/*
 // @match        https://javtiful.com/embed/*
+// @match          https://missav.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM.setClipboard
 // @grant        GM_xmlhttpRequest
@@ -33,6 +34,12 @@ var HEADERS = {
     'use strict';
     console.log('Starting inject...');
     removeShade();
+    // Missav 单独拿出来
+    if (location.hostname === 'missav.com') {
+        let urls = fetchMissUrls();
+        return
+    }
+    // 添加按钮
     let onClick = async (event, doSize) => {
         let fileName = getQuery('v_name');
         let resolution = '-720P';
@@ -215,6 +222,33 @@ function fetchFileSize(finalUrl) {
                 console.log(`ontimeout`);
                 console.log(response)
             }
+        });
+    });
+}
+
+function fetchMissUrls() {
+    runWhenLoaded('.plyr__controls', ctrls => {
+        let urls = [];
+        ['1080p', '720p', '480p', '360p'].forEach(quality => {
+            if (ctrls.innerHTML.includes(quality)) {
+                urls.push({
+                    quality: `${quality}`,
+                    url: hls.url.replace(/playlist/, `${quality}/video`)
+                });
+            }
+        });
+        console.log('urls: ', urls);
+        let pos = 0;
+        urls.forEach(_url => {
+            addButton(`复制 ${_url.quality}`, {
+                'left': '1%',
+                'top': `${1 + (pos * 8)}%`
+            }, e => {
+                console.log('点击复制', _url);
+                copyToClipboard(_url.url);
+                toast(`链接已复制 ${_url.quality}`);
+            });
+            pos += 1;
         });
     });
 }

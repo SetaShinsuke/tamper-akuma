@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.25
+// @version      0.26
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -15,6 +15,7 @@
 // @match        https://tktube.com/videos/*
 // @match        https://tktube.com/*/videos/*
 // @match        https://javtiful.com/video/*
+// @match        https://missav.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -39,6 +40,9 @@ function inject() {
                 break
             case 'javtiful.com':
                 forkTiful();
+                break
+            case 'missav.com':
+                forkMis();
                 break
             // region //+deprecated sites
             case 'javgg.net':
@@ -139,6 +143,34 @@ function forkTkTube() {
     let cover = document.head.querySelector("[property~='og:image']").getAttribute('content');
     if (cover) {
         data.cover = cover;
+    }
+    data.wrapper = window.location.href.replace(/\?.*/, '');
+    console.log(data);
+    forkIt(data);
+}
+
+function forkMis() {
+    // window.axios.get('https://missav.com/api/playlists/siro-769').then(response => {
+    //     playlists = response.data.data
+    // }
+    let no = document.querySelector('.mt-4 h1').innerText.split(/\s/)[0];
+    let hostname = location.hostname;
+    let uid = location.pathname;
+    let tags = [];
+    let data = {
+        title: no,
+        site: hostname,
+        uid: uid,
+        auto_sync_cover: false
+    };
+    console.log('tags: ', tags);
+    if (tags?.length > 0) {
+        data.tags = tags.join('-');
+    }
+    let cover = document.querySelector('.plyr__poster').style.getPropertyValue('background-image');
+    cover = cover?.match(/url\("(.*)"\)/);
+    if (cover?.length > 0) {
+        data.cover = cover[1];
     }
     data.wrapper = window.location.href.replace(/\?.*/, '');
     console.log(data);
