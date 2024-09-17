@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.26
+// @version      0.27
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -16,6 +16,7 @@
 // @match        https://tktube.com/*/videos/*
 // @match        https://javtiful.com/video/*
 // @match        https://missav.com/*
+// @match        https://rule34video.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -43,6 +44,9 @@ function inject() {
                 break
             case 'missav.com':
                 forkMis();
+                break
+            case 'rule34video.com':
+                forkRule34();
                 break
             // region //+deprecated sites
             case 'javgg.net':
@@ -171,6 +175,29 @@ function forkMis() {
     cover = cover?.match(/url\("(.*)"\)/);
     if (cover?.length > 0) {
         data.cover = cover[1];
+    }
+    data.wrapper = window.location.href.replace(/\?.*/, '');
+    console.log(data);
+    forkIt(data);
+}
+
+function forkRule34() {
+    let no = location.pathname.replace(/\/video\/(.*?)\/(.*?)\//, '$2_$1');
+    let author = document.querySelector('span.name').innerText;
+    no = `${no}_by_${author}`;
+    let hostname = location.hostname;
+    let uid = location.pathname;
+    let tags = ['anime'];
+    let data = {
+        title: no,
+        site: hostname,
+        uid: uid,
+        auto_sync_cover: false
+    };
+    console.log('tags: ', tags);
+    data.cover = flashvars["preview_url"];
+    if (tags?.length > 0) {
+        data.tags = tags.join('-');
     }
     data.wrapper = window.location.href.replace(/\?.*/, '');
     console.log(data);

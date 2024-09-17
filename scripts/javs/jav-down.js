@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.7
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
 // @match        https://tktube.com/*/embed/*
 // @match        https://javtiful.com/embed/*
-// @match          https://missav.com/*
+// @match        https://missav.com/*
+// @match        https://rule34video.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM.setClipboard
 // @grant        GM_xmlhttpRequest
@@ -36,8 +37,11 @@ var HEADERS = {
     removeShade();
     // Missav 单独拿出来
     if (location.hostname === 'missav.com') {
-        let urls = fetchMissUrls();
-        return
+        fetchMissUrls();
+        return;
+    } else if (location.hostname === 'rule34video.com') {
+        fetchRule34();
+        return;
     }
     // 添加按钮
     let onClick = async (event, doSize) => {
@@ -251,6 +255,32 @@ function fetchMissUrls() {
             pos += 1;
         });
     });
+}
+
+function fetchRule34() {
+    let pos = 0;
+    ['_url', '_alt_url', '_alt_url2', '_alt_url3'].forEach(alt => {
+        let quality = flashvars[`video${alt}_text`];
+        let videoUrl = flashvars[`video${alt}`];
+        if (quality && videoUrl) {
+            addButton(`下载 ${quality}`, {
+                'left': '1%',
+                'top': `${1 + (pos * 8)}%`
+            }, e => {
+                console.log('点击下载', videoUrl);
+                // copyToClipboard(videoUrl);
+                let fileName = getQuery('v_name');
+                let ext = getExtByUrl(videoUrl);
+                fileName = `${fileName}-${quality}${ext}`;
+                console.log('Filename:', fileName);
+                copyToClipboard(fileName);
+                toast(`文件名已复制 ${quality}`);
+                window.open(videoUrl, '_blank');
+            });
+            pos += 1;
+        }
+    });
+
 }
 
 function removeShade() {
