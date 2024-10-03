@@ -2,7 +2,9 @@
 // 依赖 utils.js 里面的 getExtByName() 和 saveTextFile()
 /**
  * version 2.1: 允许自定义扩展名
- * @see{}
+ * @see{findFileExt}
+ * version unknown: 允许添加备注信息
+ * @see{forkTasks} 的 extraConfigs
  */
 class CrawlerBase {
     constructor() {
@@ -67,6 +69,12 @@ class CrawlerBase {
         return remain;
     }
 
+    // addMemo(){
+    //     return new Promise((resolve, reject) => {
+    //        resolve('');
+    //     });
+    // }
+
     forkTasks(doSave, extraConfigs = {}) {
         console.log(`forkTasks`);
         return new Promise(async (onFetched, onFetchFail) => {
@@ -78,6 +86,7 @@ class CrawlerBase {
                 info.picUrls = await this.findPicUrls();
                 info.fileNames = await this.findFileNames();
                 info.ext = await this.findFileExt();
+                // info.memo = await this.addMemo();
             } catch (e) {
                 onFetchFail(e);
                 return
@@ -124,6 +133,7 @@ class CrawlerBase {
         let chapName = info.chapName;
         let chapIndex = info.chapIndex;
         let fileNames = info.fileNames;
+        // let memo = info.memo;
         if (chapIndex) {
             chapName = `${chapIndex}`.padStart(4, '0') + '_' + chapName;
         }

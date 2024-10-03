@@ -91,7 +91,8 @@ function getFileNameByUrl(url) {
     let matches = url.match(/\/([^\/]+\.[^.]+)$/);
     if (matches.length > 1) {
         // xxxx.jpg/800
-        return matches[1].replace(/\/.*/, '');
+        // 去掉 ?query 部分
+        return matches[1].replace(/\/.*/, '').replace(/\?.*/,'');
     }
     return undefined
 }
