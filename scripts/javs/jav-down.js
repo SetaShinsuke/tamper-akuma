@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -17,6 +17,7 @@
 // @connect      cloudflarestorage.com
 // @connect      *
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
+// @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
 // @downloadURL  https://raw.githubuserconnettent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
 // ==/UserScript==
@@ -35,6 +36,8 @@ var HEADERS = {
     'use strict';
     console.log('Starting inject...');
     removeShade();
+    // 注入 Netter
+    unsafeWindow.NETTER = new NetHelper();
     // Missav 单独拿出来
     if (location.hostname === 'missav.com') {
         fetchMissUrls();
@@ -85,6 +88,7 @@ var HEADERS = {
 function fetchTubeUrl(doSize = false) {
     return new Promise((resolve, reject) => {
         let url = flashvars.video_alt_url;
+        console.log(`flashvars.video_alt_url: ${url}`);
         if (!url || url.length === 0) {
             alert("Get URL fail!");
             reject(new Error(`Video alt url is empty`));
@@ -92,6 +96,13 @@ function fetchTubeUrl(doSize = false) {
         GM_xmlhttpRequest({
             method: 'head',
             url: url,
+            headers: HEADERS,
+            // onreadystatechange(response){
+            //     // 0请求未初始化; 1连接已建立; 2请求已接收; 3请求处理中; 4请求已完成
+            //     console.log(`onreadystatechange`);
+            //     console.log(response)
+            //     unsafeWindow.res = response;
+            // },
             onload: function (response) {
                 var finalUrl = response.finalUrl;
                 console.log('FinalUrl: ', finalUrl);
