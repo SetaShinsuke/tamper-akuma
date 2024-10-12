@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.8
+// @version      0.9
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -19,7 +19,7 @@
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
-// @downloadURL  https://raw.githubuserconnettent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
+// @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-down.js
 // ==/UserScript==
 
 // body: {video_id: xxx}
