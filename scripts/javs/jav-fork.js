@@ -160,7 +160,7 @@ function forkMis() {
     let no = document.querySelector('.mt-4 h1').innerText.split(/\s/)[0];
     let hostname = location.hostname;
     let uid = location.pathname;
-    let tags = ['m3u8'];
+    let tags = ['ttss'];
     let data = {
         title: no,
         site: hostname,
