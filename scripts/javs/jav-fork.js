@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.27
+// @version      0.28
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -160,7 +160,7 @@ function forkMis() {
     let no = document.querySelector('.mt-4 h1').innerText.split(/\s/)[0];
     let hostname = location.hostname;
     let uid = location.pathname;
-    let tags = [];
+    let tags = ['m3u8'];
     let data = {
         title: no,
         site: hostname,
