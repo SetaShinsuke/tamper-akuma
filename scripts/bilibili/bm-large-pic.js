@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bm-large-pic
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  desc
 // @author       Akuma
 // @match        https://manga.bilibili.com/mc*
@@ -35,10 +35,13 @@ async function checkPic(page) {
     let resJson = await netHelper.post(API_IMG_INDEX, {'ep_id': epId});
     let imgs = resJson.data.images;
     let imgPath = imgs[page].path;
+    // console.log(imgs);
     // 拉图片
     resJson = await netHelper.post(API_IMG_TOKEN, {'urls': `[\"${imgPath}\"]`});
     let picData = resJson.data[0];
-    let fullPic = `${picData.url}?token=${picData.token}`;
+    // let fullPic = `${picData.url}?token=${picData.token}`;
+    // console.log(`Full pic: \n`, fullPic);
+    let fullPic = `${picData.complete_url}`;
     // 打开
     window.open(fullPic, '_blank');
 }
