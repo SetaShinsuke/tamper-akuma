@@ -79,7 +79,8 @@ class NetHelper {
                             console.log(response);
                             console.log(`Parse response json error: `);
                             console.log(e);
-                            resolve(response);
+                            // resolve(response);
+                            reject(e);
                         }
                     } else {
                         console.log(response);

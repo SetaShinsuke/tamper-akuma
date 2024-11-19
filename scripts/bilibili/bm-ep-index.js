@@ -38,6 +38,9 @@ function onReady() {
 
 function injectHeadSetter() {
     unsafeWindow.addHead = addHead;
+    addButton('记录为卷首', {'left': '1%', 'bottom': '1%'}, _ => {
+        addHead();
+    }, 0)
 }
 
 async function addHead() {
@@ -49,7 +52,11 @@ async function addHead() {
     console.log(`添加卷首, mangaId: ${mangaId}, shortTitle: ${shortTitle}`);
     let url = API_ADD_HEAD.replace(`[MANGA_ID]`, mangaId).replace(`[SHORT_TITLES]`, shortTitle);
     console.log(url);
-    resJson = await netHelper.get(url);
+    resJson = await netHelper.get(url).then(res => {
+        toast('成功记录卷首!');
+    }).catch(err => {
+        alert(`记录卷首失败!\n${err.message}`);
+    });
     console.log(resJson);
 }
 
