@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            BM-EP-index
 // @namespace       http://tampermonkey.net/
-// @version         0.9
+// @version         0.10
 // @description     显示章节index; 控制台addHead()记录为卷首话
 // @author          Akuma
 // @match           https://manga.bilibili.com/detail/*
@@ -53,7 +53,12 @@ async function addHead() {
     let url = API_ADD_HEAD.replace(`[MANGA_ID]`, mangaId).replace(`[SHORT_TITLES]`, shortTitle);
     console.log(url);
     resJson = await netHelper.get(url).then(res => {
-        toast('成功记录卷首!');
+        // unsafeWindow.res = res;
+        if (res['error']) {
+            alert(res['error']);
+            return;
+        }
+        toast(`成功记录卷首![${res['vol_heads']['ords'].length}]`);
     }).catch(err => {
         alert(`记录卷首失败!\n${err.message}`);
     });
