@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      0.10
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -182,9 +182,9 @@ function fetchFileSize(finalUrl) {
                 console.log(`onreadystatechange`);
                 console.log(response)
                 unsafeWindow.res = response;
-                if (response.readyState === 2) {
-                    var contentLength = response.responseHeaders.match(/\ncontent-length:(.*)\n/);
-                    if (contentLength.length < 2) {
+                if (response.readyState === 2 || response.readyState === 3) {
+                    var contentLength = response.responseHeaders.match(/\ncontent-length:(.*)\r?\n/);
+                    if (!contentLength || contentLength.length < 2) {
                         console.log(`Error getting content length, headers: `);
                         console.log(response.responseHeaders);
                         return
@@ -198,7 +198,7 @@ function fetchFileSize(finalUrl) {
                 }
             },
             onprogress: function (progress) {
-                console.log(`total: `, progress.total);
+                console.log(`onProgress, total: `, progress.total);
                 let contentLength = parseInt(progress.total);
                 contentLength = `${(contentLength / 1024 / 1024).toFixed(2)}m`;
                 // document.querySelector('#btnCopy').innerHTML = `Copy (${contentLength})`;
