@@ -26,6 +26,9 @@ let netHelper;
 
 function inject() {
     netHelper = new NetHelper();
+    // 增加headers
+    let headers = netHelper.headers;
+    // headers['Content-Type'] = 'application/json;charset=UTF-8';
     unsafeWindow.checkPic = checkPic;
 }
 
