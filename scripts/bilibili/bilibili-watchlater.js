@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bilibili-Watchlater
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  “稍后观看”中点击封面，只打开单个视频，不打开整个列表
 // @author       Akuma
 // @match        https://www.bilibili.com/watchlater/*
@@ -15,11 +15,12 @@
 (function () {
     'use strict';
     console.log('inject watchlater');
-    runWhenLoaded('.av-item', inject);
+    // runWhenLoaded('.av-item', inject);
+    runWhenLoaded('.bili-cover-card', inject);
 })();
 
 function inject() {
-    document.querySelectorAll(".av-item").forEach(x => {
+    document.querySelectorAll(".bili-cover-card").forEach(x => {
         var a = x.querySelector("a");
         console.log(a.href);
         a.href = a.href.replace("/medialist/play/watchlater", "");
