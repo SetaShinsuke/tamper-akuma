@@ -1,3 +1,6 @@
+[Adblock Plus 2.0]
+! 这里是备注
+
 store.steampowered.com###sih-header-cart
 store.steampowered.com###sih-header-notifications
 steamcommunity.com###sih-header-cart
