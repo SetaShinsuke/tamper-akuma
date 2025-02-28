@@ -1,6 +1,7 @@
 [Adblock Plus 2.0]
 ! 这里是备注
 ! Title: Akuma ADB filters
+! Version: 25.2.28
 
 store.steampowered.com###sih-header-cart
 store.steampowered.com###sih-header-notifications
