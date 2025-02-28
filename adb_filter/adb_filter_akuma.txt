@@ -1,0 +1,4 @@
+store.steampowered.com###sih-header-cart
+store.steampowered.com###sih-header-notifications
+steamcommunity.com###sih-header-cart
+steamcommunity.com###sih-header-notifications
