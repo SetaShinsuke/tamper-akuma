@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.30
+// @version      0.31
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -17,7 +17,7 @@
 // @match        https://javtiful.com/video/*
 // @match        https://missav.com/*
 // @match        https://missav.ws/*
-// @match        https://missav.ws/*
+// @match        https://missav.ai/*
 // @match        https://rule34video.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
