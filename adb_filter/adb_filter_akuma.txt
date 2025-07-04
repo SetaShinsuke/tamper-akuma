@@ -7,3 +7,8 @@ store.steampowered.com###sih-header-cart
 store.steampowered.com###sih-header-notifications
 steamcommunity.com###sih-header-cart
 steamcommunity.com###sih-header-notifications
+
+! 微博推荐
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article>div:-abp-contains(荐读))
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article>div:-abp-contains(推荐))
+weibo.com##div[class^="TipsAd_bottomGap_"]
