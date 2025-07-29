@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.31
+// @version      0.32
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -36,6 +36,7 @@ const HOST = 'http://192.168.50.166:9292';
 })();
 
 function inject() {
+    blockAds();
     let onClick = _ => {
         switch (window.location.hostname) {
             case 'tktube.com':
@@ -398,6 +399,31 @@ function forkIt(data) {
         console.log(e);
         window.open(url, "_blank");
     }
+}
+
+function blockAds() {
+    switch (window.location.hostname) {
+        case 'tktube.com':
+            break
+        case 'javtiful.com':
+            break
+        case 'missav.com':
+        case 'missav.ws':
+        case 'missav.ai':
+            blockMissAds();
+            break
+    }
+}
+
+async function blockMissAds() {
+    console.log('blockMissAds');
+    // let trigger = document.querySelector('.flex-1.order-first>div');
+    let trigger = await waitForEle('.flex-1.order-first>div')
+    // console.log(trigger);
+    trigger.setAttribute('x-data', trigger.getAttribute('x-data').replace(/directUrls: JSON.parse\('\[.*]'\)/, "directUrls: JSON.parse\(\'\[\]\'\)"));
+    trigger.setAttribute('x-data', trigger.getAttribute('x-data').replace(/directUrlsIphone: JSON.parse\('\[.*]'\)/, "directUrlsIphone: JSON.parse\(\'\[\]\'\)"));
+    trigger.setAttribute('x-data', trigger.getAttribute('x-data').replace(/isJumped: false/, "isJumped: true"));
+    trigger.setAttribute('x-data', trigger.getAttribute('x-data').replace(/popOnce: false/, "popOnce: true"));
 }
 
 // function copyToClipboard(text) {
