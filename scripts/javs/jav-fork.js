@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.32
+// @version      0.33
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -417,6 +417,11 @@ function blockAds() {
 
 async function blockMissAds() {
     console.log('blockMissAds');
+    if (/pop/.test(window.location.pathname)) {
+        console.log(`Pop 页, 直接关闭`);
+        window.close();
+        return;
+    }
     // let trigger = document.querySelector('.flex-1.order-first>div');
     let trigger = await waitForEle('.flex-1.order-first>div')
     // console.log(trigger);
