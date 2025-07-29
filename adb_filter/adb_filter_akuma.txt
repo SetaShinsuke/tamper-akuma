@@ -12,3 +12,6 @@ steamcommunity.com###sih-header-notifications
 weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article>div:-abp-contains(荐读))
 weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article>div:-abp-contains(推荐))
 weibo.com##div[class^="TipsAd_bottomGap_"]
+
+! J
+javtiful.com##div.x-video-button
