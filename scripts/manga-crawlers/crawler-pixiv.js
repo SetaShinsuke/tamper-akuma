@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-pixiv
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  desc
 // @author       Akuma
 // @match        https://www.pixiv.net/users/*/bookmarks/artworks*
@@ -87,7 +87,7 @@ class CrawlerImpl extends CrawlerBase {
             if (globalPicUrls) {
                 fileNames = globalPicUrls.map(picUrl => {
                     // return picUrl.split('/').pop();
-                    return '';
+                    return `${Date.now()}`;
                 });
             }
             console.log(`fileNames: \n`, fileNames)
