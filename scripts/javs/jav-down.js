@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.10
+// @version      0.11
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -72,6 +72,10 @@ var HEADERS = {
             event.target.innerText = `下载视频(${size})`;
         }
         // let idmLink = `akuma-idm://${videoUrl}?file_name___${fileName}${resolution}${ext}`;
+        // 2025.2.23 转义=&
+        // videoUrl = videoUrl.replace('=', '%3D').replace('&', '%26');
+        videoUrl = videoUrl.replaceAll('=', '%3D').replaceAll('&', '%26');
+        console.log(videoUrl);
         let idmLink = `akuma-idm://` + videoUrl + '-----' + fileName;
         window.open(idmLink, '_self');
         console.log(`link:\n`, idmLink);
