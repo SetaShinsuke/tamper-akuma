@@ -96,7 +96,7 @@ function kt_player(a, b, c, d, e) {
                 j[bU(182)] = y = !0;
             !bG && (e[cp(bU(9), bW(8), bW(24))] || e[cp(bX(14), bW(8), bZ(38))] || e[cp(bU(9), bU(4), bX(36), bS(41))] || e[cp(bT(10), bZ(11), bW(29))]) && (j[bX(187)] = y = !0)
         }
-        // todo: 尝试反混淆
+        // untodo: 尝试反混淆
         // u = window[cm('get', cq('embed'))]
         // '<iframe width="544" height="306" src="https://tktube.com/embed/216117" frameborder="0" allowfullscreen></iframe>'
         // w: "https://tktube.com/embed/216117"

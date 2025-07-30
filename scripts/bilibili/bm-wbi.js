@@ -5,6 +5,7 @@
 // @description  Description here
 // @author       Akuma
 // @match        https://manga.bilibili.com/*
+// @grant        GM_openInTab
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @require      https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -19,6 +20,8 @@ const mixinKeyEncTab = [
     36, 20, 34, 44, 52
 ];
 
+const API_REPLIES = `https://api.bilibili.com/x/v2/reply/wbi/main`;
+
 (function () {
     'use strict';
     console.log('Starting inject...');
@@ -29,12 +32,48 @@ async function inject() {
     // await waitForEle(`head`);
     // requireMD5();
     unsafeWindow.getWbiParams = getWbiParams;
+    if (chapId) {
+        addButton(`查看评论`, {'top': '6%', 'left': '1%'}, btn => {
+            // 单话阅读页
+            let chapId = window.location.pathname.match(/\/mc.*\/(.*)\??/)[1];
+            console.log(`chapId=${chapId}`);
+            // todo: 从外部传入参数
+            showReplies(chapId, 3, `{"offset":"CAEiAggC"}`, 20);
+        });
+    }
+}
+
+async function showReplies(oid, mode, pageStr, pageSize) {
+    let params = {
+        oid: oid,
+        type: 29,
+        mode: mode,
+        pagination_str: pageStr,
+        ps: pageSize
+    };
+    console.log('params', params);
+    let finalParams = await getWbiParams(null, params);
+    console.log('finalParams', finalParams);
+    const searchParams = new URLSearchParams(finalParams);
+    const queryString = searchParams.toString();
+    // 拼凑出 API_URL
+    let replyUrl = API_REPLIES + '?' + queryString;
+    console.log('replyUrl', replyUrl);
+    try {
+        GM_openInTab(replyUrl, false);
+    } catch (e) {
+        console.log(e);
+        window.open(replyUrl, "_blank");
+    }
 }
 
 // 给出 query 字符串，计算出 wbi 并返回完整的 query
-async function getWbiParams(paramStr) {
+async function getWbiParams(paramStr, paramsObj = null) {
     // string => object
-    let params = queryStringToObject(paramStr);
+    let params = paramsObj;
+    if (!params) {
+        params = queryStringToObject(paramStr);
+    }
     console.log('params ', params);
 
     const web_keys = await getWbiKeys();
@@ -43,6 +82,9 @@ async function getWbiParams(paramStr) {
     console.log(img_key, sub_key);
     const query = encWbi(params, img_key, sub_key);
     console.log(query);
+    return new Promise((resolve, reject) => {
+        resolve(query);
+    });
 }
 
 // 获取最新的 img_key 和 sub_key
