@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.33
+// @version      0.34
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -406,6 +406,7 @@ function blockAds() {
         case 'tktube.com':
             break
         case 'javtiful.com':
+            blockTifulAds();
             break
         case 'missav.com':
         case 'missav.ws':
@@ -413,6 +414,13 @@ function blockAds() {
             blockMissAds();
             break
     }
+}
+
+
+async function blockTifulAds() {
+    let ad = await waitForEle(`.x-video-btn`);
+    ad.classList.remove('x-video-btn');
+    console.log('Ad btn class removed!');
 }
 
 async function blockMissAds() {
