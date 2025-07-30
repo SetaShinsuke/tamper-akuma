@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bm-wbi
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Description here
 // @author       Akuma
 // @match        https://manga.bilibili.com/*
@@ -32,14 +32,14 @@ async function inject() {
     // await waitForEle(`head`);
     // requireMD5();
     unsafeWindow.getWbiParams = getWbiParams;
-    if (chapId) {
+    if (window.location.pathname.match(/\/mc.*\/(.*)\??/)[1]) {
         addButton(`查看评论`, {'top': '6%', 'left': '1%'}, btn => {
             // 单话阅读页
             let chapId = window.location.pathname.match(/\/mc.*\/(.*)\??/)[1];
             console.log(`chapId=${chapId}`);
             // todo: 从外部传入参数
             showReplies(chapId, 3, `{"offset":"CAEiAggC"}`, 20);
-        });
+        }, 0);
     }
 }
 
