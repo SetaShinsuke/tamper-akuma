@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.22
+// @version        0.23
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -11,6 +11,8 @@
 // @match          https://tktube.com/*
 // @match          https://javtiful.com/*
 // @match          https://missav.com/*
+// @match          https://missav.ws/*
+// @match          https://missav.ai/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          GM_openInTab
 // @grant          GM_xmlhttpRequest
@@ -43,6 +45,8 @@ const FAKE_AD_ID = 'zlVjUDdSLHIP';
             injectFul();
             break;
         case 'missav.com':
+        case 'missav.ws':
+        case 'missav.ai':
             injectMis();
             break
         // region deprecated

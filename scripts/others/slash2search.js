@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         slash2search
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  desc
 // @author       Akuma
 // @match        https://*.wiktionary.org/*
 // @match        https://shyyp.net/search?q=*
+// @match        https://howlongtobeat.com/*
+// @match        https://*.douban.com/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -16,7 +18,9 @@
 // [搜索框, 搜索按钮(搜索框隐藏的情况), 被隐藏的部分]
 const DATA_MAP = {
     "wiktionary.org": ["#searchInput", null, null],
-    "shyyp.net": ['#mainSearchInput', null, null]
+    "shyyp.net": ['#mainSearchInput', null, null],
+    "howlongtobeat.com": ['.MainNavigation_search_box__UUnYc.back_form', null, null],
+    "douban.com": ['#inp-query', null, null]
 };
 
 (function () {
