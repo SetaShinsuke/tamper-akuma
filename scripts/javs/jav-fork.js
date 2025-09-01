@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.35
+// @version      0.36
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -103,7 +103,12 @@ function forkTiful() {
         auto_sync_cover: false,
         tags: 'hd'
     };
-    let cover = document.querySelector("meta[property='og:image']").getAttribute("content");
+    let cover = document.querySelector(`#player>.player-wrapper`)?.style['background']?.match(/url\("(.*)"\)/);
+    if (cover?.length > 1) {
+        cover = cover[1];
+    } else {
+        cover = document.querySelector("meta[property='og:image']").getAttribute("content");
+    }
     if (cover) {
         data.cover = cover;
     }
