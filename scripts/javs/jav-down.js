@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.11
+// @version      0.12
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -23,7 +23,8 @@
 // ==/UserScript==
 
 // body: {video_id: xxx}
-let API_TIFUL = `https://javtiful.com/ajax/get_cdn`;
+// let API_TIFUL = `https://javtiful.com/ajax/get_cdn`;
+let API_TIFUL = `https://javtiful.com/ajax/embed_cdn`; // 2025.9.7 更新接口
 
 let referer = getReferer();
 // content-type 必要
