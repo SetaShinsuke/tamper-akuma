@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.36
+// @version      0.37
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -18,6 +18,7 @@
 // @match        https://missav.com/*
 // @match        https://missav.ws/*
 // @match        https://missav.ai/*
+// @match        https://missav.live/*
 // @match        https://rule34video.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
@@ -48,6 +49,7 @@ function inject() {
             case 'missav.com':
             case 'missav.ws':
             case 'missav.ai':
+            case 'missav.live':
                 forkMis();
                 break
             case 'rule34video.com':

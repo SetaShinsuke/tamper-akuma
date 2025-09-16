@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.23
+// @version        0.24
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -13,6 +13,7 @@
 // @match          https://missav.com/*
 // @match          https://missav.ws/*
 // @match          https://missav.ai/*
+// @match          https://missav.live/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          GM_openInTab
 // @grant          GM_xmlhttpRequest
@@ -47,6 +48,7 @@ const FAKE_AD_ID = 'zlVjUDdSLHIP';
         case 'missav.com':
         case 'missav.ws':
         case 'missav.ai':
+        case 'missav.live':
             injectMis();
             break
         // region deprecated
@@ -244,8 +246,9 @@ function injectMis() {
         });
     });
     // 检查是否已fork
-    let no = [].concat(document.querySelector('.mt-4 h1')?.innerText?.split(/\s/))[0];
-    if (no) {
+    let no = [].concat(document.querySelector('.mt-4 h1')?.innerText?.split(/\s/));
+    if (no && no.length > 0) {
+        no = no[0];
         checkForked(no);
     }
 }
