@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-gcores-radio
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  desc
 // @author       Akuma
 // @match        https://www.gcores.com/albums/*
@@ -74,7 +74,13 @@ class CrawlerGcsAlbum extends CrawlerBase {
             // :not(.is_locked) 未解锁的节目
             let index = 0;
             let fileNames = Array.from(document.querySelectorAll('.albumRadios .albumRadio:not(.is_locked) h3 a')).map(a => {
-                let name = verifyFileName(`${index}`.padStart(3, '0') + '_' + a.innerText);
+                let radioId = a.href.match(/\/radios\/(\d+)/);
+                if (radioId.length > 1) {
+                    radioId = "_" + radioId[1];
+                } else {
+                    radioId = "";
+                }
+                let name = verifyFileName(`${index}`.padStart(3, '0') + radioId + '_' + a.innerText);
                 index += 1;
                 return name;
             });
