@@ -4,10 +4,10 @@
 ! Version: 25.2.28
 
 ! steam
-store.steampowered.com###sih-header-cart
-store.steampowered.com###sih-header-notifications
-steamcommunity.com###sih-header-cart
-steamcommunity.com###sih-header-notifications
+!store.steampowered.com###sih-header-cart
+!store.steampowered.com###sih-header-notifications
+!steamcommunity.com###sih-header-cart
+!steamcommunity.com###sih-header-notifications
 
 ! 微博推荐
 weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(荐读))
@@ -15,7 +15,7 @@ weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item
 weibo.com##div[class^="TipsAd_bottomGap_"]
 
 ! QQ邮箱推广广告
-mail.qq.com##table.maillist_gg_bar
+!mail.qq.com##table.maillist_gg_bar
 
 ! J
-javtiful.com##div.x-video-button
+!javtiful.com##div.x-video-button
