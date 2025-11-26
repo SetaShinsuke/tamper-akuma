@@ -1,8 +1,7 @@
-[Adblock Plus 3.1]
-! 这里是备注
-! 注意：3.1 版本才支持规则中包含中文
-! Title: Akuma ADB filters (compliance)
+ [Adblock Plus 2.0]
+! Title: _Akuma ADB filters
 ! Version: 25.11.26
+! 标题版本放在最上面才能显示
 
 ! steam
 store.steampowered.com###sih-header-cart
@@ -10,13 +9,16 @@ store.steampowered.com###sih-header-notifications
 steamcommunity.com###sih-header-cart
 steamcommunity.com###sih-header-notifications
 
-! 微博推荐
-weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(荐读))
-weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(推荐))
-weibo.com##div[class^="TipsAd_bottomGap_"]
-
-! QQ邮箱推广广告
-mail.qq.com##table.maillist_gg_bar
+! QQ邮箱
+mail.qq.com###table.maillist_gg_bar
 
 ! J
-javtiful.com##div.x-video-button
+javtiful.com###div.x-video-button
+
+! 微博推荐
+! 包含中文的规则需要手动复制添加
+! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(荐读))
+! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(推荐))
+! 很奇怪包含"推"字会造成规则语法错误，所以改为只屏蔽"荐"字
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(荐))
+weibo.com###div[class^="TipsAd_bottomGap_"]
