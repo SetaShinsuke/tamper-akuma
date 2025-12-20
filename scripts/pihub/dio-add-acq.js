@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.6
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -65,7 +65,12 @@ function injectSteam() {
         if(!priceStr){
             priceStr = div.querySelector('.discount_original_price')?.innerText;
             if(priceStr){
-                orgPrice = priceStr.match(/[$¥]\s(.*)/) * 100;
+                orgPrice = parseInt(priceStr.replace(/[$¥]\s/, '')) * 100;
+            }
+            // 当前折后价格
+            let orgPriceStr = div.querySelector('.discount_final_price')?.innerText;
+            if(orgPriceStr){
+                orgPrice = parseInt(orgPriceStr.replace(/[$¥]\s/, '')) * 100;
             }
         }
         var url = `${HOST}/pages/#/dio/main/new`
