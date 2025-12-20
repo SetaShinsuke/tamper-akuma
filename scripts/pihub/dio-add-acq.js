@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -59,24 +59,28 @@ function injectSteam() {
             accountId = ACCOUNT_STEAM_ALT;
         }
         var orgPrice = 0;
+        var acq_price = 0;
         // 没打折
         var priceStr = document.querySelector(`.game_purchase_price.price`)?.dataset?.priceFinal;
         // 打折中
-        if(!priceStr){
+        if(priceStr){
+            orgPrice = priceStr;
+            acq_price = orgPrice;
+        }else{
             priceStr = div.querySelector('.discount_original_price')?.innerText;
             if(priceStr){
-                orgPrice = parseInt(priceStr.replace(/[$¥]\s/, '')) * 100;
+                orgPrice = parseFloat(priceStr.replace(/[$¥]\s/, '')) * 100;
             }
             // 当前折后价格
-            let orgPriceStr = div.querySelector('.discount_final_price')?.innerText;
-            if(orgPriceStr){
-                orgPrice = parseInt(orgPriceStr.replace(/[$¥]\s/, '')) * 100;
+            let finalPriceStr = div.querySelector('.discount_final_price')?.innerText;
+            if(finalPriceStr){
+                acq_price = parseFloat(finalPriceStr.replace(/[$¥]\s/, '')) * 100;
             }
         }
         var url = `${HOST}/pages/#/dio/main/new`
             + `?sku=${sku}&platform=steam&name=${name}&org_name=${name}&account_id=${accountId}`
             + `&acq_method=buy&acq_date=${(new Date()).toDateString()}&currency=${currency}`
-            + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=CN`;
+            + `&acq_price=${acq_price}&org_price=${orgPrice}&media_format=digital&region=CN`;
         console.log(url);
         GM_openInTab(url, false);
     });
