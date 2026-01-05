@@ -7,6 +7,9 @@
 // @match        https://store.steampowered.com/app/*
 // @match        https://steamcommunity.com/id/*/gamecards/*
 // @match        https://steamcommunity.com/id/*/inventory*
+// @match        https://steamcommunity.com/id/*/badges*
+// @match        https://www.steamcardexchange.net/index.php?badgeprices*
+// @match        https://www.steamcardexchange.net/index.php?foilbadgeprices*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -31,10 +34,41 @@ const URL_CARD_DETAIL = "https://steamcommunity.com/market/listings/753/{APP_ID}
                 injectBadgesPage();
             } else if (/inventory/.test(location.pathname)) {
                 injectInventoryPage();
+            } else if (/badges/.test(location.pathname)) {
+                // 徽章列表页：记录出我能收集卡牌的 appids
+                injectBadgeList();
             }
+            break;
+        case 'steamcardexchange.net':
             break;
     }
 })();
+
+function injectBadgeList() {
+    addButton(`复制 appIds`, {'left': '1%', 'bottom': '1%'}, async _ => {
+        await waitForEle(`.badge_row_inner`);
+        let finIds = [];
+        Array.from(document.querySelectorAll(`.badge_row_inner`)).forEach(item => {
+            let hint = item.querySelector(`.progress_info_bold`)
+            if (!hint) {
+                return;
+            }
+            hint = hint.innerText;
+            // let got = item.querySelector(`.badge_progress_info`).innerText.match(/(\d+)\s?\/\s?\d+/);
+            // if (got.length > 1){
+            //     got = parseInt(got[1]);
+            // }
+            // if (/无剩余卡牌掉落/.test(hint) && got == 0){ // 不能掉落/已经掉落并出售
+            // if (/无剩余卡牌掉落/.test(hint)){
+            let appId = item.parentNode.querySelector(`a`).href.replace(/.+gamecards\/(\d+).+/, `$1`);
+            finIds.push(appId);
+            // }
+        });
+        console.log(`可掉落卡牌的游戏: \n`, finIds);
+        copyToClipboard(finIds + '');
+        toast('Appid 列表已复制!');
+    }, 0);
+}
 
 function injectStorePage() {
     addButton('查看徽章进度', {'left': '1%', 'bottom': '1%'}, _ => {

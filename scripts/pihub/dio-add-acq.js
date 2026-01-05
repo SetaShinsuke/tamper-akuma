@@ -22,6 +22,7 @@ const ACCOUNT_XBOX = 9;
 const ACCOUNT_STEAM = 1;
 const ACCOUNT_STEAM_ALT = 4;
 
+
 (function () {
     'use strict';
     console.log('Starting inject...');
