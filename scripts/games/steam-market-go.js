@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         steam-market-go
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  添加卡牌市场的跳转链接
 // @author       Akuma
 // @match        https://store.steampowered.com/app/*
@@ -22,6 +22,8 @@ const URL_MARKET = "https://steamcommunity.com/market/search?appid=753&category_
 const URL_EXCHANGE = "https://www.steamcardexchange.net/index.php?gamepage-appid-{APP_ID}";
 const URL_CARD_DETAIL = "https://steamcommunity.com/market/listings/753/{APP_ID}-{CARD_NAME}";
 
+const FILTER_IDS = `filterIds`;
+
 (function () {
     'use strict';
     console.log('Starting inject...');
@@ -39,10 +41,73 @@ const URL_CARD_DETAIL = "https://steamcommunity.com/market/listings/753/{APP_ID}
                 injectBadgeList();
             }
             break;
-        case 'steamcardexchange.net':
+        case 'www.steamcardexchange.net':
+            injectPriceList();
             break;
     }
 })();
+
+async function injectPriceList() {
+    window.getFilterIds = _ => {
+        let filterIds = localStorage.getItem(FILTER_IDS);
+        if (filterIds == null) {
+            filterIds = [];
+        } else {
+            filterIds = JSON.parse(filterIds);
+        }
+        return filterIds;
+    }
+    // 添加过滤id
+    window.addFilterIds = ids => {
+        let filterIds = getFilterIds();
+        console.log('org:\n', filterIds);
+        filterIds = filterIds.concat(ids);
+        console.log(`Ids added`);
+        console.log(filterIds);
+        localStorage.setItem(FILTER_IDS, JSON.stringify(filterIds));
+    };
+    // 清除过滤id
+    window.clearFilterIds = () => {
+        localStorage.removeItem(FILTER_IDS);
+    };
+    // 筛选按钮
+    let btnId = addButton(`筛选appId`, {'left': '1%', 'bottom': '1%'}, _ => {
+        let filterIds = getFilterIds();
+        console.log(filterIds);
+        // 按id过滤
+        document.querySelectorAll(`.table-border-fix tbody>tr`).forEach(item => {
+            let id = item.querySelector(`td>a`).href?.match(/appid-(\d+)/);
+            if (!id || id.length <= 1) {
+                return;
+            }
+            id = id[1];
+            let hide = true;
+            if (filterIds.length === 0) {
+                hide = false;
+            } else {
+                filterIds.forEach(x => {
+                    if (id === x) { // 找到了
+                        hide = false;
+                    }
+                });
+            }
+            if (hide) {
+                item.style.opacity = `0.1`;
+            }
+        });
+        toast('已筛选!');
+    }, 0);
+    // 默认启动即筛选
+    await waitForEle(`.table-border-fix tbody>tr td>a`);
+    console.log('自动筛选');
+    document.querySelector('#' + btnId).click();
+    // 清除按钮
+    addButton(`清除筛选`, {'left': '1%', bottom: '8%'}, _ => {
+        document.querySelectorAll(`.table-border-fix tbody>tr`).forEach((item) => {
+            item.style.opacity = '1';
+        });
+    }, 0);
+}
 
 function injectBadgeList() {
     addButton(`复制 appIds`, {'left': '1%', 'bottom': '1%'}, async _ => {
@@ -53,7 +118,7 @@ function injectBadgeList() {
             if (!hint) {
                 return;
             }
-            hint = hint.innerText;
+            // hint = hint.innerText;
             // let got = item.querySelector(`.badge_progress_info`).innerText.match(/(\d+)\s?\/\s?\d+/);
             // if (got.length > 1){
             //     got = parseInt(got[1]);
@@ -65,7 +130,7 @@ function injectBadgeList() {
             // }
         });
         console.log(`可掉落卡牌的游戏: \n`, finIds);
-        copyToClipboard(finIds + '');
+        copyToClipboard(JSON.stringify(finIds));
         toast('Appid 列表已复制!');
     }, 0);
 }
