@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         crawler-pixiv
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  desc
 // @author       Akuma
 // @match        https://www.pixiv.net/users/*/bookmarks/artworks*
@@ -17,7 +17,7 @@
 let DO_SAVE = true;
 let NEXT_TIMEOUT = 3_000;
 let EX_CONFIGS = {
-    'proxy': 'http://192.168.50.266:7890'
+    'proxy': 'http://192.168.50.226:7890'
 };
 
 const API_ART = `https://www.pixiv.net/ajax/illust/`; //+artwork_id

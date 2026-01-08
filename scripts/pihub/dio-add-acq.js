@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -15,7 +15,7 @@
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/pihub/dio-add-acq.js
 // ==/UserScript==
 
-const HOST = 'http://192.168.50.166:9292';
+const HOST = 'http://192.168.0.120:9292';
 const ACCOUNT_EPIC = 8;
 const ACCOUNT_EPIC_CN = 10;
 const ACCOUNT_XBOX = 9;
