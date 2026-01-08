@@ -41,7 +41,8 @@ async function inject() {
 }
 
 async function showHistories(listingType) {
-    let url = API_ALL_HISTORY + `&kind=${listingType}`;
+    let cardUid = findCardUid();
+    let url = API_ALL_HISTORY + `&card_uid=${cardUid}&kind=${listingType}`;
     console.log(url);
     let histories = await netHelper.get(url).catch(e => {
         console.error(e);
