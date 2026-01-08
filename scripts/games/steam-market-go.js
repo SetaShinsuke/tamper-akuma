@@ -8,12 +8,10 @@
 // @match        https://steamcommunity.com/id/*/gamecards/*
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/id/*/badges*
-// @match        https://steamcommunity.com/market/listings/*/*
 // @match        https://www.steamcardexchange.net/index.php?badgeprices*
 // @match        https://www.steamcardexchange.net/index.php?foilbadgeprices*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @grant        GM_xmlhttpRequest
-// @connect      192.168.0.120
+// @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/steam-market-go.js
@@ -24,10 +22,6 @@ const URL_BADGE = "https://steamcommunity.com/my/gamecards/{APP_ID}/";
 const URL_MARKET = "https://steamcommunity.com/market/search?appid=753&category_753_Game[]=tag_app_{APP_ID}&&category_753_item_class%5B%5D=tag_item_class_2";
 const URL_EXCHANGE = "https://www.steamcardexchange.net/index.php?gamepage-appid-{APP_ID}";
 const URL_CARD_DETAIL = "https://steamcommunity.com/market/listings/753/{APP_ID}-{CARD_NAME}";
-
-const API_CARD = `http://192.168.0.120:9292/api/steam_cards`;
-const API_CARD_HISTORY = `${API_CARD}/histories`;
-const API_ALL_HISTORY = API_CARD_HISTORY + "?all=ture"
 
 const FILTER_IDS = `filterIds`;
 
@@ -46,9 +40,6 @@ const FILTER_IDS = `filterIds`;
             } else if (/badges/.test(location.pathname)) {
                 // 徽章列表页：记录出我能收集卡牌的 appids
                 injectBadgeList();
-            } else if (/market\/listings/.test(location.pathname)) {
-                // 卡片详情页
-                injectCardListing();
             }
             break;
         case 'www.steamcardexchange.net':
@@ -56,63 +47,6 @@ const FILTER_IDS = `filterIds`;
             break;
     }
 })();
-
-function injectCardListing() {
-    const netHelper = new NetHelper();
-    const findCardId = _ => parseInt(window.location.pathname.match(/\/market\/listings\/\d+\/(\d+)/)[1]);
-    const findCardName = _ => document.querySelector(`.largeiteminfo_react_placeholder h1 span`)?.innerText;
-    const addCard = _ => {
-        let uid = findCardId();
-        let name = findCardName();
-        let img = document.querySelector(`.largeiteminfo_react_placeholder img`)?.src;
-        let url = document.querySelector(`.market_listing_nav a:last-child`)?.href;
-        let isFoil = /\([fF]oil\)$/.test(window.location.pathname);
-        netHelper.post(API_CARD, {
-            uid: uid,
-            name: name,
-            img: img,
-            url: url,
-            foil: isFoil
-        }).then(result => {
-            console.log(`已添加卡牌\n`, result);
-        });
-    };
-    const checkCardForked = async _ => {
-        let cardId = findCardId();
-        let cards = await netHelper.get(API_CARD + `?uid="${cardId}"`).cards;
-        if (cards?.length <= 0) {
-            console.log(`卡牌未保存，尝试保存...`);
-            addCard();
-        }
-    }
-    // 出售单（左）记录
-    addButton(`+出售单记录`, {'left': '1%', 'bottom': '1%'}, _ => {
-        let cardId = findCardId();
-        let name = findCardName();
-        let firstListing = document.querySelector(`#market_commodity_forsale_table tr:nth-child(2)`);
-        let price = firstListing.querySelector(`td`).innerText.replace(/¥\s+/, '');
-        price = parseInt(Number(price) * 100);
-        let count = firstListing.querySelector(`td:last-child`).innerText;
-        count = parseInt(count);
-        let date = (new Date()).toDateString();
-        data = {
-            card_id: cardId,
-            kind: "s_listing",
-            price: price,
-            count: count,
-            record_date: date
-        }
-        console.log(data);
-        checkCardForked();
-        netHelper.post(API_CARD_HISTORY, data).then(response => {
-            // todo: 刷新页面
-            toast(`已添加记录!`);
-        }).catch(error => {
-            console.log(error);
-            alert(`记录添加失败!`);
-        });
-    }, 0);
-}
 
 async function injectPriceList() {
     window.getFilterIds = _ => {
