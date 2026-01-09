@@ -75,7 +75,7 @@ async function showHistories(listingType) {
     billboard.style['color'] = 'white';
     billboard.style['z-index'] = '2147483647';
     billboard.style[position] = '1%';
-    console.log('billboard', billboard);
+    // console.log('billboard', billboard);
     document.body.appendChild(billboard);
 }
 
@@ -134,7 +134,7 @@ function addListing(uid, listingType) {
     // let count = firstListing.querySelector(`td:last-child`).innerText;
     let count = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex].innerText;
     count = parseInt(count);
-    let date = (new Date()).toDateString();
+    let date = (new Date()).toISOString();
     let data = {
         card_uid: uid,
         kind: listingType,
