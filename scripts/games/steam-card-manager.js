@@ -14,7 +14,7 @@
 // @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/steam_card_manager.js
 // ==/UserScript==
 
-const API_CARD = `http://192.168.0.120:9292/api/steam_cards`;
+const API_CARD = `http://192.168.0.120:9292/api/cards`;
 const API_CARD_HISTORY = `${API_CARD}/histories`;
 const API_ALL_HISTORY = API_CARD_HISTORY + "?all=true";
 const S_LISTING = 's_listing';
@@ -52,8 +52,8 @@ async function showHistories(listingType) {
         return;
     }
     histories = histories.histories;
-    console.log(histories);
-    console.log('todo: 显示 ' + listingType);
+    // console.log(histories);
+    console.log('显示 table: ' + listingType);
     let position = 'left';
     if (listingType === B_LISTING) {
         position = 'right'
@@ -79,26 +79,32 @@ async function showHistories(listingType) {
     document.body.appendChild(billboard);
 }
 
-async function syncCardInfo() {
+// 获取 cardId
+async function fetchCardId() {
     let cardUid = findCardUid();
+    let cardId;
     console.log(`sync card: ${cardUid}`);
-    netHelper.get(API_CARD + `?uid=${cardUid}`).then(response => {
-        let cards = response.cards;
-        console.log(cards);
-        if (cards?.length <= 0) {
-            console.log(`卡牌未保存，尝试保存...`);
-            addCard();
-            return;
-        }
-        console.log(`Card already forked, uid: ${cardUid}`);
-    }).catch(e => {
+    let response = await netHelper.get(API_CARD + `?uid=${cardUid}`).catch(e => {
         console.error(e);
         alert('Error: ' + e.message);
+        throw e;
     });
+    let cards = response.cards;
+    console.log(cards);
+    if (cards?.length <= 0) {
+        console.log(`卡牌未保存，尝试保存...`);
+        cardId = await addCard();
+    } else {
+        console.log(`Card already forked, uid: ${cardUid}`);
+        cardId = cards[0].id;
+    }
+    return cardId;
 }
 
+// 添加 card 并返回 cardId
 async function addCard() {
     let uid = findCardUid();
+    let cardId;
     let name = await findCardName();
     // 图片加载出来再继续
     let img = await waitForEle(`.largeiteminfo_react_placeholder img`);
@@ -113,14 +119,16 @@ async function addCard() {
         foil: isFoil
     }
     console.log(`正在添加卡牌: \n`, data);
-    netHelper.post(API_CARD, data).then(result => {
-        console.log(`已添加卡牌\n`, result);
-    });
+    let response = await netHelper.post(API_CARD, data);
+    cardId = response.card.id;
+    console.log(`已添加卡牌\n`, response);
+    console.log(`cardId: ${cardId};`);
+    return cardId;
 }
 
-function addListing(uid, listingType) {
+async function addListing(uid, listingType) {
     // 先更新卡牌信息
-    syncCardInfo();
+    let cardId = await fetchCardId();
 
     let tableId = `#market_commodity_forsale_table`;
     let countIndex = 0
@@ -136,7 +144,7 @@ function addListing(uid, listingType) {
     count = parseInt(count);
     let date = (new Date()).toISOString();
     let data = {
-        card_uid: uid,
+        card_id: cardId,
         kind: listingType,
         price: price,
         count: count,
@@ -144,6 +152,11 @@ function addListing(uid, listingType) {
     }
     console.log(data);
     netHelper.post(API_CARD_HISTORY, data).then(response => {
+        if (response.error) {
+            console.log(response.error);
+            alert('Error: ' + response.error);
+            return;
+        }
         showHistories(listingType);
         toast(`已添加记录!`);
     }).catch(error => {
