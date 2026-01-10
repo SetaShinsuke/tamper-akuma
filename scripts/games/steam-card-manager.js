@@ -110,7 +110,8 @@ async function addCard() {
     let img = await waitForEle(`.largeiteminfo_react_placeholder img`);
     img = img.src;
     let marketId = parseInt(window.location.pathname.match(/market\/listings\/(\d+)\//)[1]);
-    let isFoil = /\([fF]oil\)$/.test(window.location.pathname);
+    // 包含 (foil) 或 (foil xxx)
+    let isFoil = /(\([fF]oil\)|%28[fF]oil.+%29)/.test(window.location.pathname);
     let data = {
         uid: uid,
         name: name,
