@@ -10,8 +10,8 @@
 // @connect      192.168.0.120
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/steam_card_manager.js
-// @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/steam_card_manager.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/steam-card-manager.js
+// @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/steam-card-manager.js
 // ==/UserScript==
 
 const API_CARD = `http://192.168.0.120:9292/api/steam_cards`;
@@ -131,18 +131,20 @@ async function addListing(uid, listingType) {
     // 先更新卡牌信息
     let cardId = await fetchCardId();
 
-    let tableId = `#market_commodity_forsale_table`;
+    // let tableId = `#market_commodity_forsale_table`;
     let countIndex = 0
     if (listingType === B_LISTING) {
         tableId = `#market_commodity_buyreqeusts_table`;
         countIndex = 2;
     }
-    let firstListing = document.querySelector(`${tableId} tr:nth-child(2)`);
-    let price = firstListing.querySelector(`td`).innerText.replace(/¥\s+/, '');
-    price = parseInt(Number(price) * 100);
-    // let count = firstListing.querySelector(`td:last-child`).innerText;
     let count = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex].innerText;
+    // let count = firstListing.querySelector(`td:last-child`).innerText;
     count = parseInt(count);
+    // let firstListing = document.querySelector(`${tableId} tr:nth-child(2)`);
+    // let price = firstListing.querySelector(`td`).innerText.replace(/¥\s+/, '');
+    let price = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex + 1].innerText;
+    price = price.replace(/¥(\s+)?/, '');
+    price = parseInt(Number(price) * 100);
     let date = (new Date()).toISOString();
     let data = {
         card_id: cardId,
