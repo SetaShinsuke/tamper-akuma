@@ -14,7 +14,7 @@
 // @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/steam_card_manager.js
 // ==/UserScript==
 
-const API_CARD = `http://192.168.0.120:9292/api/cards`;
+const API_CARD = `http://192.168.0.120:9292/api/steam_cards`;
 const API_CARD_HISTORY = `${API_CARD}/histories`;
 const API_ALL_HISTORY = API_CARD_HISTORY + "?all=true";
 const S_LISTING = 's_listing';
