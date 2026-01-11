@@ -155,13 +155,23 @@ async function addListing(uid, listingType) {
     let cardId = await fetchCardId();
 
     let date = (new Date()).toISOString();
-    let price, count;
+    let price, count, extra;
     let countIndex = 0
     switch (listingType) {
         case ON_LISTING:
             date = document.querySelector(`.market_listing_row .market_listing_right_cell.market_listing_listed_date.can_combine`).innerText;
             date = `2026-${date.replace(' 月 ', '-').replace('日', '')}`;
-            date = new Date(Date.parse(date)).toISOString();
+            let now = new Date();
+            date = new Date(Date.parse(date));
+            if (date > now) { // 超过今天了，说明年份是去年
+                date.setFullYear(date.getFullYear() - 1);
+            }
+            if (date.toLocaleDateString() === now.toLocaleDateString()){ // 日期为今日，应该是刚刚上架，把时间改成此刻
+                date = now;
+            }
+            date = date.toISOString();
+            // 预计赚到多少 (￥1.00)
+            extra = document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price>span>span:last-child`)?.innerText
         case ORDER_LISTING:
             count = 1;
             price = document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price`).innerText;
@@ -186,6 +196,9 @@ async function addListing(uid, listingType) {
         price: price,
         count: count,
         record_date: date
+    }
+    if (extra) {
+        data.extra = extra;
     }
     console.log(data);
     netHelper.post(API_CARD_HISTORY, data).then(response => {
