@@ -37,8 +37,10 @@ async function inject() {
     // 如果有我出售单/订购单，则滚动到对应位置 + 添加对应按钮
     checkMyOrder(uid);
     // 显示两侧列表
-    showHistories(S_LISTING);
-    showHistories(B_LISTING);
+    showChart(S_LISTING);
+    showChart(B_LISTING);
+    showChart(ON_LISTING);
+    showChart(ORDER_LISTING);
     // 点击添加记录
     addButton(`+出售单记录`, {'left': '1%', 'bottom': '1%'}, _ => addListing(uid, S_LISTING), 0);
     addButton(`+订购单记录`, {'right': '1%', 'bottom': '1%'}, _ => addListing(uid, B_LISTING), 0);
@@ -61,10 +63,7 @@ function checkMyOrder(uid) {
     });
 }
 
-async function showHistories(listingType) {
-    if (listingType === ON_LISTING || listingType === ORDER_LISTING) {
-        return;
-    }
+async function showChart(listingType) {
     let cardUid = findCardUid();
     let url = API_ALL_HISTORY + `&card_uid=${cardUid}&kind=${listingType}`;
     console.log(url);
@@ -78,8 +77,14 @@ async function showHistories(listingType) {
     histories = histories.histories;
     console.log('显示 table: ' + listingType);
     let position = 'left';
-    if (listingType === B_LISTING) {
+    if (listingType === B_LISTING || listingType === ORDER_LISTING) {
         position = 'right'
+    }
+    let vPosition = 'top';
+    let opacity = '1';
+    if (listingType === ON_LISTING || listingType === ORDER_LISTING) {
+        vPosition = 'bottom';
+        opacity = '0.25';
     }
     let divId = `billboard-${listingType}`;
     let billboard = document.getElementById(divId);
@@ -87,12 +92,13 @@ async function showHistories(listingType) {
         billboard = document.createElement('div');
         billboard.id = divId;
         // 样式
-        billboard.style['top'] = '15%';
+        billboard.style[vPosition] = '15%';
+        billboard.style[position] = '1%';
+        billboard.style['opacity'] = opacity;
         billboard.style['position'] = 'fixed';
         billboard.style['display'] = 'block';
         billboard.style['color'] = 'white';
         billboard.style['z-index'] = '2147483647';
-        billboard.style[position] = '1%';
     }
     billboard.innerHTML = '';
     histories.forEach(h => {
@@ -155,18 +161,18 @@ async function addListing(uid, listingType) {
     let cardId = await fetchCardId();
 
     let date = (new Date()).toISOString();
-    let price, count, extra;
+    let price, count, extra, now;
     let countIndex = 0
     switch (listingType) {
         case ON_LISTING:
             date = document.querySelector(`.market_listing_row .market_listing_right_cell.market_listing_listed_date.can_combine`).innerText;
             date = `2026-${date.replace(' 月 ', '-').replace('日', '')}`;
-            let now = new Date();
+            now = new Date();
             date = new Date(Date.parse(date));
             if (date > now) { // 超过今天了，说明年份是去年
                 date.setFullYear(date.getFullYear() - 1);
             }
-            if (date.toLocaleDateString() === now.toLocaleDateString()){ // 日期为今日，应该是刚刚上架，把时间改成此刻
+            if (date.toLocaleDateString() === now.toLocaleDateString()) { // 日期为今日，应该是刚刚上架，把时间改成此刻
                 date = now;
             }
             date = date.toISOString();
@@ -207,7 +213,7 @@ async function addListing(uid, listingType) {
             alert('Error: ' + response.error);
             return;
         }
-        showHistories(listingType);
+        showChart(listingType);
         toast(`已添加记录!`);
     }).catch(error => {
         console.log(error);
