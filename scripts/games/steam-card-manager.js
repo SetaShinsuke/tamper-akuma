@@ -14,7 +14,8 @@
 // @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/steam-card-manager.js
 // ==/UserScript==
 
-const API_CARD = `http://192.168.0.120:9292/api/steam_cards`;
+const HOST = `http://192.168.0.120:9292`;
+const API_CARD = `${HOST}/api/steam_cards`;
 const API_CARD_HISTORY = `${API_CARD}/histories`;
 const API_ALL_HISTORY = API_CARD_HISTORY + "?all=true";
 const S_LISTING = 's_listing';
@@ -99,12 +100,97 @@ async function showChart(listingType) {
         billboard.style['display'] = 'block';
         billboard.style['color'] = 'white';
         billboard.style['z-index'] = '2147483647';
+        billboard.style['background'] = 'rgba(0, 0, 0, 0.8)';
+        billboard.style['border'] = '1px solid rgba(255, 255, 255, 0.3)';
+        billboard.style['borderRadius'] = '5px';
+        billboard.style['padding'] = '10px';
+        billboard.style['maxHeight'] = '300px';
+        billboard.style['overflow'] = 'auto';
     }
+    // 如果没有数据，直接返回不显示
+    if (histories.length === 0) {
+        // 如果之前有显示，移除它
+        if (billboard.parentNode) {
+            billboard.parentNode.removeChild(billboard);
+        }
+        return;
+    }
+    
     billboard.innerHTML = '';
-    histories.forEach(h => {
-        billboard.innerHTML += `${(h.price / 100.0).toFixed(2)}---${h.count}---${(new Date(h.record_date)).toLocaleDateString()}<br>`;
+    
+    // 创建表格
+    let table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+    table.style.fontSize = '12px';
+    
+    // 创建表头
+    let thead = document.createElement('thead');
+    let headerRow = document.createElement('tr');
+    headerRow.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+    
+    let headers = ['价格', '数量', '日期'];
+    headers.forEach(headerText => {
+        let th = document.createElement('th');
+        th.textContent = headerText;
+        th.style.padding = '4px 8px';
+        th.style.borderBottom = '1px solid rgba(255, 255, 255, 0.2)';
+        th.style.textAlign = 'left';
+        headerRow.appendChild(th);
     });
-    // console.log('billboard', billboard);
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+    
+    // 创建表格主体
+    let tbody = document.createElement('tbody');
+    
+    histories.forEach(h => {
+        let row = document.createElement('tr');
+        row.style.cursor = 'pointer';
+        row.style.transition = 'background-color 0.2s';
+        
+        // 价格列
+        let priceCell = document.createElement('td');
+        priceCell.textContent = (h.price / 100.0).toFixed(2);
+        priceCell.style.padding = '4px 8px';
+        priceCell.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
+        
+        // 数量列
+        let countCell = document.createElement('td');
+        countCell.textContent = h.count;
+        countCell.style.padding = '4px 8px';
+        countCell.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
+        
+        // 日期列
+        let dateCell = document.createElement('td');
+        dateCell.textContent = (new Date(h.record_date)).toLocaleDateString();
+        dateCell.style.padding = '4px 8px';
+        dateCell.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
+        
+        row.appendChild(priceCell);
+        row.appendChild(countCell);
+        row.appendChild(dateCell);
+        
+        // 鼠标悬停效果
+        row.addEventListener('mouseenter', () => {
+            row.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        });
+        row.addEventListener('mouseleave', () => {
+            row.style.backgroundColor = '';
+        });
+        
+        // 点击事件
+        row.addEventListener('click', () => {
+            let url = `${HOST}/pages/#/games/steam_cards/histories?search=${cardUid}&search_by=card_uid&kind=${listingType}`;
+            window.open(url, '_blank');
+        });
+        
+        tbody.appendChild(row);
+    });
+    
+    table.appendChild(tbody);
+    billboard.appendChild(table);
+    
     document.body.appendChild(billboard);
 }
 
