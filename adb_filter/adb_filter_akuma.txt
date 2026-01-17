@@ -1,6 +1,6 @@
  [Adblock Plus 2.0]
 ! Title: _Akuma ADB filters
-! Version: 25.11.26
+! Version: 26.01.17
 ! 标题版本放在最上面才能显示
 
 ! steam
@@ -21,7 +21,8 @@ javtiful.com###div.theeffect section
 ! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(荐读))
 ! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(推荐))
 ! 很奇怪包含"推"字会造成规则语法错误，所以改为只屏蔽"荐"字
-weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(荐))
+! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(荐))
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag-img"]>img)
 weibo.com###div[class^="TipsAd_bottomGap_"]
 
 ! local
