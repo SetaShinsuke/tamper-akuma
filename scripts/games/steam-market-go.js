@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         steam-market-go
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  添加卡牌市场的跳转链接
 // @author       Akuma
 // @match        https://store.steampowered.com/app/*
+// @match        https://steamcommunity.com/app/*
 // @match        https://steamcommunity.com/id/*/gamecards/*
 // @match        https://steamcommunity.com/id/*/inventory*
 // @match        https://steamcommunity.com/id/*/badges*
@@ -40,6 +41,8 @@ const FILTER_IDS = `filterIds`;
             } else if (/badges/.test(location.pathname)) {
                 // 徽章列表页：记录出我能收集卡牌的 appids
                 injectBadgeList();
+            } else if (/\/app\/\d+$/.test(location.pathname)) { // 社区中心
+                injectStorePage();
             }
             break;
         case 'www.steamcardexchange.net':
