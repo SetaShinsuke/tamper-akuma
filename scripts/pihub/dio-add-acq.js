@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.8
+// @version      1.9
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -78,7 +78,7 @@ function injectSteam() {
                 acq_price = parseFloat(finalPriceStr.replace(/[$¥]\s/, '')) * 100;
             }
         }
-        var url = `${HOST}/pages/#/dio/main/new`
+        var url = `${HOST}/pages/#/dio/main/games/new`
             + `?sku=${sku}&platform=steam&name=${name}&org_name=${name}&account_id=${accountId}`
             + `&acq_method=buy&acq_date=${(new Date()).toDateString()}&currency=${currency}`
             + `&acq_price=${acq_price}&org_price=${orgPrice}&media_format=digital&region=CN`;
@@ -104,7 +104,7 @@ function injectXbox() {
            }
            var orgPrice = priceStr.split('$')[1];
            orgPrice = parseInt(parseFloat(orgPrice) * 100);
-           var url = `${HOST}/pages/#/dio/main/new`
+           var url = `${HOST}/pages/#/dio/main/games/new`
                + `?sku=${sku}&platform=xbox&name=${name}&org_name=${name}&account_id=${ACCOUNT_XBOX}`
                + `&acq_method=vip&acq_date=${(new Date()).toDateString()}&currency=${currency}`
                + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=${region}`
@@ -146,7 +146,7 @@ function injectEpic() {
                 priceStr = priceStr[1];
                 orgPrice = parseInt(parseFloat(priceStr) * 100);
             }
-            var url = `${HOST}/pages/#/dio/main/new`
+            var url = `${HOST}/pages/#/dio/main/games/new`
                 + `?sku=${sku}&platform=epic&name=${name}&org_name=${name}&account_id=${accountId}`
                 + `&acq_method=free&acq_date=${(new Date()).toDateString()}&currency=${currency}`
                 + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=${region}`
