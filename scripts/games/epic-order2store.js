@@ -36,7 +36,7 @@ async function injectPurchases() {
     injectLinks();
     // 翻页1s后重新注入
     ['#prev-btn', '#next-btn'].forEach(btnId => {
-        document.querySelectorAll(btnId).addEventListener('click', async _ => {
+        document.querySelector(btnId).addEventListener('click', async _ => {
             await sleep(1_000);
             injectLinks();
         });
