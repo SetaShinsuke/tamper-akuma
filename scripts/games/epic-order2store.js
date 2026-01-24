@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EpicOrder2Store
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.1.2
 // @description  订单页点击游戏标题跳转到商店搜索
 // @author       Akuma
 // @match        https://www.epicgames.com/account/transactions/purchases*
@@ -35,9 +35,11 @@ async function injectPurchases() {
     // 标题增加链接
     injectLinks();
     // 翻页1s后重新注入
-    ['prev-btn', 'next-btn'].forEach(async btn => {
-        await sleep(1_000);
-        injectLinks();
+    ['#prev-btn', '#next-btn'].forEach(btnId => {
+        document.querySelectorAll(btnId).addEventListener('click', async _ => {
+            await sleep(1_000);
+            injectLinks();
+        });
     });
 }
 
