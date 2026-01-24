@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EpicOrder2Store
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  订单页点击游戏标题跳转到商店搜索
 // @author       Akuma
 // @match        https://www.epicgames.com/account/transactions/purchases*

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.9
+// @version      2.0
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
