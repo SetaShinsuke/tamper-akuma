@@ -11,8 +11,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/${DIR_PATH}/epic-order2store
-// @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/${DIR_PATH}/epic-order2store
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/epic-order2store.js
+// @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/games/epic-order2store.js
 // ==/UserScript==
 
 const ACQ_DATE = 'acq_date';
