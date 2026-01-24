@@ -265,10 +265,10 @@ function zawaarudo(seconds) {
 /**
  * @param task
  * @param {Array} range [min, max]
- * @param arguments
+ * @param args
  * @return {number} 返回 setTimeout() 的返回值
  */
-function setTimeoutInRange(task, range, ...arguments) {
+function setTimeoutInRange(task, range, ...args) {
     if (pause) {
         console.log(`Pause Retry()`);
         return
@@ -276,7 +276,7 @@ function setTimeoutInRange(task, range, ...arguments) {
     // 服务器似乎限制了 1000ms 的限制
     var timeout = randomInRange(range[0], range[1]);
     console.log(`Retrying in random timeout: ${timeout}`);
-    return setTimeout(task, timeout, ...arguments);
+    return setTimeout(task, timeout, ...args);
 }
 
 /**

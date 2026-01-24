@@ -22,10 +22,10 @@ const ACCOUNT_XBOX = 9;
 const ACCOUNT_STEAM = 1;
 const ACCOUNT_STEAM_ALT = 4;
 
+const ACQ_DATE = 'acq_date';
 
 (function () {
     'use strict';
-    console.log('Starting inject...');
     inject();
 })();
 
@@ -52,11 +52,11 @@ function injectSteam() {
         let name = document.querySelector('#appHubAppName').innerText;
         name = name.replace(/《(.*)》/, '$1')
         let currency = document.querySelector(`[itemprop="priceCurrency"]`)?.content;
-        if(!currency){
+        if (!currency) {
             currency = 'CNY';
         }
         var accountId = ACCOUNT_STEAM;
-        if(document.querySelector(`.persona.online`)?.innerText === 'woolenpants'){
+        if (document.querySelector(`.persona.online`)?.innerText === 'woolenpants') {
             accountId = ACCOUNT_STEAM_ALT;
         }
         var orgPrice = 0;
@@ -64,23 +64,23 @@ function injectSteam() {
         // 没打折
         var priceStr = document.querySelector(`.game_purchase_price.price`)?.dataset?.priceFinal;
         // 打折中
-        if(priceStr){
+        if (priceStr) {
             orgPrice = priceStr;
             acq_price = orgPrice;
-        }else{
+        } else {
             priceStr = div.querySelector('.discount_original_price')?.innerText;
-            if(priceStr){
+            if (priceStr) {
                 orgPrice = parseFloat(priceStr.replace(/[$¥]\s/, '')) * 100;
             }
             // 当前折后价格
             let finalPriceStr = div.querySelector('.discount_final_price')?.innerText;
-            if(finalPriceStr){
+            if (finalPriceStr) {
                 acq_price = parseFloat(finalPriceStr.replace(/[$¥]\s/, '')) * 100;
             }
         }
         var url = `${HOST}/pages/#/dio/main/games/new`
             + `?sku=${sku}&platform=steam&name=${name}&org_name=${name}&account_id=${accountId}`
-            + `&acq_method=buy&acq_date=${(new Date()).toDateString()}&currency=${currency}`
+            + `&acq_method=buy&acq_date=${getRecDate()}&currency=${currency}`
             + `&acq_price=${acq_price}&org_price=${orgPrice}&media_format=digital&region=CN`;
         console.log(url);
         GM_openInTab(url, false);
@@ -89,31 +89,31 @@ function injectSteam() {
 
 function injectXbox() {
     runWhenLoaded(`[class^='Price-module']`, priceTag => {
-       let priceStr = priceTag.innerText;
-       try {
-           // var sku = JSON.parse(document.querySelector(`#PageContent>div`).dataset['m']).pid;
-           var sku = document.location.pathname.match(/store\/(.*)/)[1];
-           var name = JSON.parse(document.querySelector(`#PageContent>div`).dataset['m']).prod;
-           name = name.replace(/《(.*)》/, '$1')
-           var currency = 'USD';
-           var region = 'US';
-           var regionText = priceStr.split('$')[0];
-           if(regionText === 'HK'){
-               currency = 'HKD';
-               region = 'HK';
-           }
-           var orgPrice = priceStr.split('$')[1];
-           orgPrice = parseInt(parseFloat(orgPrice) * 100);
-           var url = `${HOST}/pages/#/dio/main/games/new`
-               + `?sku=${sku}&platform=xbox&name=${name}&org_name=${name}&account_id=${ACCOUNT_XBOX}`
-               + `&acq_method=vip&acq_date=${(new Date()).toDateString()}&currency=${currency}`
-               + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=${region}`
-           console.log(url);
-           GM_openInTab(url, false);
-       }catch (e) {
-           console.log(e);
-           alert('获取游戏信息出错!' + e.message)
-       }
+        let priceStr = priceTag.innerText;
+        try {
+            // var sku = JSON.parse(document.querySelector(`#PageContent>div`).dataset['m']).pid;
+            var sku = document.location.pathname.match(/store\/(.*)/)[1];
+            var name = JSON.parse(document.querySelector(`#PageContent>div`).dataset['m']).prod;
+            name = name.replace(/《(.*)》/, '$1')
+            var currency = 'USD';
+            var region = 'US';
+            var regionText = priceStr.split('$')[0];
+            if (regionText === 'HK') {
+                currency = 'HKD';
+                region = 'HK';
+            }
+            var orgPrice = priceStr.split('$')[1];
+            orgPrice = parseInt(parseFloat(orgPrice) * 100);
+            var url = `${HOST}/pages/#/dio/main/games/new`
+                + `?sku=${sku}&platform=xbox&name=${name}&org_name=${name}&account_id=${ACCOUNT_XBOX}`
+                + `&acq_method=vip&acq_date=${getRecDate()}&currency=${currency}`
+                + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=${region}`
+            console.log(url);
+            GM_openInTab(url, false);
+        } catch (e) {
+            console.log(e);
+            alert('获取游戏信息出错!' + e.message)
+        }
     });
 }
 
@@ -142,13 +142,13 @@ function injectEpic() {
             //     .querySelector('div>span').innerText.substr(3)) * 100
             let orgPrice = 0;
             let priceStr = document.querySelector('aside>div>div').innerText.match(/[$¥](.*)\n/);
-            if(priceStr && priceStr.length > 0){
+            if (priceStr && priceStr.length > 0) {
                 priceStr = priceStr[1];
                 orgPrice = parseInt(parseFloat(priceStr) * 100);
             }
             var url = `${HOST}/pages/#/dio/main/games/new`
                 + `?sku=${sku}&platform=epic&name=${name}&org_name=${name}&account_id=${accountId}`
-                + `&acq_method=free&acq_date=${(new Date()).toDateString()}&currency=${currency}`
+                + `&acq_method=free&acq_date=${getRecDate()}&currency=${currency}`
                 + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=${region}`
             console.log(url);
             GM_openInTab(url, false);
@@ -159,4 +159,16 @@ function injectEpic() {
     } else {
         alert('未找到游戏详情!');
     }
+}
+
+function getRecDate() {
+    let date = getQuery(ACQ_DATE);
+    if (date == null) {
+        date = (new Date()).toLocaleDateString();
+    } else { // 用完删除
+        date = (new Date(Date.parse(date))).toLocaleDateString();
+        // GM_deleteValue(REC_DATE);
+    }
+    console.log(`acq_date: ${date}`);
+    return date;
 }
