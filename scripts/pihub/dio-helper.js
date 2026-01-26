@@ -41,7 +41,7 @@ async function injectHl2b() {
     console.log(`Inject img copy btn`);
     await waitForEle(`.contain_in ul>li>div`);
     // 需要等一秒，否则会被覆盖移除
-    await sleep(1_000);
+    await sleep(1_200);
     document.querySelectorAll(`.contain_in ul>li>div`).forEach(card => {
         let copyDiv = document.createElement('div');
         copyDiv.class = 'cover-copy-btn';
