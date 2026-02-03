@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      1.2.0
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
 // @match        https://www.xbox.com/*/games/store/*
 // @match        https://store.steampowered.com/app/*
+// @match        https://www.gog.com/en/game/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @run-at       context-menu
@@ -42,6 +43,9 @@ function inject() {
             break
         case 'store.steampowered.com':
             injectSteam();
+            break
+        case 'www.gog.com':
+            injectGOG();
             break
     }
 }
@@ -161,12 +165,29 @@ function injectEpic() {
     }
 }
 
+function injectGOG() {
+    const accountId = 7;
+    const sku = window.location.pathname.split('/').pop();
+    const name = document.querySelector('meta[property="og:title"]')?.content;
+    // const acqPrice = productcardData?.cardProduct?.price?.finalAmount;
+    let orgPrice = productcardData?.cardProduct?.price?.baseAmount;
+    orgPrice = orgPrice ? parseInt(parseFloat(orgPrice) * 100) : null
+    const currency = productcardData?.currency;
+    const region = 'US';
+    var url = `${HOST}/pages/#/dio/main/games/new`
+        + `?sku=${sku}&platform=epic&name=${name}&org_name=${name}&account_id=${accountId}`
+        + `&acq_method=free&acq_date=${getRecDate()}&currency=${currency}`
+        + `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=${region}`
+    console.log(url);
+    GM_openInTab(url, false);
+}
+
 function getRecDate() {
     let date = getQuery(ACQ_DATE);
     if (date == null) {
-        date = (new Date()).toLocaleDateString();
+        date = (new Date()).toISOString();
     } else { // 用完删除
-        date = (new Date(Date.parse(date))).toLocaleDateString();
+        date = (new Date(Date.parse(date))).toISOString();
         // GM_deleteValue(REC_DATE);
     }
     console.log(`acq_date: ${date}`);
