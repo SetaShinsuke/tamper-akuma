@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ${SCRIPT_NAME}
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.1.0
 // @description  Description here
 // @author       Akuma
 // @match        ${MATCH_URL}

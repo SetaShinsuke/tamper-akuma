@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EpicOrder2Store
 // @namespace    http://tampermonkey.net/
-// @version      0.1.2
+// @version      0.1.3
 // @description  订单页点击游戏标题跳转到商店搜索
 // @author       Akuma
 // @match        https://www.epicgames.com/account/transactions/purchases*
@@ -36,7 +36,7 @@ async function injectPurchases() {
     injectLinks();
     // 翻页1s后重新注入
     ['#prev-btn', '#next-btn'].forEach(btnId => {
-        document.querySelectorAll(btnId).addEventListener('click', async _ => {
+        document.querySelector(btnId).addEventListener('click', async _ => {
             await sleep(1_000);
             injectLinks();
         });
@@ -47,7 +47,7 @@ function injectLinks() {
     document.querySelectorAll(`td>span>span.MuiBox-root>span.MuiTypography-root`).forEach(titleDiv => {
         // 按名称搜索
         let name = titleDiv.innerText;
-        name = name.replace(/[《》]/, '');
+        name = name.replace(/[《》]/g, '');
         let link = `https://store.epicgames.com/zh-CN/browse?q=${name}&sortBy=relevancy&sortDir=DESC`;
         // link += `#record_date=${date}`;
         // Epic 会把参数过滤掉，因此复制日期到剪贴板
