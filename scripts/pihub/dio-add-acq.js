@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.2.1
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -24,7 +24,7 @@ const ACCOUNT_STEAM_ALT = 4;
 
 const ACQ_DATE = 'acq_date';
 
-(function() {
+(function () {
     'use strict';
     inject();
 })();
@@ -118,6 +118,7 @@ function injectXbox() {
 }
 
 function injectEpic() {
+    const platform = `gog`;
     let skuPath = window.location.pathname.match(/\/p\/(.*)/);
     if (skuPath) {
         let sku = skuPath[1];
@@ -147,7 +148,7 @@ function injectEpic() {
                 orgPrice = parseInt(parseFloat(priceStr) * 100);
             }
             var url = `${HOST}/pages/#/dio/main/games/new` +
-                `?sku=${sku}&platform=epic&name=${name}&org_name=${name}&account_id=${accountId}` +
+                `?sku=${sku}&platform=${platform}&name=${name}&org_name=${name}&account_id=${accountId}` +
                 `&acq_method=free&acq_date=${getRecDate()}&currency=${currency}` +
                 `&acq_price=0&org_price=${orgPrice}&media_format=digital&region=${region}`
             console.log(url);
