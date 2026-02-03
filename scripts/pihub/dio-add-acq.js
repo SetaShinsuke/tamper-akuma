@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.2.2
+// @version      1.2.3
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
 // @match        https://www.xbox.com/*/games/store/*
 // @match        https://store.steampowered.com/app/*
-// @match        https://www.gog.com/en/game/*
+// @match        https://www.gog.com/*/game/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @run-at       context-menu
