@@ -15,7 +15,7 @@
 const HOST = 'http://192.168.0.120:9292';
 const ACCOUNT_WEREAD = 16;
 
-(function() {
+(function () {
     'use strict';
     console.log('Starting inject...');
     injectWeread();
@@ -34,12 +34,27 @@ function injectWeread() {
         let name = document.querySelector(`#outline_book_detail_header_title`).innerText;
         let author = document.querySelector(`.outline_book_detail_header_author>a`).innerText;
         let sku = location.pathname.split('/').pop();
+        let isbn = getISBN();
 
         let acq_method = `buy`;
         acq_method = acq_method + `&acq_from=weread`
-        let url = `${HOST}/pages/#/dio/main/books/new` + `?name=${name}&author=${author}&sku=${sku}&cover_url=${coverUrl}` +
-            `&account_id=${ACCOUNT_WEREAD}&acq_method=${acq_method}&acq_price=0&platform=weread&region=CN&media_format=digital`;
+        let url = `${HOST}/pages/#/dio/main/books/new` + `?name=${name}&author=${author}&sku=${sku}&isbn=${isbn}` +
+            `&account_id=${ACCOUNT_WEREAD}&acq_method=${acq_method}&acq_price=0&platform=weread&region=CN&media_format=digital` + 
+            `&cover_url=${coverUrl}`;
         // 打开页面
         GM_openInTab(url, false);
     }, 0);
+}
+
+function getISBN() {
+    const script = document.querySelector('script[type="application/ld+json"]');
+    let isbn = "";
+    try {
+        const data = JSON.parse(script.textContent);
+        console.log(data);
+        isbn = data['isbn'];
+    } catch (e) {
+        console.log(e);
+    }
+    return isbn;
 }
