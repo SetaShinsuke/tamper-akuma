@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Dio-Weread
 // @namespace    http://tampermonkey.net/
-// @version      0.1.1
+// @version      0.1.2
 // @description  Description here
 // @author       Akuma
 // @match       https://weread.qq.com/web/reader/*
@@ -39,7 +39,7 @@ function injectWeread() {
         let acq_method = `buy`;
         acq_method = acq_method + `&acq_from=weread`
         let url = `${HOST}/pages/#/dio/main/books/new` + `?name=${name}&author=${author}&sku=${sku}&isbn=${isbn}` +
-            `&account_id=${ACCOUNT_WEREAD}&acq_method=${acq_method}&acq_price=0&platform=weread&region=CN&media_format=digital` + 
+            `&account_id=${ACCOUNT_WEREAD}&acq_method=${acq_method}&acq_price=0&platform=weread&region=CN&media_format=digital` +
             `&cover_url=${coverUrl}`;
         // 打开页面
         GM_openInTab(url, false);
