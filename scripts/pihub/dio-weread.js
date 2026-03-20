@@ -36,8 +36,8 @@ function injectWeread() {
         let sku = location.pathname.split('/').pop();
         let isbn = getISBN();
 
-        let acq_method = `buy`;
-        acq_method = acq_method + `&acq_from=weread`
+        let acq_method = `free`;
+        // acq_method = acq_method + `&acq_from=weread`
         let url = `${HOST}/pages/#/dio/main/books/new` + `?name=${name}&author=${author}&sku=${sku}&isbn=${isbn}` +
             `&account_id=${ACCOUNT_WEREAD}&acq_method=${acq_method}&acq_price=0&platform=weread&region=CN&media_format=digital` +
             `&cover_url=${coverUrl}`;
