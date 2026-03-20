@@ -22,10 +22,15 @@ const FILTER_DEFAULT = ['BELLWAY STATION', 'BENCH', 'VENTRICA STATION', 'MEMORY 
 })();
 
 function inject() {
-    addBtn('筛选地图', {'bottom': '1%', 'left': '1%'}, _ => {
+    addButton('筛选地图', {'bottom': '1%', 'left': '1%'}, _ => {
         // 隐藏所有
         document.querySelector(`#hide-all`).click();
         // 进行筛选
-
+        document.querySelectorAll(`.category-item`).forEach(item => {
+            let title = item.querySelector(`.title`).textContent;
+            if (FILTER_DEFAULT.includes(title.toUpperCase())) {
+                item.click();
+            };
+        });
     }, 0);
 };
