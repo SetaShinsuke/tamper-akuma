@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         BliveExport
 // @namespace    http://tampermonkey.net/
-// @version      0.1.0
+// @version      0.1.1
 // @description  导出直播弹幕数据
 // @author       Akuma
 // @match        https://link.bilibili.com/p/center/index*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
-// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/bilibili/blive-export-data.js
-// @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/bilibili/blive-export-data.js
+// @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/blive-export-data.js
+// @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/blive-export-data.js
 // ==/UserScript==
 
 // const LINK = `
