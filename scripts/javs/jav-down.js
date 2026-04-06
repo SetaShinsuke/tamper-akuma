@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.12
+// @version      0.13
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
 // @match        https://tktube.com/*/embed/*
 // @match        https://javtiful.com/embed/*
-// @match        https://missav.com/*
+// @match        https://missav.ai/*
 // @match        https://rule34video.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM.setClipboard
@@ -40,7 +40,7 @@ var HEADERS = {
     // 注入 Netter
     unsafeWindow.NETTER = new NetHelper();
     // Missav 单独拿出来
-    if (location.hostname === 'missav.com') {
+    if (location.hostname === 'missav.ai') {
         fetchMissUrls();
         return;
     } else if (location.hostname === 'rule34video.com') {
@@ -247,6 +247,7 @@ function fetchFileSize(finalUrl) {
 }
 
 function fetchMissUrls() {
+    // 或者（需要点击播放后） document.querySelector('.plyr__preview-thumb__image-container img').src
     runWhenLoaded('.plyr__controls', ctrls => {
         let urls = [];
         ['1080p', '720p', '480p', '360p'].forEach(quality => {

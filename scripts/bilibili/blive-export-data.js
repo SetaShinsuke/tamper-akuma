@@ -39,7 +39,8 @@ function inject() {
         };
 
         // 爬取弹幕数据并保存
-        let date = document.querySelector(`.room-info .time span`).innerText.split(' ')[0];
+        // let date = document.querySelector(`.room-info .time span`).innerText.split(' ')[0];
+        let date = document.querySelector(`.room-info .time span`).innerText.replaceAll(' ', '_').replaceAll(':', '-');
         let title = `直播弹幕_${date}`;
         let text = ``;
         let items = document.querySelectorAll(`.venue-record-con .rank-list .rank-list-item`);
