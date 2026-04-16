@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.38
+// @version      0.39
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -57,7 +57,7 @@ function inject() {
                 forkRule34();
                 break;
             case 'www.javhdporn.net':
-                forkJHD();
+                forkJHP();
                 break;
             // region //+deprecated sites
             case 'javgg.net':
@@ -197,7 +197,7 @@ function forkMis() {
     forkIt(data);
 }
 
-function forkJHD() {
+function forkJHP() {
     let no = location.pathname.replace(/\/video\/(.*?)\//, '$1');
     let hostname = location.hostname;
     let uid = location.pathname;

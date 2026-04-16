@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.25
+// @version        0.26
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -14,6 +14,7 @@
 // @match          https://missav.ws/*
 // @match          https://missav.ai/*
 // @match          https://missav.live/*
+// @match          https://www.javhdporn.net/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          GM_openInTab
 // @grant          GM_xmlhttpRequest
@@ -50,7 +51,10 @@ const FAKE_AD_ID = 'zlVjUDdSLHIP';
         case 'missav.ai':
         case 'missav.live':
             injectMis();
-            break
+            break;
+        case 'www.javhdporn.net':
+            injectJHP()
+            break;
         // region deprecated
         case 'javgg.net':
             injectGG();
@@ -253,7 +257,7 @@ function injectMis() {
     }
 }
 
-function injectJHD() {
+function injectJHP() {
     let no = location.pathname.replace(/\/video\/(.*?)\//, '$1');
     no.replace('-decensored', '');
     checkForked(no);
@@ -262,6 +266,20 @@ function injectJHD() {
     ad.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation(); // Stops the click from affecting parent elements
+    });
+    // 搜索快捷键
+    runWhenLoaded(`.input-group-field`, inputSearch => {
+        document.addEventListener('keydown', e => {
+            if (e.code !== 'Slash') {
+                return
+            }
+            console.log(`click, key code: ${e.code}`);
+            // 按下斜杠"/"
+            setTimeout(_ => {
+                inputSearch.focus();
+                inputSearch.select();
+            }, 250);
+        });
     });
 }
 
