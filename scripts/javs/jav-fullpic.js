@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.26
+// @version        0.27
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -257,29 +257,33 @@ function injectMis() {
     }
 }
 
-function injectJHP() {
+async function injectJHP() {
     let no = location.pathname.replace(/\/video\/(.*?)\//, '$1');
     no.replace('-decensored', '');
     checkForked(no);
-    // 屏蔽广告
-    let ad = document.querySelector('.under-player-ad-mobile');
-    ad.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation(); // Stops the click from affecting parent elements
-    });
     // 搜索快捷键
     runWhenLoaded(`.input-group-field`, inputSearch => {
         document.addEventListener('keydown', e => {
+            console.log(e.code);
             if (e.code !== 'Slash') {
                 return
             }
             console.log(`click, key code: ${e.code}`);
+            const btnSearch = document.querySelector(`.fa-search`);
+            if (window.getComputedStyle(inputSearch).display === 'none') {
+                btnSearch?.click();
+            }
             // 按下斜杠"/"
-            setTimeout(_ => {
-                inputSearch.focus();
-                inputSearch.select();
-            }, 250);
+            e.preventDefault();
+            inputSearch.focus();
+            inputSearch.select();
         });
+    });
+    // 屏蔽广告
+    let ad = await waitForEle('.under-player-ad-mobile');
+    ad?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Stops the click from affecting parent elements
     });
 }
 
