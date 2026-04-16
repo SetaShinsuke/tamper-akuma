@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.24
+// @version        0.25
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -79,7 +79,7 @@ async function checkForked(javNo) {
     console.log(`Already forked count: ${resJson.javs}`);
     let btnId;
     if (resJson.javs > 0) {
-        btnId = addButton('已Fork', {'bottom': '1%'}, _ => {
+        btnId = addButton('已Fork', { 'bottom': '1%' }, _ => {
             let piJav = PI_JAV + `${no}`;
             try {
                 GM_openInTab(piJav, false);
@@ -89,7 +89,7 @@ async function checkForked(javNo) {
             }
         });
     } else {
-        btnId = addButton('未Fork', {'bottom': '1%', 'background': 'grey'}, null, 0);
+        btnId = addButton('未Fork', { 'bottom': '1%', 'background': 'grey' }, null, 0);
     }
     console.log(`CheckFork btn id: ${btnId}`);
 }
@@ -251,6 +251,18 @@ function injectMis() {
         no = no[0];
         checkForked(no);
     }
+}
+
+function injectJHD() {
+    let no = location.pathname.replace(/\/video\/(.*?)\//, '$1');
+    no.replace('-decensored', '');
+    checkForked(no);
+    // 屏蔽广告
+    let ad = document.querySelector('.under-player-ad-mobile');
+    ad.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Stops the click from affecting parent elements
+    });
 }
 
 // region deprecated sites

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.37
+// @version      0.38
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -20,6 +20,7 @@
 // @match        https://missav.ai/*
 // @match        https://missav.live/*
 // @match        https://rule34video.com/video/*
+// @match        https://www.javhdporn.net/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -42,19 +43,22 @@ function inject() {
         switch (window.location.hostname) {
             case 'tktube.com':
                 forkTkTube()
-                break
+                break;
             case 'javtiful.com':
                 forkTiful();
-                break
+                break;
             case 'missav.com':
             case 'missav.ws':
             case 'missav.ai':
             case 'missav.live':
                 forkMis();
-                break
+                break;
             case 'rule34video.com':
                 forkRule34();
-                break
+                break;
+            case 'www.javhdporn.net':
+                forkJHD();
+                break;
             // region //+deprecated sites
             case 'javgg.net':
                 forkJavGG();
@@ -82,7 +86,7 @@ function inject() {
             // endregion
         }
     }
-    addButton(`FORK IT!`, {'left': '1%', 'bottom': '1%'}, onClick, 0);
+    addButton(`FORK IT!`, { 'left': '1%', 'bottom': '1%' }, onClick, 0);
 }
 
 function forkTiful() {
@@ -193,6 +197,31 @@ function forkMis() {
     forkIt(data);
 }
 
+function forkJHD() {
+    let no = location.pathname.replace(/\/video\/(.*?)\//, '$1');
+    let hostname = location.hostname;
+    let uid = location.pathname;
+    let tags = ['JHD'];
+    if (/decensored/.test(uid)) {
+        tags.push('unreduce');
+    }
+    let data = {
+        title: no,
+        site: hostname,
+        uid: uid,
+        auto_sync_cover: false
+    };
+    console.log('tags: ', tags);
+    if (tags?.length > 0) {
+        data.tags = tags.join('-');
+    }
+    let cover = document.querySelector('#video-player-area img').src;
+    data.cover = cover;
+    data.wrapper = window.location.href.replace(/\?.*/, '');
+    console.log(data);
+    forkIt(data);
+}
+
 function forkRule34() {
     let no = location.pathname.replace(/\/video\/(.*?)\/(.*?)\//, '$2_$1');
     let author = document.querySelector('span.name').innerText;
@@ -215,6 +244,7 @@ function forkRule34() {
     console.log(data);
     forkIt(data);
 }
+
 
 // region //+deprecated sites
 function forkJavTk() {
