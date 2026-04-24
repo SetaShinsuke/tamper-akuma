@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.40
+// @version      0.41
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -201,7 +201,7 @@ function forkJHP() {
     let no = location.pathname.replace(/\/video\/(.*?)\//, '$1');
     let hostname = location.hostname;
     let uid = location.pathname;
-    let tags = ['JHD'];
+    let tags = ['JHP'];
     if (/decensored/.test(uid)) {
         tags.push('unreduce');
     }
