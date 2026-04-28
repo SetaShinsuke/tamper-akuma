@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.27
+// @version        0.28
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -106,9 +106,10 @@ function injectFul() {
         checkForked(no);
     }
     // 搜索快捷键
-    runWhenLoaded(`input[name='search_query']`, inputSearch => {
+    // runWhenLoaded(`input[name='search_query']`, inputSearch => {
+    runWhenLoaded(`input.form-control[name='q']`, inputSearch => {
         document.addEventListener('keydown', e => {
-            const btnSearch = document.querySelector(`button.search-here`);
+            const btnSearch = document.querySelector(`button.front-search-toggle`);
             if (e.code !== 'Slash') {
                 return
             }
@@ -137,17 +138,23 @@ function injectFul() {
         // container.insertBefore(fakeDiv, container.firstChild);
         return
     }
-    runWhenLoaded('.container-lg', mainDiv => {
+    runWhenLoaded('.front-section .container-xxl', mainDiv => {
+        console.log('set max width: 100%');
         mainDiv.style['max-width'] = '100%';
-        document.querySelectorAll('section .card')?.forEach(card => {
-            let coverUrl = card.querySelector('img').getAttribute('data-src');
+        // document.querySelectorAll('section .card')?.forEach(card => {
+        // 点击查看封面
+        document.querySelectorAll('section .front-video-card')?.forEach(card => {
+            // let coverUrl = card.querySelector('img').getAttribute('data-src');
+            let coverUrl = card.querySelector('img').src;
             // card.querySelector('.video-views').setAttribute('href', cover);
             let a = document.createElement('a');
             a.href = coverUrl;
             a.innerText = 'Pic';
-            a.classList.add('video-addtime');
+            // a.classList.add('video-addtime');
+            a.classList.add('front-video-stat');
             a.style.textDecoration = 'none';
-            card.querySelector('.video-views')?.appendChild(a);
+            // card.querySelector('.video-views')?.appendChild(a);
+            card.querySelector('.front-video-stat')?.appendChild(a);
         });
     });
 }
