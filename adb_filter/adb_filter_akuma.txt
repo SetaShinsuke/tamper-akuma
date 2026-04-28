@@ -15,6 +15,7 @@ mail.qq.com###table.maillist_gg_bar
 ! J
 javtiful.com###div.x-video-button
 javtiful.com###div.theeffect section
+javtiful.com#?#article.front-ad-card
 
 ! WB recommend
 ! Copy rules with Chinese

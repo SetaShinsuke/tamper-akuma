@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.28
+// @version        0.29
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -44,7 +44,7 @@ const FAKE_AD_ID = 'zlVjUDdSLHIP';
             injectTube();
             break;
         case 'javtiful.com':
-            injectFul();
+            injectTiful();
             break;
         case 'missav.com':
         case 'missav.ws':
@@ -99,11 +99,16 @@ async function checkForked(javNo) {
 }
 
 // --------------------------
-function injectFul() {
+function injectTiful() {
     // 播放页
     if (/\/video\//.test(window.location.pathname)) {
         let no = window.location.pathname.split('/').pop();
         checkForked(no);
+        // 屏蔽广告？
+        runWhenLoaded(`.front-player-ad-wrap`, adContainer => {
+            adContainer.classList?.remove('front-player-ad-wrap');
+            console.log(`Ad container removed!`);
+        });
     }
     // 搜索快捷键
     // runWhenLoaded(`input[name='search_query']`, inputSearch => {
@@ -139,8 +144,9 @@ function injectFul() {
         return
     }
     runWhenLoaded('.front-section .container-xxl', mainDiv => {
-        console.log('set max width: 100%');
-        mainDiv.style['max-width'] = '100%';
+        // console.log('set max width: 100%');
+        // 暂时不修改宽度
+        // mainDiv.style['max-width'] = '100%';
         // document.querySelectorAll('section .card')?.forEach(card => {
         // 点击查看封面
         document.querySelectorAll('section .front-video-card')?.forEach(card => {
@@ -152,6 +158,7 @@ function injectFul() {
             a.innerText = 'Pic';
             // a.classList.add('video-addtime');
             a.classList.add('front-video-stat');
+            a.target = '_blank';
             a.style.textDecoration = 'none';
             // card.querySelector('.video-views')?.appendChild(a);
             card.querySelector('.front-video-stat')?.appendChild(a);

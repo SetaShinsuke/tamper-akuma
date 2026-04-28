@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.41
+// @version      0.42
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -90,9 +90,10 @@ function inject() {
 }
 
 function forkTiful() {
-    // runWhenLoaded('#video-section .share-btn', shareBtn => {
-    let shareBtn = document.querySelector('#video-section .share-btn');
-    let playerUrl = shareBtn.getAttribute('data-embed-url');
+    // let shareBtn = document.querySelector('#video-section .share-btn');
+    // let playerUrl = shareBtn.getAttribute('data-embed-url');
+    // 2026.4.28 没有 embed 了，只能用完整源网址
+    let playerUrl = window.location.href.split('?')[0];
     let no = window.location.pathname.split('/').pop();
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
@@ -109,19 +110,18 @@ function forkTiful() {
         auto_sync_cover: false,
         tags: 'hd'
     };
-    let cover = document.querySelector(`#player>.player-wrapper`)?.style['background']?.match(/url\("(.*)"\)/);
-    if (cover?.length > 1) {
-        cover = cover[1];
-    } else {
-        cover = document.querySelector("meta[property='og:image']").getAttribute("content");
-    }
+    // let cover = document.querySelector(`#player>.player-wrapper`)?.style['background']?.match(/url\("(.*)"\)/);
+    // if (cover?.length > 1) {
+    //     cover = cover[1];
+    // } else {
+    let cover = document.querySelector("meta[property='og:image']").getAttribute("content");
+    // }
     if (cover) {
         data.cover = cover;
     }
     data.wrapper = window.location.href.replace(/\?.*/, '');
     console.log(data);
     forkIt(data);
-    // });
 }
 
 function forkTkTube() {

@@ -171,6 +171,11 @@ function fetchTifulUrl(doSize = false) {
     });
 }
 
+function fetchTifulUrlNew(){
+    // 07939eeaaead6385bd83270993ad46e15da997e95f1b9af123f7e86a4a86823b
+    let videoUrl = document.querySelector(`video source`).src;
+}
+
 function fetchFileSize(finalUrl) {
     console.log(`Fetch file size, url: ${finalUrl}`);
     return new Promise((resolve, reject) => {
