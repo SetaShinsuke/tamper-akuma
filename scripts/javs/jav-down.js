@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.13
+// @version      0.14
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
 // @match        https://tktube.com/*/embed/*
 // @match        https://javtiful.com/embed/*
+// @match        https://javtiful.com/video/*
 // @match        https://missav.ai/*
 // @match        https://rule34video.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -41,10 +42,18 @@ var HEADERS = {
     unsafeWindow.NETTER = new NetHelper();
     // Missav 单独拿出来
     if (location.hostname === 'missav.ai') {
-        fetchMissUrls();
+        // fetchMissUrls();
+        console.log(`暂时禁用 fetchMissUrls() `);
         return;
     } else if (location.hostname === 'rule34video.com') {
         fetchRule34();
+        return;
+    }
+
+    // 跳过 tiful embed 页面
+    let isEmbed = /embed/.test(window.location.pathname);
+    if (location.hostname === 'javtiful.com' && isEmbed) {
+        console.log(`Javtiful embed deprecated!`);
         return;
     }
     // 添加按钮
@@ -61,7 +70,7 @@ var HEADERS = {
                 });
                 break;
             case 'javtiful.com':
-                await fetchTifulUrl(doSize).then(res => {
+                await fetchTifulUrl(doSize, isEmbed).then(res => {
                     videoUrl = res.url;
                     size = res.size;
                 });
@@ -82,12 +91,14 @@ var HEADERS = {
         console.log(`link:\n`, idmLink);
     };
 
-    addButton('下载视频', {'left': '1%'}, e => {
+    addButton('下载视频', { 'left': '1%' }, e => {
         onClick(e, false);
     });
-    addButton('获取视频大小', {'left': '1%', 'top': '8%'}, e => {
+    addButton('获取视频大小', { 'left': '1%', 'top': '8%' }, e => {
         onClick(e, true);
     });
+
+    console.log(`Buttons added`);
 })();
 
 function fetchTubeUrl(doSize = false) {
@@ -134,46 +145,64 @@ function fetchTubeUrl(doSize = false) {
     })
 }
 
-function fetchTifulUrl(doSize = false) {
+function fetchTifulUrl(doSize = false, isEmbed = false) {
     return new Promise((resolve, reject) => {
-        let videoId = video_id;
-        console.log(`videoId: ${videoId}`);
-        GM_xmlhttpRequest({
-            method: 'POST',
-            url: API_TIFUL,
-            headers: HEADERS,
-            data: `video_id=${videoId}`,
-            onload: function (response) {
-                // unsafeWindow.res = response;
-                console.log(response.responseText);
-                var resJson = JSON.parse(response.responseText);
-                let finalUrl = resJson.playlists;
-                if (!doSize) {
-                    resolve({
-                        url: finalUrl,
-                        size: ''
-                    });
-                    return
+        let finalUrl;
+
+        if (isEmbed && video_id) {
+            // isEmbed = true 时，通过 POST 方法获取 finalUrl
+            let videoId = video_id;
+            console.log(`videoId: ${videoId}`);
+
+            GM_xmlhttpRequest({
+                method: 'POST',
+                url: API_TIFUL,
+                data: `video_id=${videoId}`,
+                headers: HEADERS,
+                onload: function (response) {
+                    console.log(response.responseText);
+                    var resJson = JSON.parse(response.responseText);
+                    finalUrl = resJson.playlists;
+
+                    processFinalUrl(finalUrl);
+                },
+                onerror: function (err) {
+                    console.log(`获取视频地址出错:`);
+                    console.log(err);
+                    reject(err);
                 }
-                fetchFileSize(finalUrl).then(_size => {
-                    resolve({
-                        url: finalUrl,
-                        size: _size
-                    });
-                }).catch(err => reject(err));
-            },
-            onerror: function (err) {
-                console.log(`获取视频地址出错:`);
-                console.log(err);
-                reject(err);
+            });
+        } else {
+            // isEmbed = false 时，直接从 video source 获取
+            finalUrl = document.querySelector(`video source`).src;
+            processFinalUrl(finalUrl);
+        }
+
+        function processFinalUrl(url) {
+            if (!doSize) {
+                resolve({
+                    url: url,
+                    size: ''
+                });
+                return;
             }
-        });
+            fetchFileSize(url).then(_size => {
+                resolve({
+                    url: url,
+                    size: _size
+                });
+            }).catch(err => reject(err));
+        }
     });
 }
 
-function fetchTifulUrlNew(){
+function fetchTifulUrlNew() {
     // 07939eeaaead6385bd83270993ad46e15da997e95f1b9af123f7e86a4a86823b
     let videoUrl = document.querySelector(`video source`).src;
+
+    // return new Promise((resolve, reject) => {
+
+    // };
 }
 
 function fetchFileSize(finalUrl) {
