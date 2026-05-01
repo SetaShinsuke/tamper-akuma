@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.14
+// @version      0.15
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
 // @match        https://tktube.com/*/embed/*
 // @match        https://javtiful.com/embed/*
-// @match        https://javtiful.com/video/*
+// @match        https://javtiful.com/video/*?v_name=*
 // @match        https://missav.ai/*
 // @match        https://rule34video.com/video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
