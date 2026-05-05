@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.43
+// @version      0.44
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -70,19 +70,19 @@ function inject() {
                 // todo: 在这里操作
                 // enableConsole();
                 forkJavGuru();
-                break
+                break;
             case 'javtk.com':
                 forkJavTk();
-                break
+                break;
             case 'javcl.com':
                 forkJavCl();
-                break
+                break;
             case 'asianclub.tv':
                 forkJavAS();
-                break
+                break;
             case 'javgiga.com':
                 forkGiga();
-                break
+                break;
             // endregion
         }
     }
@@ -198,12 +198,13 @@ function forkMis() {
 }
 
 function forkJHP() {
-    let no = location.pathname.replace(/\/video\/(.*?)\//, '$1');
+    let no = location.pathname.replace(/(\/v\d+)?\/video\/(.*?)\//, '$2');
     let hostname = location.hostname;
     let uid = location.pathname;
     let tags = ['JHP'];
     if (/decensored/.test(uid)) {
         tags.push('unreduce');
+        no = no.replace('-decensored', '');
     }
     let data = {
         title: no,
