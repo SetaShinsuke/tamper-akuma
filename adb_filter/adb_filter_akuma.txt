@@ -16,6 +16,7 @@ mail.qq.com###table.maillist_gg_bar
 javtiful.com###div.x-video-button
 javtiful.com###div.theeffect section
 javtiful.com#?#article.front-ad-card
+javtiful.com#?#article.front-partner-card
 ||seccc.jasjas.xyz^
 
 ! WB recommend
@@ -25,6 +26,9 @@ javtiful.com#?#article.front-ad-card
 ! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(___RC___))
 weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag-img"]>img)
 weibo.com###div[class^="TipsAd_bottomGap_"]
+
+! Other
+eshop-prices.com##tr.ads
 
 ! local
 laookkfknpbbblfpciffpaejjkokdgca###div.modal-container
