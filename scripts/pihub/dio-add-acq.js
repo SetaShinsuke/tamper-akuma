@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.2.3
+// @version      1.2.4
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -129,7 +129,9 @@ function injectEpic() {
         var currency = 'USD';
         try {
             let data = JSON.parse(document.querySelector('#_schemaOrgMarkup-Product').innerText);
-            currency = data.offers[0].priceCurrency;
+            // currency = data.offers[0]?.priceCurrency;
+            currency = data.offers?.priceCurrency;
+            currency = currency?currency:'USD';
             var accountId = ACCOUNT_EPIC;
             var region = 'US';
             if (currency === 'CNY') {
