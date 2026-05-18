@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.45
+// @version      0.46
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -100,6 +100,7 @@ function forkTiful() {
     // 2026.4.28 没有 embed 了，只能用完整源网址
     let playerUrl = window.location.href.split('?')[0];
     let no = window.location.pathname.split('/').pop();
+    no = no.replace(/-reducing-mosaic/, '');
     var text = `[${no}](${playerUrl}?v_name=${no}-)`;
     console.log(text);
     // copyToClipboard(text);

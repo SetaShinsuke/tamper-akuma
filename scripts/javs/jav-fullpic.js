@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.30
+// @version        0.31
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -15,6 +15,7 @@
 // @match          https://missav.ai/*
 // @match          https://missav.live/*
 // @match          https://www.javhdporn.net/*
+// @match          https://www.javdock.com/*video/*
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          GM_openInTab
 // @grant          GM_xmlhttpRequest
@@ -53,6 +54,7 @@ const FAKE_AD_ID = 'zlVjUDdSLHIP';
             injectMis();
             break;
         case 'www.javhdporn.net':
+        case 'www.javdock.com':
             injectJHP()
             break;
         // region deprecated
@@ -103,6 +105,7 @@ function injectTiful() {
     // 播放页
     if (/\/video\//.test(window.location.pathname)) {
         let no = window.location.pathname.split('/').pop();
+        no = no.replace(/-reducing-mosaic/, '');
         checkForked(no);
         // 屏蔽广告？
         // runWhenLoaded(`.front-player-ad-wrap`, adContainer => {
