@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.44
+// @version      0.45
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -21,6 +21,7 @@
 // @match        https://missav.live/*
 // @match        https://rule34video.com/video/*
 // @match        https://www.javhdporn.net/*video/*
+// @match        https://www.javdock.com/*video/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -33,12 +34,14 @@ const HOST = 'http://192.168.50.166:9292';
 (function () {
     // addButton("获取链接",{},()=>{
     'use strict';
+    console.log(`JAV FORK starting inject...`);
     inject();
     // });
 })();
 
 function inject() {
     blockAds();
+    console.log(`Inject buttons...`);
     let onClick = _ => {
         switch (window.location.hostname) {
             case 'tktube.com':
@@ -57,6 +60,7 @@ function inject() {
                 forkRule34();
                 break;
             case 'www.javhdporn.net':
+            case 'www.javdock.com':
                 forkJHP();
                 break;
             // region //+deprecated sites
@@ -87,6 +91,7 @@ function inject() {
         }
     }
     addButton(`FORK IT!`, { 'left': '1%', 'bottom': '1%' }, onClick, 0);
+    console.log(`Buttons injected`);
 }
 
 function forkTiful() {
@@ -216,7 +221,9 @@ function forkJHP() {
     if (tags?.length > 0) {
         data.tags = tags.join('-');
     }
-    let cover = document.querySelector('#video-player-area img').src;
+    // let cover = document.querySelector('#video-player-area img').src;
+    let cover = document.querySelector('#video-player-area>div').style['background'];
+    cover = cover.replace(/url\("(.*)"\).*/, '$1');
     data.cover = cover;
     data.wrapper = window.location.href.replace(/\?.*/, '');
     console.log(data);
