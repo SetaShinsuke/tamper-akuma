@@ -17,3 +17,5 @@
 [（失效）爱给网素材下载](https://greasyfork.org/zh-CN/scripts/527208-%E7%88%B1%E7%BB%99%E7%BD%91%E9%9F%B3%E9%A2%91%E5%8A%A9%E6%89%8B)
 
 [Bilibili 视频点踩](https://greasyfork.org/zh-CN/scripts/487644-bilibili-%E5%93%94%E5%93%A9%E5%93%94%E5%93%A9%E8%A7%86%E9%A2%91%E7%82%B9%E8%B8%A9/code)
+
+[哔哩哔哩直播间挂机小助手](https://greasyfork.org/zh-CN/scripts/420971-%E5%93%94%E5%93%A9%E5%93%94%E5%93%A9%E7%9B%B4%E6%92%AD%E9%97%B4%E6%8C%82%E6%9C%BA%E5%B0%8F%E5%8A%A9%E6%89%8B/code)
