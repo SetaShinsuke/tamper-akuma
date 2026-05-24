@@ -52,7 +52,8 @@ function inject() {
             text = `${time}\n@${user}: ${content}\n\n` + text;
         });
         text = `${title}\n\n` + text;
-        saveTextFile(text, `直播弹幕_${date}.txt`);
+        let fileName = date.replace(/(\d\d)(\d\d)-(\d\d)-(\d\d)/, `$2$3$4_直播弹幕_$1$2-$3-$4`);
+        saveTextFile(text, fileName);
         toast(`弹幕已导出`);
         console.log(`弹幕已导出`);
     }, 0);
