@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.31
+// @version        0.32
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -28,6 +28,8 @@
 
 const API_SEARCH = `http://192.168.50.166:9292/api/javs?count=true&filter=`;
 const PI_JAV = `http://192.168.50.166:9292/pages/#/no_media/javs?filter=`;
+const API_FAV = `http://192.168.50.166:9292/api/joyuu/fav`;
+const API_ADD_FAV = API_FAV + `?name=`;
 
 const FAKE_AD_ID = 'zlVjUDdSLHIP';
 
@@ -100,8 +102,43 @@ async function checkForked(javNo) {
     console.log(`CheckFork btn id: ${btnId}`);
 }
 
+// 添加演员收藏
+async function addJoyuuFav(name) {
+    let netHelper = new NetHelper();
+
+    // 检查是否已收藏
+    console.log(`检查是否已收藏演员: ${name}`);
+    let resJson = await netHelper.get(API_FAV);
+    console.log(`收藏列表:`, resJson);
+
+    let isFavorited = resJson.names && resJson.names.includes(name);
+    console.log(`是否已收藏: ${isFavorited}`);
+
+    if (isFavorited) {
+        // 已收藏，显示灰色按钮
+        addButton(`已收藏`, { 'bottom': '1%', 'background': 'grey' }, null, 0);
+    } else {
+        // 未收藏，添加收藏按钮
+        let btnId = addButton(`收藏演员`, { 'bottom': '1%' }, async _ => {
+            let favAPI = API_ADD_FAV + name;
+            console.log(`Add new fav joyuu: ${name}`);
+            let addRes = await netHelper.post(favAPI);
+            console.log(`Fav added: `);
+            console.log(addRes);
+
+            // 更新按钮状态为已收藏
+            let btn = document.getElementById(btnId);
+            if (btn) {
+                btn.style.background = 'grey';
+                btn.innerText = '已收藏';
+            }
+            toast(`已添加收藏`);
+        }, 0);
+    }
+}
+
 // --------------------------
-function injectTiful() {
+async function injectTiful() {
     // 播放页
     if (/\/video\//.test(window.location.pathname)) {
         let no = window.location.pathname.split('/').pop();
@@ -112,6 +149,11 @@ function injectTiful() {
         //     adContainer.classList?.remove('front-player-ad-wrap');
         //     console.log(`Ad container removed!`);
         // });
+    }
+    // 演员页
+    if (/\/actress\//.test(window.location.pathname)) {
+        let name = window.location.pathname.replace('/actress/', '');
+        await addJoyuuFav(name);
     }
     // 搜索快捷键
     // runWhenLoaded(`input[name='search_query']`, inputSearch => {
