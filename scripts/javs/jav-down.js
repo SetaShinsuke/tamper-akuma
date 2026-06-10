@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.16
+// @version      0.17
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -57,6 +57,10 @@ var HEADERS = {
         return;
     }
     // 添加按钮
+    let alpha = 1;
+    if (window.location.hostname === 'javtiful.com' && !getQuery('v_name')) { // 没有v_name字段，透明度0
+        alpha = 0;
+    }
     let onClick = async (event, doSize) => {
         let fileName = getQuery('v_name');
         let resolution = '-720P';
@@ -93,10 +97,10 @@ var HEADERS = {
 
     addButton('下载视频', { 'left': '1%' }, e => {
         onClick(e, false);
-    });
+    }, alpha);
     addButton('获取视频大小', { 'left': '1%', 'top': '8%' }, e => {
         onClick(e, true);
-    });
+    }, alpha);
 
     console.log(`Buttons added`);
 })();
