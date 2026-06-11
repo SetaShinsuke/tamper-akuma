@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.46
+// @version      0.47
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -205,6 +205,7 @@ function forkMis() {
 
 function forkJHP() {
     let no = location.pathname.replace(/(\/v\d+)?\/video\/(.*?)\//, '$2');
+    no = no.replace('/zh', '').replace('/.ja', '');
     let hostname = location.hostname;
     let uid = location.pathname;
     let tags = ['JHP'];
@@ -222,8 +223,11 @@ function forkJHP() {
     if (tags?.length > 0) {
         data.tags = tags.join('-');
     }
-    // let cover = document.querySelector('#video-player-area img').src;
-    let cover = document.querySelector('#video-player-area>div').style['background'];
+    let cover = document.querySelector('#video-player-area img')?.src;
+    if (!cover) {
+        cover = document.querySelector('#video-player-area>div')?.style['background'];
+    }
+    cover = cover.replace('/s/', '/');  
     cover = cover.replace(/url\("(.*)"\).*/, '$1');
     data.cover = cover;
     data.wrapper = window.location.href.replace(/\?.*/, '');
