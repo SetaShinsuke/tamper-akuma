@@ -75,7 +75,7 @@ function getExtByUrl(url) {
 function getExtByName(fileName) {
     // 匹配[.xxx]结尾且[xxx]中不包含[.]
     let matches = fileName.match(/(\.[^.]+)$/);
-    if (matches.length > 1) {
+    if (matches?.length > 1) {
         // xxxx.jpg/800
         let ext = matches[1].replace(/\/.*/, '');
         if (ext.toLowerCase() === '.jpeg') {
@@ -89,7 +89,7 @@ function getExtByName(fileName) {
 function getFileNameByUrl(url) {
     // 匹配[.xxx]结尾且[xxx]中不包含[.]
     let matches = url.match(/\/([^\/]+\.[^.]+)$/);
-    if (matches.length > 1) {
+    if (matches?.length > 1) {
         // xxxx.jpg/800
         // 去掉 ?query 部分
         return matches[1].replace(/\/.*/, '').replace(/\?.*/,'');

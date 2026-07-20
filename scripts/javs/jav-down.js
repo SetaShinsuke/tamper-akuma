@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.17
+// @version      0.18
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -15,6 +15,7 @@
 // @grant        GM_xmlhttpRequest
 // @connect      tktube.com
 // @connect      javtiful.com
+// @connect      fast-stream.jav.si
 // @connect      cloudflarestorage.com
 // @connect      *
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -81,6 +82,9 @@ var HEADERS = {
                 break;
         }
         let ext = getExtByUrl(videoUrl);
+        if (!ext) {
+            ext = '.mp4';
+        }
         fileName = `${fileName}${resolution}${ext}`;
         if (size) {
             event.target.innerText = `下载视频(${size})`;
