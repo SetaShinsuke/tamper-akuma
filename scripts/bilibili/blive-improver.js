@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BLiveImprover
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  防止B站直播在后台自动暂停/去除OW区马赛克
 // @author       Akuma
 // @include      /https?:\/\/live\.bilibili\.com\/?\??.*/
@@ -15,6 +15,8 @@
 
 (function () {
     console.log('Prevent sleeping script running...');
+    // 移除水印
+    removeWatermark();
     // 移除马赛克
     removeMosaic();
     // 防止挂机检测
@@ -23,14 +25,16 @@
 
 function removeWatermark() {
     runWhenLoaded(`.web-player-icon-roomStatus`, maskDiv => {
-        maskDiv?.remove();
+        // maskDiv?.remove();
+        maskDiv.style['display'] = 'none';
         console.log('Removed room user id watermark.');
     });
 }
 
 function removeMosaic() {
     runWhenLoaded(`.web-player-module-area-mask`, maskDiv => {
-        maskDiv?.remove();
+        // maskDiv?.remove();
+        maskDiv.style['display'] = 'none';
         console.log('Removed web player mask.');
     });
 }
