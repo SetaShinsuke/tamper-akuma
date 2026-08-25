@@ -1,6 +1,6 @@
  [Adblock Plus 2.0]
 ! Title: _Akuma ADB filters
-! Version: 26.05.09-02
+! Version: 26.08.25
 ! Title should be on TOP
 
 ! steam
@@ -32,6 +32,11 @@ weibo.com###div[class^="TipsAd_bottomGap_"]
 
 ! Other
 eshop-prices.com##tr.ads
+
+! TV-PC
+bing.com#?#li[class^="b_ad"]
+yxxq23.cc#?#[class*="mac-ad"]
+
 
 ! local
 laookkfknpbbblfpciffpaejjkokdgca###div.modal-container
