@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         steam-card-manager
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Description here
 // @author       Akuma
 // @match        https://steamcommunity.com/market/listings/*/*
@@ -48,11 +48,20 @@ async function inject() {
 }
 
 function checkMyOrder(uid) {
-    waitForEle(`.my_listing_section .market_listing_row.market_recent_listing_row`, 2_000, 10_000).then(myListing => {
-        document.querySelector(`.market_commodity_orders_block`).scrollIntoView({behavior: 'smooth'});
+    console.log(`Cheking my order, uid: ${uid}`);
+    // waitForEle(`.my_listing_section .market_listing_row.market_recent_listing_row`, 2_000, 10_000).then(myListing => {
+    waitForEle(`div[style*="--grid-column:"]>h2`, 2_000, 10_000).then(myListingChild => {
+        if (!/我的/.test(myListingChild.innerText)) { // 确保是“我的上架/报价”
+            console.log('NO 我的');
+            console.log(myListingChild);
+            return;
+        }
+        let myListing = myListingChild.parentNode.parentNode;
+        // document.querySelector(`.market_commodity_orders_block`).scrollIntoView({behavior: 'smooth'});
         let listingType = ORDER_LISTING;
         let btnTag = `+订购记录`;
-        if (document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price span>span:nth-child(1)`)) {
+        // if (document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price span>span:nth-child(1)`)) {
+        if (/我的上架物品/.test(myListingChild.innerText)) {
             listingType = ON_LISTING;
             btnTag = `+上架记录`;
         }
@@ -222,7 +231,8 @@ async function addCard() {
     let cardId;
     let name = await findCardName();
     // 图片加载出来再继续
-    let img = await waitForEle(`.largeiteminfo_react_placeholder img`);
+    // let img = await waitForEle(`.largeiteminfo_react_placeholder img`);
+    let img = await waitForEle(`div>div>div>div>div>div>div>div>div>img`);
     img = img.src;
     let marketId = parseInt(window.location.pathname.match(/market\/listings\/(\d+)\//)[1]);
     // 包含 (foil) 或 (foil xxx)
@@ -248,34 +258,42 @@ async function addListing(uid, listingType) {
 
     let date = (new Date()).toISOString();
     let price, count, extra, now;
-    let countIndex = 0
+    let tableIndex = 0;
+    // 最上面的“我的上架物品”
+    let mySaleTable = document.querySelector(`div[style*="--grid-column:"]>h2`)?.parentNode.parentNode;
     switch (listingType) {
         case ON_LISTING:
-            date = document.querySelector(`.market_listing_row .market_listing_right_cell.market_listing_listed_date.can_combine`).innerText;
-            date = `2026-${date.replace(' 月 ', '-').replace('日', '')}`;
+            date = mySaleTable.querySelectorAll(`div>span`)[4].innerText;
+            // date = document.querySelector(`.market_listing_row .market_listing_right_cell.market_listing_listed_date.can_combine`).innerText;
+            // date = `2026-${date.replace(' 月 ', '-').replace('日', '')}`;
             now = new Date();
             date = new Date(Date.parse(date));
-            if (date > now) { // 超过今天了，说明年份是去年
-                date.setFullYear(date.getFullYear() - 1);
-            }
+            // if (date > now) { // 超过今天了，说明年份是去年
+            //     date.setFullYear(date.getFullYear() - 1);
+            // }
             if (date.toLocaleDateString() === now.toLocaleDateString()) { // 日期为今日，应该是刚刚上架，把时间改成此刻
                 date = now;
             }
             date = date.toISOString();
             // 预计赚到多少 (￥1.00)
-            extra = document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price>span>span:last-child`)?.innerText
+            // extra = document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price>span>span:last-child`)?.innerText;
+            extra = mySaleTable.querySelectorAll(`div>span`)[4].innerText;
         case ORDER_LISTING:
             count = 1;
-            price = document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price`).innerText;
+            // price = document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price`).innerText;
+            price = mySaleTable.querySelectorAll(`div>span`)[5].parentNode.querySelector('div').innerText;
             price = price.replace(/\n.+/, '');
             break;
         case B_LISTING:
-            countIndex = 2;
+            tableIndex = 1;
         // 这里就不break，因为除 countIndex 之外的逻辑和 S_LISTING 分支相同
         case S_LISTING:
-            count = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex].innerText;
+            // count = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex].innerText;
+            let tds = document.querySelectorAll(`div>div>table`)[tableIndex].querySelectorAll(`tbody>tr>td>span`);
+            count = tds[1].innerText;
             count = parseInt(count);
-            price = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex + 1].innerText;
+            // price = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex + 1].innerText;
+            price = tds[0].innerText;
             break;
         default:
             break;
@@ -308,5 +326,6 @@ async function addListing(uid, listingType) {
 }
 
 async function findCardName() {
-    return (await waitForEle(`.largeiteminfo_react_placeholder h1 span`))?.innerText;
+    // return (await waitForEle(`.largeiteminfo_react_placeholder h1 span`))?.innerText;
+    return (await waitForEle(`div>h2>span`))?.innerText;
 }
