@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         blive-danmaku-watch
 // @namespace    http://tampermonkey.net/
-// @version      0.1.1
+// @version      0.1.2
 // @description  Show danmaku only, hide everything else
-// @note         v0.1.1: 修复进度条动画问题
+// @note         v0.1.1/2: 修复进度条动画问题;控制屏幕常亮;
 // @author       Akuma
 // @match        https://live.bilibili.com/h5/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -25,6 +25,7 @@ let activeBtn = null;
 let currentShowMs = NORMAL_SHOW_MS;
 let currentHideMs = NORMAL_HIDE_MS;
 let progressBar = null;
+let wakeLock = null;
 
 (function () {
     'use strict';
@@ -142,12 +143,42 @@ function stopCycle() {
     hideMask();
 }
 
+// 申请屏幕常亮（防止屏幕变暗/休眠）
+async function acquireWakeLock() {
+    if (!navigator.wakeLock) {
+        console.log('[屏幕常亮] 当前浏览器不支持 Wake Lock');
+        return;
+    }
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        console.log('[屏幕常亮] 已申请');
+        // 浏览器可能会在特定时机释放锁，监听 visibilitychange 重新申请
+        document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible' && active) {
+                await acquireWakeLock();
+            }
+        });
+    } catch (err) {
+        console.error(`[屏幕常亮] 申请失败: ${err.name}: ${err.message}`);
+    }
+}
+
+function releaseWakeLock() {
+    if (wakeLock) {
+        wakeLock.release()
+            .then(() => console.log('[屏幕常亮] 已释放'))
+            .catch(err => console.error(`[屏幕常亮] 释放失败: ${err}`));
+        wakeLock = null;
+    }
+}
+
 function onToggle(btn, showMs, hideMs) {
     if (active) {
         active = false;
         if (activeBtn) activeBtn.textContent = activeBtn._originalText;
         activeBtn = null;
         stopCycle();
+        releaseWakeLock();
         console.log('[省电模式] 关闭：已停止循环并移除遮罩');
         return;
     }
@@ -163,6 +194,7 @@ function onToggle(btn, showMs, hideMs) {
     btn.textContent = '退出';
     console.log(`[省电模式] 开启：立即显示遮罩，${currentShowMs / 1000}秒后隐去显示${currentHideMs / 1000}秒`);
     startCycle();
+    acquireWakeLock();
 }
 
 function inject() {
