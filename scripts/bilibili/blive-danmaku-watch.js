@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name         blive-danmaku-watch
 // @namespace    http://tampermonkey.net/
-// @version      0.1.0
+// @version      0.1.1
 // @description  Show danmaku only, hide everything else
+// @note         v0.1.1: 修复进度条动画问题
 // @author       Akuma
 // @match        https://live.bilibili.com/h5/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -91,12 +92,11 @@ function showMask() {
         mask.appendChild(progressBar);
     }
     mask.style.display = 'block';
+    progressBar.style.display = 'block';
     if (!mask.parentNode) document.body.appendChild(mask);
 }
 
 function runProgress(durationMs) {
-    // TODO: 目前动画只能进行一次，不知什么原因
-    console.log(`runProgress: ${durationMs}`);
     const fill = progressBar.querySelector('.progress-fill');
 
     // 重置：移除所有过渡
