@@ -1,0 +1,5 @@
+ [Adblock Plus 2.0]
+! Title: _Akuma Strict filters
+! Version: 26.08.25
+! Title should be on TOP
+

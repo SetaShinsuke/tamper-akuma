@@ -1,6 +1,6 @@
  [Adblock Plus 2.0]
 ! Title: _Akuma ADB filters
-! Version: 26.08.25
+! Version: 26.09.03
 ! Title should be on TOP
 
 ! steam
@@ -14,20 +14,24 @@ mail.qq.com###table.maillist_gg_bar
 
 ! J
 javtiful.com###div.x-video-button
-javtiful.com###div.theeffect section
+javtiful.com##div.theeffect section
 javtiful.com#?#article.front-ad-card
 javtiful.com#?#article.front-partner-card
+javtiful.com###.front-ad-placement.front-ad-placement-in-video
 javhdporn.net#?#article.thumb-block-native-ad
 ||seccc.jasjas.xyz^
 ||mna.jasjas.site^
 ||static.content-sync.xyz^
+||static.bucketflare.xyz^
 
 ! WB recommend
-! Copy rules with Chinese
-! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(___RCMD-READ___))
-! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(___RCMD___))
-! weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains(___RC___))
-weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag-img"]>img)
+! 注意 abp-has/contain 后买中文需要引号
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains("荐读"))
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains("推荐"))
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains("荐"))
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains("品牌"))
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag"]>div:-abp-contains("广告"))
+weibo.com#?#div.vue-recycle-scroller__item-view:-abp-has(div.wbpro-scroller-item>article div[class^="wbpro-tag-img"]:-abp-has(>img))
 weibo.com###div[class^="TipsAd_bottomGap_"]
 
 ! Other
@@ -36,7 +40,8 @@ eshop-prices.com##tr.ads
 ! TV-PC
 bing.com#?#li[class^="b_ad"]
 yxxq23.cc#?#[class*="mac-ad"]
+yxxq23.cc#?#[title*="福利"]
 
 
 ! local
-laookkfknpbbblfpciffpaejjkokdgca###div.modal-container
+laookkfknpbbblfpciffpaejjkokdgca##div.modal-container
