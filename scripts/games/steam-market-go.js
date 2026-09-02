@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         steam-market-go
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  添加卡牌市场的跳转链接
 // @author       Akuma
 // @match        https://store.steampowered.com/app/*
@@ -20,7 +20,8 @@
 // ==/UserScript==
 
 const URL_BADGE = "https://steamcommunity.com/my/gamecards/{APP_ID}/";
-const URL_MARKET = "https://steamcommunity.com/market/search?appid=753&category_753_Game[]=tag_app_{APP_ID}&&category_753_item_class%5B%5D=tag_item_class_2";
+const URL_MARKET = "https://steamcommunity.com/market/search?appid=753&category_Game=app_{APP_ID}&category_item_class=item_class_2";
+// &category_cardborder=cardborder_0/1
 const URL_EXCHANGE = "https://www.steamcardexchange.net/index.php?gamepage-appid-{APP_ID}";
 const URL_CARD_DETAIL = "https://steamcommunity.com/market/listings/753/{APP_ID}-{CARD_NAME}";
 
