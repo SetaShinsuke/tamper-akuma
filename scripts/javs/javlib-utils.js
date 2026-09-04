@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavLibUtils
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Search contents in multiple websites
 // @author       Akuma
 // @match        https://www.javlibrary.com/*
@@ -14,6 +14,7 @@
 // @grant        GM_openInTab
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_deleteValue
 // @grant        GM_addValueChangeListener
 // @grant        GM_removeValueChangeListener
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
@@ -89,6 +90,7 @@ function onSyncClick() {
         // GM_addValueChangeListener(key, (key, old_value, new_value, remote) => void)
         listenerId = GM_addValueChangeListener(SYNC_COVER, (key, old_value, new_value, remote) => {
             cover = new_value;
+            GM_deleteValue(SYNC_COVER); // 重置 value 防止错乱
             resolve(cover);
         });
         // 已经主备好同步，模拟点击右侧搜索按钮
