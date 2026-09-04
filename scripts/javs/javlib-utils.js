@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavLibUtils
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Search contents in multiple websites
 // @author       Akuma
 // @match        https://www.javlibrary.com/*
@@ -57,7 +57,8 @@ async function rememberCover() {
     if (/search/.test(window.location.pathname)) { // 搜索页，搜出了多个结果
         document.querySelectorAll(`.video>a>img`).forEach(img => {
             let title = img.parentNode.title;
-            if (/ブルーレイディスク/.test(title) || /Blu-ray Disc/.test(title)) {
+            // 优先前面匹配的 cover
+            if (cover || /ブルーレイディスク/.test(title) || /Blu-ray Disc/.test(title)) {
                 return;
             }
             cover = img.src.replace('ps.', 'pl.');
