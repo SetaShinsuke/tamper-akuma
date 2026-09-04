@@ -44,7 +44,7 @@ function getQueryInt(name) {
 }
 
 function saveTextFile(text, fileName) {
-    var data = new Blob([text], {type: 'text/plain'});
+    var data = new Blob([text], { type: 'text/plain' });
     // // If we are replacing a previously generated file we need to
     // // manually revoke the object URL to avoid memory leaks.
     // if (textFile !== null) {
@@ -92,7 +92,7 @@ function getFileNameByUrl(url) {
     if (matches?.length > 1) {
         // xxxx.jpg/800
         // 去掉 ?query 部分
-        return matches[1].replace(/\/.*/, '').replace(/\?.*/,'');
+        return matches[1].replace(/\/.*/, '').replace(/\?.*/, '');
     }
     return undefined
 }
@@ -255,7 +255,7 @@ function zawaarudo(seconds) {
     let i = 0;
     let counting = setInterval(_ => {
         console.log(`${i++} 秒か`);
-        if(i >= seconds){
+        if (i >= seconds) {
             clearInterval(counting);
         }
     }, 1_000);
@@ -332,4 +332,13 @@ function span2a(span, href) {
     a.classList = span.classList;
     span.parentNode.appendChild(a);
     span.style.display = 'none';
+}
+
+// 增加样式到<head>
+function injectStyle(cssCode) {
+    const style = document.createElement('style');
+    style.textContent = cssCode;
+    document.head.appendChild(style);
+    console.log(`样式已注入:`);
+    console.log(cssCode);
 }

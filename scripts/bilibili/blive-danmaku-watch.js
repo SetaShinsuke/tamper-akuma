@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         blive-danmaku-watch
 // @namespace    http://tampermonkey.net/
-// @version      0.1.3
+// @version      0.1.4
 // @description  Show danmaku only, hide everything else
 // @note         v0.1.1/2: 修复进度条动画问题;控制屏幕常亮;
 // @author       Akuma
@@ -21,6 +21,11 @@ const NORMAL_SHOW_MS = 30000;   // 省电模式：遮罩显示时长（毫秒）
 const NORMAL_HIDE_MS = 30000;   // 省电模式：遮罩隐去时长（毫秒）
 const SUPER_SHOW_MS = 60000;   // 超级省电：遮罩显示时长（毫秒）
 const SUPER_HIDE_MS = 30000;   // 超级省电：遮罩隐去时长（毫秒）
+
+const CSS_INJECT = `
+.danmaku-content.v-middle { font-size: 26px!important; }
+#bili-danmaku-wrap { width: 100%; margin: 0px}
+.background-img { background: black!important }`;
 
 let mask = null;
 let timerId = null;
@@ -153,18 +158,12 @@ let styleApplied = false;   // 全局样式只注入一次
 function applyStyleOverrides() {
     if (styleApplied) return;
     styleApplied = true;
-    // 修改背景
-    const bg = document.querySelector('.background-img');
-    if (bg) bg.style.background = 'black';
     // 隐藏下方“打开app”按钮
     const openBtn = document.querySelectorAll(`#app__display-area>.open-app-btn`)[1];
     if (openBtn) openBtn.style.display = 'none';
     // 修改字体等
     const style = document.createElement('style');
-    style.textContent = `
-.danmaku-content.v-middle { font-size: 24px; }
-#bili-danmaku-wrap { width: 100%; margin: 0px}
-`;
+    style.textContent = CSS_INJECT;
     document.head.appendChild(style);
     console.log('[样式] 已应用全局样式覆盖');
 }
