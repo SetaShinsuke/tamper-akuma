@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.33
+// @version        0.34
 // @description    Click 👁 to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -85,20 +85,23 @@ async function checkForked(javNo) {
     console.log(`Check if forked: ${no}`);
     let resJson = await netHelper.get(searchUrl);
     console.log(`Already forked count: ${resJson.javs}`);
-    let btnId;
-    if (resJson.javs > 0) {
-        btnId = addButton('已Fork', { 'bottom': '1%' }, _ => {
-            let piJav = PI_JAV + `${no}`;
-            try {
-                GM_openInTab(piJav, false);
-            } catch (e) {
-                console.log(e);
-                window.open(piJav, "_blank");
-            }
-        });
-    } else {
-        btnId = addButton('未Fork', { 'bottom': '1%', 'background': 'grey' }, null, 0);
+    let btnText = '已Fork';
+    let style = { 'bottom': '1%' };
+    let preHover = 1;
+    if (resJson.javs <= 0) {
+        btnText = '未Fork';
+        style['background'] = 'grey';
+        preHover = 0;
     }
+    let btnId = addButton(btnText, style, _ => {
+        let piJav = PI_JAV + `${no}`;
+        try {
+            GM_openInTab(piJav, false);
+        } catch (e) {
+            console.log(e);
+            window.open(piJav, "_blank");
+        }
+    }, preHover);
     console.log(`CheckFork btn id: ${btnId}`);
 }
 
