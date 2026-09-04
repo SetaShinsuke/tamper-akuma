@@ -9,21 +9,29 @@
 // @match        https://javlib.com/*
 // @match        http://javlib.com/*
 // @match        https://g64w.com/*
+// @match        http://192.168.0.120:9292/pages/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_addValueChangeListener
+// @grant        GM_removeValueChangeListener
 // @require      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @updateURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javlib-utils.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/javlib-utils.js
 // ==/UserScript==
 
-const SYNC_COVER = "sync_cover";
+const SYNC_COVER = "j_sync_cover";
 const TODO = "todo";
+const SEARCH_URL = "https://www.javlibrary.com/cn/vl_searchbyid.php?keyword=";
 
 (function () {
     'use strict';
     console.log(`jav host: ${window.location.hostname}`);
+    if (/192.168.\d+.\d+/.test(location.hostname) && /no_media\/javs/.test(location.hash)) {
+        console.log(`pihub set onSyncClick`);
+        unsafeWindow.pasteTM = onSyncClick;
+    }
     switch (window.location.hostname) {
         case 'javlib.com':
             // 跳转到中文网页
@@ -35,23 +43,57 @@ const TODO = "todo";
             // 自动选择'已成年'
             setAdult();
             setSearch();
+            // 自动同步封面
+            if (GM_getValue(SYNC_COVER) === TODO) {
+                console.log("Auto sync cover");
+                rememberCover();
+            }
             break;
-    }
-    // 自动同步封面
-    if (GM_getValue()) {
-
     }
 })();
 
-function syncCover() {
-    // TODO: 自动同步封面
-    // 1. 搜索页，搜出了多个结果
-    //      自动点击其中一个（非蓝光的，封面更完整）
-    // 2. 详情页 (有#video_jacket_img)
-    //      cover = document.querySelector(`#video_jacket_img`).src
-    // 3. GM_setValue(SYNC_COVER) = cover
-    // 4. 关闭标签
-    // (pihub 中监听 GM_value 的变化，原本是 todo，现在不是了，则修改 input)
+async function rememberCover() {
+    let cover;
+    if (/search/.test(window.location.pathname)) { // 搜索页，搜出了多个结果
+        document.querySelectorAll(`.video>a>img`).forEach(img => {
+            let title = img.parentNode.title;
+            if (/ブルーレイディスク/.test(title) || /Blu-ray Disc/.test(title)) {
+                return;
+            }
+            cover = img.src.replace('ps.', 'pl.');
+        });
+    } else {
+        let img = await waitForEle('#video_jacket_img');
+        cover = img?.src;
+        if (img && !cover) { // 图片没加载出来
+            cover = img.getAttribute('onerror').match(/'(.*)'\);/)[1];
+        }
+    }
+    console.log(`GM set value: sync_cover = ${cover}`);
+    GM_setValue(SYNC_COVER, cover);
+    window.close();
+}
+
+let listenerId;
+
+// 点击 pihub form 上的同步按钮
+function onSyncClick() {
+    return new Promise((resolve, reject) => {
+        let cover;
+        if (listenerId) { // 每次点击都清除监听器
+            GM_removeValueChangeListener(listenerId);
+            listenerId = null;
+        }
+        GM_setValue(SYNC_COVER, TODO); // 标记为需要同步
+        // GM_addValueChangeListener(key, (key, old_value, new_value, remote) => void)
+        listenerId = GM_addValueChangeListener(SYNC_COVER, (key, old_value, new_value, remote) => {
+            cover = new_value;
+            resolve(cover);
+        });
+        // 已经主备好同步，模拟点击右侧搜索按钮
+        let searchBtn = document.querySelector(`.jav-form a[href*="javlibrary"]`);
+        searchBtn?.click();
+    });
 }
 
 function setSearch() {
@@ -117,9 +159,12 @@ function searchInNewTab(keyword) {
 }
 
 function setAdult() {
+    if (!getCookie) {
+        return;
+    }
     if (getCookie('over18') === '18') {
         console.log('Over 18 confirmed.');
-        return
+        return;
     }
     runWhenLoaded('#adultwarningmask', (adultWarningMask) => {
         if (adultWarningMask.style['display'] === 'none') {
