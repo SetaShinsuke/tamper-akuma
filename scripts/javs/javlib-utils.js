@@ -58,7 +58,8 @@ function setSearch() {
     // todo: 搜索 jav
     console.log('TODO: Add jav search');
     // 详情页
-    runWhenLoaded('#video_id>table>tbody>tr>td.text', titleEle => {
+    let noSelector = `#video_id>table>tbody>tr>td.text`;
+    runWhenLoaded(noSelector, titleEle => {
         titleEle.addEventListener('click', () => {
             searchInNewTab(titleEle.innerText);
         });
@@ -71,6 +72,10 @@ function setSearch() {
         btn.addEventListener('click', () => {
             var input = document.querySelector('#idsearchbox');
             var keyword = input.value;
+            if (!keyword) { // 搜索栏是空的，自动点击标题，进行搜索
+                document.querySelector(noSelector)?.click();
+                return;
+            }
             searchInNewTab(keyword);
         });
     });
