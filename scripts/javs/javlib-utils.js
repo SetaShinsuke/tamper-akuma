@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavLibUtils
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  Search contents in multiple websites
 // @author       Akuma
 // @match        https://www.javlibrary.com/*
@@ -90,6 +90,7 @@ function onSyncClick() {
         // GM_addValueChangeListener(key, (key, old_value, new_value, remote) => void)
         listenerId = GM_addValueChangeListener(SYNC_COVER, (key, old_value, new_value, remote) => {
             cover = new_value;
+            GM_removeValueChangeListener(listenerId);
             GM_deleteValue(SYNC_COVER); // 重置 value 防止错乱
             resolve(cover);
         });
