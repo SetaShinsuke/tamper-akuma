@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavLibUtils
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Search contents in multiple websites
 // @author       Akuma
 // @match        https://www.javlibrary.com/*
@@ -9,7 +9,7 @@
 // @match        https://javlib.com/*
 // @match        http://javlib.com/*
 // @match        https://g64w.com/*
-// @match        http://192.168.0.120:9292/pages/*
+// @match        http://192.168.50.96:9292/pages/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_openInTab
 // @grant        GM_setValue
