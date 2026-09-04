@@ -13,6 +13,10 @@
 // @downloadURL  https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/bilibili/blive-danmaku-watch.js
 // ==/UserScript==
 
+// TODO: .bili-danmaku-wrap: width = 100%
+// .danmaku-content.v-middle: font-size = 24px
+// document.querySelectorAll(`#app__display-area>.open-app-btn`)[1].style["display"] = "none"; // 隐藏打开app按钮
+
 const NORMAL_SHOW_MS = 30000;   // 省电模式：遮罩显示时长（毫秒）
 const NORMAL_HIDE_MS = 30000;   // 省电模式：遮罩隐去时长（毫秒）
 const SUPER_SHOW_MS = 60000;   // 超级省电：遮罩显示时长（毫秒）
