@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         blive-danmaku-watch
 // @namespace    http://tampermonkey.net/
-// @version      0.1.2
+// @version      0.1.3
 // @description  Show danmaku only, hide everything else
 // @note         v0.1.1/2: 修复进度条动画问题;控制屏幕常亮;
 // @author       Akuma
@@ -147,6 +147,28 @@ function stopCycle() {
     hideMask();
 }
 
+let styleApplied = false;   // 全局样式只注入一次
+
+// 通过 <style> 全局覆盖类样式（该类下元素实时更新，无法逐个修改）
+function applyStyleOverrides() {
+    if (styleApplied) return;
+    styleApplied = true;
+    // 修改背景
+    const bg = document.querySelector('.background-img');
+    if (bg) bg.style.background = 'black';
+    // 隐藏下方“打开app”按钮
+    const openBtn = document.querySelectorAll(`#app__display-area>.open-app-btn`)[1];
+    if (openBtn) openBtn.style.display = 'none';
+    // 修改字体等
+    const style = document.createElement('style');
+    style.textContent = `
+.danmaku-content.v-middle { font-size: 24px; }
+#bili-danmaku-wrap { width: 100%; margin: 0px}
+`;
+    document.head.appendChild(style);
+    console.log('[样式] 已应用全局样式覆盖');
+}
+
 // 申请屏幕常亮（防止屏幕变暗/休眠）
 async function acquireWakeLock() {
     if (!navigator.wakeLock) {
@@ -192,8 +214,7 @@ function onToggle(btn, showMs, hideMs) {
     activeBtn = btn;
     currentShowMs = showMs;
     currentHideMs = hideMs;
-    const bg = document.querySelector('.background-img');
-    if (bg) bg.style.background = 'black';
+    applyStyleOverrides();
     if (!btn._originalText) btn._originalText = btn.textContent;
     btn.textContent = '退出';
     console.log(`[省电模式] 开启：立即显示遮罩，${currentShowMs / 1000}秒后隐去显示${currentHideMs / 1000}秒`);
