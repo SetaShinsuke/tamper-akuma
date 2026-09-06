@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         steam-card-manager
 // @namespace    http://tampermonkey.net/
-// @version      0.3
-// @description  Description here
+// @version      0.4
+// @description  管理卡牌记录
 // @author       Akuma
 // @match        https://steamcommunity.com/market/listings/*/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
@@ -290,7 +290,8 @@ async function addListing(uid, listingType) {
         case S_LISTING:
             // count = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex].innerText;
             let tds = document.querySelectorAll(`div>div>table`)[tableIndex].querySelectorAll(`tbody>tr>td>span`);
-            count = tds[1].innerText;
+            // 0: 出售数; 2: 求购数
+            document.querySelectorAll(`div[style*="start"]>span>span`)[2 * tableIndex];
             count = parseInt(count);
             // price = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex + 1].innerText;
             price = tds[0].innerText;
