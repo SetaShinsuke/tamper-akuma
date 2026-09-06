@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         steam-card-manager
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  管理卡牌记录
 // @author       Akuma
 // @match        https://steamcommunity.com/market/listings/*/*
@@ -291,7 +291,7 @@ async function addListing(uid, listingType) {
             // count = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex].innerText;
             let tds = document.querySelectorAll(`div>div>table`)[tableIndex].querySelectorAll(`tbody>tr>td>span`);
             // 0: 出售数; 2: 求购数
-            document.querySelectorAll(`div[style*="start"]>span>span`)[2 * tableIndex];
+            count = document.querySelectorAll(`div[style*="start"]>span>span`)[2 * tableIndex]?.innerText;
             count = parseInt(count);
             // price = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex + 1].innerText;
             price = tds[0].innerText;
@@ -329,4 +329,8 @@ async function addListing(uid, listingType) {
 async function findCardName() {
     // return (await waitForEle(`.largeiteminfo_react_placeholder h1 span`))?.innerText;
     return (await waitForEle(`div>h2>span`))?.innerText;
+}
+
+function hideSIHAds() {
+    // 改用 Adblock 插件
 }

@@ -1,6 +1,6 @@
  [Adblock Plus 2.0]
 ! Title: _Akuma ADB filters
-! Version: 26.09.03-02
+! Version: 26.09.06-18
 ! Title should be on TOP
 
 ! steam
@@ -8,6 +8,9 @@ store.steampowered.com###sih-header-cart
 store.steampowered.com###sih-header-notifications
 steamcommunity.com###sih-header-cart
 steamcommunity.com###sih-header-notifications
+steamcommunity.com##.sih-modified-header
+steamcommunity.com###sih-features-main-modal
+steamcommunity.com##.sih-global-header>.sih-global-header-inner>a>div
 
 ! QQ-email
 mail.qq.com###table.maillist_gg_bar
