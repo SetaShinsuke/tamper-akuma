@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         JavFork
 // @namespace    http://tampermonkey.net/
-// @version      0.48
+// @version      0.49
 // @description  Right click to fork jav data
 // @author       Akuma
 // @match        https://javgg.net/jav/*
@@ -29,7 +29,7 @@
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-fork.js
 // ==/UserScript==
 
-const HOST = 'http://192.168.50.166:9292';
+const HOST = 'http://192.168.50.96:9292';
 
 (function () {
     // addButton("获取链接",{},()=>{

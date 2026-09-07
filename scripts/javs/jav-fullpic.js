@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.34
-// @description    Click 👁 to see full picture, as well as other experience-enhancing functions
+// @version        0.35
+// @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
 // @match          https://jav.guru/*
@@ -19,16 +19,16 @@
 // @icon           data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant          GM_openInTab
 // @grant          GM_xmlhttpRequest
-// @connect        192.168.50.166
+// @connect        192.168.50.96
 // @require        https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/utils.js
 // @require        https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/utils/net-helper.js
 // @updateURL      https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-fullpic.js
 // @downloadURL    https://raw.githubusercontent.com/SetaShinsuke/tamper-akuma/master/scripts/javs/jav-fullpic.js
 // ==/UserScript==
 
-const API_SEARCH = `http://192.168.50.166:9292/api/javs?count=true&filter=`;
-const PI_JAV = `http://192.168.50.166:9292/pages/#/no_media/javs?filter=`;
-const API_FAV = `http://192.168.50.166:9292/api/joyuu/fav`;
+const API_SEARCH = `http://192.168.50.96:9292/api/javs?count=true&filter=`;
+const PI_JAV = `http://192.168.50.96:9292/pages/#/no_media/javs?filter=`;
+const API_FAV = `http://192.168.50.96:9292/api/joyuu/fav`;
 const API_ADD_FAV = API_FAV + `?name=`;
 
 const FAKE_AD_ID = 'zlVjUDdSLHIP';
