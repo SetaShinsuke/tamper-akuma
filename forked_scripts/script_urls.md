@@ -19,3 +19,6 @@
 [Bilibili 视频点踩](https://greasyfork.org/zh-CN/scripts/487644-bilibili-%E5%93%94%E5%93%A9%E5%93%94%E5%93%A9%E8%A7%86%E9%A2%91%E7%82%B9%E8%B8%A9/code)
 
 [哔哩哔哩直播间挂机小助手](https://greasyfork.org/zh-CN/scripts/420971-%E5%93%94%E5%93%A9%E5%93%94%E5%93%A9%E7%9B%B4%E6%92%AD%E9%97%B4%E6%8C%82%E6%9C%BA%E5%B0%8F%E5%8A%A9%E6%89%8B/code)
+
+
+[百度优化+去广告](https://greasyfork.org/zh-CN/scripts/14178-ac-baidu-%E9%87%8D%E5%AE%9A%E5%90%91%E4%BC%98%E5%8C%96%E7%99%BE%E5%BA%A6%E6%90%9C%E7%8B%97%E8%B0%B7%E6%AD%8C%E5%BF%85%E5%BA%94%E6%90%9C%E7%B4%A2-favicon-%E5%8F%8C%E5%88%97)

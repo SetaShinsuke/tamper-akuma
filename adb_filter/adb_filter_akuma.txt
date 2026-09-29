@@ -1,6 +1,6 @@
  [Adblock Plus 2.0]
 ! Title: _Akuma ADB filters
-! Version: 26.09.06-18
+! Version: 26.09.29
 ! Title should be on TOP
 
 ! steam
@@ -26,6 +26,7 @@ javhdporn.net#?#article.thumb-block-native-ad
 ||mna.jasjas.site^
 ||static.content-sync.xyz^
 ||static.bucketflare.xyz^
+javlibrary.com##a[href^="./redirect.php"]
 
 ! WB recommend
 ! 注意 abp-has/contain 后买中文需要引号
