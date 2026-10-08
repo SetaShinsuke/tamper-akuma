@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.35
+// @version        0.36
 // @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -322,7 +322,7 @@ function injectMis() {
 async function injectJHP() {
     let no = location.pathname.replace(/(\/v\d+)?\/video\/(.*?)\//, '$2');
     no = no.replace('/zh', '').replace('/ja', '');
-    no.replace('-decensored', '');
+    no = no.replace('-decensored', '');
     checkForked(no);
     // 搜索快捷键
     runWhenLoaded(`.input-group-field`, inputSearch => {
