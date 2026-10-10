@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.39
+// @version        0.40
 // @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -186,11 +186,15 @@ async function injectTiful() {
         return
     }
     runWhenLoaded('.video-grid', mainDiv => {
-        // console.log('set max width: 100%');
-        // 暂时不修改宽度
-        // mainDiv.style['max-width'] = '100%';
+        console.log('set max width');
+        let mainContent = document.querySelector(`.page-content.videos-content`);
+        if (mainContent) {
+            mainContent.style['max-width'] = '1600px';
+        }
         // 点击查看封面
         document.querySelectorAll('.video-grid article.video-card')?.forEach(card => {
+            // 条目的宽度
+            document.querySelector('.video-grid').style.setProperty('grid-template-columns', 'repeat(auto-fill, minmax(min(100%, 360px), 1fr))', 'important');
             // let coverUrl = card.querySelector('img').getAttribute('data-src');
             let coverUrl = card.querySelector('img').src;
             // card.querySelector('.video-views').setAttribute('href', cover);
