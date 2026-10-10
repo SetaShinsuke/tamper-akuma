@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.37
+// @version        0.38
 // @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -142,16 +142,18 @@ async function addJoyuuFav(name) {
 
 // --------------------------
 async function injectTiful() {
+    // 自动折叠导航
+    runWhenLoaded(`.site-shell`, siteShell => {
+        if (!siteShell.classList.contains('is-sidebar-collapsed')) {
+            document.querySelector(`button.navigation-toggle`)?.click();
+            console.log(`Nav auto collapsed!`);
+        }
+    });
     // 播放页
     if (/\/video\//.test(window.location.pathname)) {
         let no = window.location.pathname.split('/').pop();
         no = no.replace(/-reducing-mosaic/, '');
         checkForked(no);
-        // 屏蔽广告？
-        // runWhenLoaded(`.front-player-ad-wrap`, adContainer => {
-        //     adContainer.classList?.remove('front-player-ad-wrap');
-        //     console.log(`Ad container removed!`);
-        // });
     }
     // 演员页
     if (/\/actress\//.test(window.location.pathname)) {
@@ -159,8 +161,6 @@ async function injectTiful() {
         await addJoyuuFav(name);
     }
     // 搜索快捷键
-    // runWhenLoaded(`input[name='search_query']`, inputSearch => {
-    // runWhenLoaded(`input.form-control[name='q']`, inputSearch => {
     runWhenLoaded(`form.search-field>label>input[name='q']`, inputSearch => {
         document.addEventListener('keydown', e => {
             const btnSearch = document.querySelector(`button.front-search-toggle`);
@@ -183,22 +183,13 @@ async function injectTiful() {
     if (player) {
         // 播放页面，忽略
         console.log('播放页，不缩放封面');
-        // 添加假的AD元素(来不及)
-        // let fakeDiv = document.createElement('div');
-        // fakeDiv.style.display = 'none';
-        // // fakeDiv.id = 'player';
-        // fakeDiv.id = FAKE_AD_ID;
-        // let container = document.body;
-        // container.insertBefore(fakeDiv, container.firstChild);
         return
     }
     runWhenLoaded('.video-grid', mainDiv => {
         // console.log('set max width: 100%');
         // 暂时不修改宽度
         // mainDiv.style['max-width'] = '100%';
-        // document.querySelectorAll('section .card')?.forEach(card => {
         // 点击查看封面
-        // document.querySelectorAll('section .front-video-card')?.forEach(card => {
         document.querySelectorAll('.video-grid article.video-card')?.forEach(card => {
             // let coverUrl = card.querySelector('img').getAttribute('data-src');
             let coverUrl = card.querySelector('img').src;
@@ -206,9 +197,7 @@ async function injectTiful() {
             let a = document.createElement('a');
             a.href = coverUrl;
             a.innerText = 'Pic';
-            // a.classList.add('video-addtime');
             // a.classList.add('front-video-stat');
-            // a.classList.add('video-card__meta');
             a.target = '_blank';
             a.style.textDecoration = 'none';
             a.style['margin-left'] = '4px';
