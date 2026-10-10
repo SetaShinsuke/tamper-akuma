@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.38
+// @version        0.39
 // @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -326,7 +326,8 @@ async function injectJHP() {
             }
             console.log(`click, key code: ${e.code}`);
             const btnSearch = document.querySelector(`.fa-search`);
-            if (window.getComputedStyle(inputSearch).display === 'none') {
+            // if (window.getComputedStyle(inputSearch).display === 'none') {
+            if (!document.querySelector(`.header-search`)?.classList?.contains(`active`)) {
                 btnSearch?.click();
             }
             // 按下斜杠"/"
