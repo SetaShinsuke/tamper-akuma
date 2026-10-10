@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.36
+// @version        0.37
 // @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -160,7 +160,8 @@ async function injectTiful() {
     }
     // 搜索快捷键
     // runWhenLoaded(`input[name='search_query']`, inputSearch => {
-    runWhenLoaded(`input.form-control[name='q']`, inputSearch => {
+    // runWhenLoaded(`input.form-control[name='q']`, inputSearch => {
+    runWhenLoaded(`form.search-field>label>input[name='q']`, inputSearch => {
         document.addEventListener('keydown', e => {
             const btnSearch = document.querySelector(`button.front-search-toggle`);
             if (e.code !== 'Slash') {
@@ -191,13 +192,14 @@ async function injectTiful() {
         // container.insertBefore(fakeDiv, container.firstChild);
         return
     }
-    runWhenLoaded('.front-section .container-xxl', mainDiv => {
+    runWhenLoaded('.video-grid', mainDiv => {
         // console.log('set max width: 100%');
         // 暂时不修改宽度
         // mainDiv.style['max-width'] = '100%';
         // document.querySelectorAll('section .card')?.forEach(card => {
         // 点击查看封面
-        document.querySelectorAll('section .front-video-card')?.forEach(card => {
+        // document.querySelectorAll('section .front-video-card')?.forEach(card => {
+        document.querySelectorAll('.video-grid article.video-card')?.forEach(card => {
             // let coverUrl = card.querySelector('img').getAttribute('data-src');
             let coverUrl = card.querySelector('img').src;
             // card.querySelector('.video-views').setAttribute('href', cover);
@@ -205,11 +207,13 @@ async function injectTiful() {
             a.href = coverUrl;
             a.innerText = 'Pic';
             // a.classList.add('video-addtime');
-            a.classList.add('front-video-stat');
+            // a.classList.add('front-video-stat');
+            // a.classList.add('video-card__meta');
             a.target = '_blank';
             a.style.textDecoration = 'none';
+            a.style['margin-left'] = '4px';
             // card.querySelector('.video-views')?.appendChild(a);
-            card.querySelector('.front-video-stat')?.appendChild(a);
+            card.querySelector('.video-card__meta')?.appendChild(a);
         });
     });
 }
