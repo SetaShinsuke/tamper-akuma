@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.41
+// @version        0.42
 // @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -151,7 +151,7 @@ async function injectTiful() {
     });
     // 自动夜间模式
     runWhenLoaded(`.preferences-radio[value='dark']`, darkThemeBtn => {
-        if (localStorage.getItem('frontTheme') !== 'dark') {
+        if (!darkThemeBtn.checked || localStorage.getItem('frontTheme') !== 'dark') {
             darkThemeBtn.click();
             console.log(`已自动切换夜间模式`);
         }
