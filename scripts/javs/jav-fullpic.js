@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.40
+// @version        0.41
 // @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -147,6 +147,13 @@ async function injectTiful() {
         if (!siteShell.classList.contains('is-sidebar-collapsed')) {
             document.querySelector(`button.navigation-toggle`)?.click();
             console.log(`Nav auto collapsed!`);
+        }
+    });
+    // 自动夜间模式
+    runWhenLoaded(`.preferences-radio[value='dark']`, darkThemeBtn => {
+        if (localStorage.getItem('frontTheme') !== 'dark') {
+            darkThemeBtn.click();
+            console.log(`已自动切换夜间模式`);
         }
     });
     // 播放页
