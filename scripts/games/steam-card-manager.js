@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         steam-card-manager
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  管理卡牌记录
 // @author       Akuma
 // @match        https://steamcommunity.com/market/listings/*/*
@@ -263,7 +263,8 @@ async function addListing(uid, listingType) {
     let mySaleTable = document.querySelector(`div[style*="--grid-column:"]>h2`)?.parentNode.parentNode;
     switch (listingType) {
         case ON_LISTING:
-            date = mySaleTable.querySelectorAll(`div>span`)[4].innerText;
+            // date = mySaleTable.querySelectorAll(`div>span`)[4].innerText;
+            date = mySaleTable.querySelectorAll(`div[style*='--text-align: center']>span`)[3].innerText;
             // date = document.querySelector(`.market_listing_row .market_listing_right_cell.market_listing_listed_date.can_combine`).innerText;
             // date = `2026-${date.replace(' 月 ', '-').replace('日', '')}`;
             now = new Date();
@@ -277,11 +278,13 @@ async function addListing(uid, listingType) {
             date = date.toISOString();
             // 预计赚到多少 (￥1.00)
             // extra = document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price>span>span:last-child`)?.innerText;
-            extra = mySaleTable.querySelectorAll(`div>span`)[4].innerText;
+            // extra = mySaleTable.querySelectorAll(`div>span`)[4].innerText;
+            extra = mySaleTable.querySelectorAll(`div[style*='--text-align: center']>span`)[4].innerText;
         case ORDER_LISTING:
             count = 1;
             // price = document.querySelector(`.market_recent_listing_row .market_listing_my_price .market_listing_price`).innerText;
-            price = mySaleTable.querySelectorAll(`div>span`)[5].parentNode.querySelector('div').innerText;
+            // price = mySaleTable.querySelectorAll(`div>span`)[5].parentNode.querySelector('div').innerText;
+            price = mySaleTable.querySelectorAll(`div[style*='--text-align: center']>span`)[4].parentNode.querySelector('div').innerText;
             price = price.replace(/\n.+/, '');
             break;
         case B_LISTING:
