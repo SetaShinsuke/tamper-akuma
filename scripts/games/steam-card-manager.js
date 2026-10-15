@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         steam-card-manager
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  管理卡牌记录
 // @author       Akuma
 // @match        https://steamcommunity.com/market/listings/*/*
@@ -258,11 +258,13 @@ async function addListing(uid, listingType) {
 
     let date = (new Date()).toISOString();
     let price, count, extra, now;
+    let cardStatus; //0: 无; 1: 在库; 2: 已卖出; 3: 已合成
     let tableIndex = 0;
     // 最上面的“我的上架物品”
     let mySaleTable = document.querySelector(`div[style*="--grid-column:"]>h2`)?.parentNode.parentNode;
     switch (listingType) {
         case ON_LISTING:
+            cardStatus = 1;  
             // date = mySaleTable.querySelectorAll(`div>span`)[4].innerText;
             date = mySaleTable.querySelectorAll(`div[style*='--text-align: center']>span`)[3].innerText;
             // date = document.querySelector(`.market_listing_row .market_listing_right_cell.market_listing_listed_date.can_combine`).innerText;
@@ -313,6 +315,9 @@ async function addListing(uid, listingType) {
     }
     if (extra) {
         data.extra = extra;
+    }
+    if (cardStatus) { // TODO: pihub 修改 card_status
+        data.card_status = cardStatus;
     }
     console.log(data);
     netHelper.post(API_CARD_HISTORY, data).then(response => {
