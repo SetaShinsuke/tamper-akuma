@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DioAddAcq
 // @namespace    http://tampermonkey.net/
-// @version      1.2.4
+// @version      1.2.5
 // @description  添加 Acquisition
 // @author       Akuma
 // @match        https://store.epicgames.com/*
@@ -128,7 +128,8 @@ function injectEpic() {
         let sku = skuPath[1];
         var currency = 'USD';
         try {
-            let data = JSON.parse(document.querySelector('#_schemaOrgMarkup-Product').innerText);
+            // let data = JSON.parse(document.querySelector('#_schemaOrgMarkup-Product').innerText);
+            let data = JSON.parse(document.querySelector(`script[type='application/ld+json`).innerText);
             // currency = data.offers[0]?.priceCurrency;
             currency = data.offers?.priceCurrency;
             currency = currency?currency:'USD';
@@ -148,8 +149,9 @@ function injectEpic() {
             // let orgPrice = parseFloat(document.querySelectorAll('aside>div>div>div')[2]
             //     .querySelector('div>span').innerText.substr(3)) * 100
             let orgPrice = 0;
-            let priceStr = document.querySelector('aside>div>div').innerText.match(/[$¥](.*)\n/);
-            if (priceStr && priceStr.length > 0) {
+            // let priceStr = document.querySelector('aside>div>div').innerText.match(/[$¥](.*)\n/);
+            let priceStr = document.querySelector(`section[class*='_sidebar_']>div[class*='eds_']>div>div>span>s`).innerText.match(/[$¥](.*)/);
+            if (priceStr && priceStr.length > 1) {
                 priceStr = priceStr[1];
                 orgPrice = parseInt(parseFloat(priceStr) * 100);
             }
