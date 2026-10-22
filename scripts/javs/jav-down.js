@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.18
+// @version      0.19
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -26,7 +26,9 @@
 
 // body: {video_id: xxx}
 // let API_TIFUL = `https://javtiful.com/ajax/get_cdn`;
-let API_TIFUL = `https://javtiful.com/ajax/embed_cdn`; // 2025.9.7 更新接口
+// let API_TIFUL = `https://javtiful.com/ajax/embed_cdn`; // 2025.9.7 更新接口
+let API_TIFUL = `https://javtiful.com/video/{VIDEO_ID}/playback`; // 2025.10.23 更新接口，需要 ticket 参数
+// let ticket = JSON.parse(document.querySelector(`#watch-config`).innerHTML)['playback']['ticket']
 
 let referer = getReferer();
 // content-type 必要
@@ -53,14 +55,17 @@ var HEADERS = {
 
     // 跳过 tiful embed 页面
     let isEmbed = /embed/.test(window.location.pathname);
-    if (location.hostname === 'javtiful.com' && isEmbed) {
-        console.log(`Javtiful embed deprecated!`);
-        return;
-    }
+    // if (location.hostname === 'javtiful.com' && isEmbed) {
+    //     console.log(`Javtiful embed deprecated!`);
+    //     return;
+    // }
     // 添加按钮
     let alpha = 1;
     if (window.location.hostname === 'javtiful.com' && !getQuery('v_name')) { // 没有v_name字段，透明度0
         alpha = 0;
+    }
+    if (isEmbed) {
+        alpha = 1;
     }
     let onClick = async (event, doSize) => {
         let fileName = getQuery('v_name');
@@ -156,21 +161,38 @@ function fetchTubeUrl(doSize = false) {
 function fetchTifulUrl(doSize = false, isEmbed = false) {
     return new Promise((resolve, reject) => {
         let finalUrl;
+        // video_id 最初是页面自带的变量，现在需要手动获得
+        let video_id = window.location.pathname.match(/(\/video\/|\/embed\/)(\d+)/);
+        if (video_id.length > 2) {
+            video_id = video_id[2];
+        } else {
+            console.log(`No video id`);
+        }
+        // ticket
+        let ticket;
+        try {
+            ticket = JSON.parse(document.querySelector(`#watch-config`).innerHTML)['playback']['ticket'];
+        } catch (err) {
+            console.log(`No ticket`);
+        }
 
-        if (isEmbed && video_id) {
+        // if (isEmbed && video_id) {
+        if (video_id && ticket) {
             // isEmbed = true 时，通过 POST 方法获取 finalUrl
             let videoId = video_id;
             console.log(`videoId: ${videoId}`);
+            let url = API_TIFUL.replace(`{VIDEO_ID}`, videoId);
 
             GM_xmlhttpRequest({
                 method: 'POST',
-                url: API_TIFUL,
-                data: `video_id=${videoId}`,
+                url: url,
+                data: `ticket=${ticket}`,
                 headers: HEADERS,
                 onload: function (response) {
                     console.log(response.responseText);
                     var resJson = JSON.parse(response.responseText);
-                    finalUrl = resJson.playlists;
+                    // finalUrl = resJson.playlists;
+                    finalUrl = resJson.sources[0].src;
 
                     processFinalUrl(finalUrl);
                 },
@@ -180,9 +202,15 @@ function fetchTifulUrl(doSize = false, isEmbed = false) {
                     reject(err);
                 }
             });
-        } else {
+        } else { // 没有 ticket，点击播放后从 <video> 里找 src
             // isEmbed = false 时，直接从 video source 获取
-            finalUrl = document.querySelector(`video source`).src;
+            finalUrl = document.querySelector(`video source`)?.src;
+            if (!finalUrl){
+                console.log(`Video source is null`);
+                alert(`需要先点击播放！`);
+                reject(`Video source is null`);
+                return;
+            }
             processFinalUrl(finalUrl);
         }
 

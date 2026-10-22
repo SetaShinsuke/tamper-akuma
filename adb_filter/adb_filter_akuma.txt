@@ -1,6 +1,6 @@
  [Adblock Plus 2.0]
 ! Title: _Akuma ADB filters
-! Version: 26.10.10
+! Version: 26.10.23
 ! Title should be on TOP
 
 ! steam
@@ -22,6 +22,10 @@ javtiful.com##article.front-ad-card
 javtiful.com##article.front-partner-card
 javtiful.com##article.video-card--partner
 javtiful.com###.front-ad-placement.front-ad-placement-in-video
+javtiful.com##.watch-related>.front-feature-placement
+javtiful.com##section.home-live
+javtiful.com##section[data-home-shorts]
+
 javhdporn.net#?#article.thumb-block-native-ad
 ||seccc.jasjas.xyz^
 ||mna.jasjas.site^
