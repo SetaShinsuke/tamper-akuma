@@ -1,0 +1,26 @@
+[
+  {
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "||fozekikikiminu.com^"
+    }
+  },
+  {
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "||seccc.jasjas.xyz^"
+    }
+  },
+  {
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "||chaseherbalpasty.com^"
+    }
+  }
+]

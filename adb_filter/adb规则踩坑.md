@@ -1,8 +1,31 @@
 # ADB filters 规则踩坑
 
 ## 写在前面
-~~折腾半天放弃了，这语法太容易错了，干脆把有语法错误的单独写到另一份文件去，能导入直接导入，不能导入手动添加完事~~感觉暂时还能撑住
+~~折腾半天放弃了，这语法太容易错了，干脆把有语法错误的单独写到另一份文件去，能导入直接导入，不能导入手动添加完事~~
+改用 Ublock Origin Lite 了，需要给与插件“允许运行用户脚本”的权限
 
+## uBlock Origin说明
+uBlock Origin 支持 `$script` 语法
+```text
+||fozekikikiminu.com^$script
+||seccc.jasjas.xyz^$script
+```
+但 **Lite 版不支持**，所以改用 DNR 规则
+uBlock Origin Lite 选项 -> 开发 -> 导入规则 -> 导入json文件
+```json
+[
+  {
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "||fozekikikiminu.com^"
+    }
+  }
+]
+```
+
+------------------------------------------------
 ## URL导入：语法错误踩坑
 ### 错误1：`###` 与 `##`
 **出错规则**：`xxx.com###div.theeffect section`
