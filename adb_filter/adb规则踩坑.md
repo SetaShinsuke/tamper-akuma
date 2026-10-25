@@ -1,8 +1,19 @@
 # ADB filters 规则踩坑
 
+## 省流
+- 对于 Tractor-Reborn 这台电脑：
+  - Chrome：
+    - ABP 导入规则出错，统一改用 uBolck Origin Lite 导入规则
+    - uBOL 不支持某些语法，所以添加几条 DNR 规则来屏蔽某些域名
+  - Edge：
+    - 正常使用 ABP 导入规则，uBlock 默认不改
+
+- 对于其他电脑
+  - 正常使用 ABP 导入规则，uBlock 默认不改
+
 ## 写在前面
 ~~折腾半天放弃了，这语法太容易错了，干脆把有语法错误的单独写到另一份文件去，能导入直接导入，不能导入手动添加完事~~
-改用 Ublock Origin Lite 了，需要给与插件“允许运行用户脚本”的权限
+改用 Ublock Origin Lite 了，需要给与插件“允许运行用户脚本”的权限，某些语法不支持的需要导入 DNR 规则
 
 ## uBlock Origin说明
 uBlock Origin 支持 `$script` 语法
@@ -10,7 +21,7 @@ uBlock Origin 支持 `$script` 语法
 ||fozekikikiminu.com^$script
 ||seccc.jasjas.xyz^$script
 ```
-但 **Lite 版不支持**，所以改用 DNR 规则
+但 **Lite 版不支持**，所以改用 DNR 规则，直接屏蔽该域名
 uBlock Origin Lite 选项 -> 开发 -> 导入规则 -> 导入json文件
 ```json
 [

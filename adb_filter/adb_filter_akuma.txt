@@ -25,6 +25,7 @@ javtiful.com###.front-ad-placement.front-ad-placement-in-video
 javtiful.com##.watch-related>.front-feature-placement
 javtiful.com##section.home-live
 javtiful.com##section[data-home-shorts]
+! 以下格式的规则在 uBlock Origin Lite 中不适用，需要以 DNR 规则的形式导入 json
 ||fozekikikiminu.com^
 ||chaseherbalpasty.com^
 

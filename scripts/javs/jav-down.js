@@ -376,6 +376,10 @@ function removeShade() {
     var divs = document.querySelectorAll('div');
     var ad = divs[divs.length - 1];
     console.log(ad);
+    if (/crx-mouse/.test(ad.id)) {
+        console.log("Skip crs-mouse div");
+        return;
+    }
     if (ad.style['opacity'] !== '' || ad.style['opacity'] === '0.01') {
         ad.style['display'] = 'none';
     }
