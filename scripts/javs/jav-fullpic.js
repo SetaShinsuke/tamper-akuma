@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           JavFullPic
 // @namespace      http://tampermonkey.net/
-// @version        0.42
+// @version        0.43
 // @description    Click eye icon to see full picture, as well as other experience-enhancing functions
 // @author         Akuma
 // @match          https://javgg.net/*
@@ -203,7 +203,10 @@ async function injectTiful() {
             // 条目的宽度
             document.querySelector('.video-grid').style.setProperty('grid-template-columns', 'repeat(auto-fill, minmax(min(100%, 360px), 1fr))', 'important');
             // let coverUrl = card.querySelector('img').getAttribute('data-src');
-            let coverUrl = card.querySelector('img').src;
+            let coverUrl = card.querySelector('img')?.src;
+            if (!coverUrl) {
+                return;
+            }
             // card.querySelector('.video-views').setAttribute('href', cover);
             let a = document.createElement('a');
             a.href = coverUrl;
