@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         steam-card-manager
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  管理卡牌记录
 // @author       Akuma
 // @match        https://steamcommunity.com/market/listings/*/*
@@ -297,6 +297,7 @@ async function addListing(uid, listingType) {
             let tds = document.querySelectorAll(`div>div>table`)[tableIndex].querySelectorAll(`tbody>tr>td>span`);
             // 0: 出售数; 2: 求购数
             count = document.querySelectorAll(`div[style*="start"]>span>span`)[2 * tableIndex]?.innerText;
+            count = count.replaceAll(',', ''); // 去掉逗号
             count = parseInt(count);
             // price = document.querySelectorAll(`span.market_commodity_orders_header_promote`)[countIndex + 1].innerText;
             price = tds[0].innerText;
@@ -305,6 +306,7 @@ async function addListing(uid, listingType) {
             break;
     }
     price = price.replace(/¥(\s+)?/, '');
+    price = price.replaceAll(',', ''); // 但是价格不太可能上千吧……
     price = parseInt(Number(price) * 100);
     let data = {
         card_id: cardId,
