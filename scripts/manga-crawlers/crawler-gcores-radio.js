@@ -149,6 +149,9 @@ function injectRadioPage() {
     cate = cate || document.querySelector('.gpf_header_title>a')?.innerText;
     let isProtected = VIP_CATES.includes(cate);
     isProtected = isProtected && !/试听/.test(name);
+    // “限时免费听”的节目不走 protected 接口
+    isProtected = isProtected && !/限时免费听/.test(name);
+    console.log(`Radio, isProtected: ${isProtected}`);
     getRadioUrl(radioId, isProtected).then(fileUrl => {
         copyToClipboard(name);
         toast('文件名已复制!');
