@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         jav-down
 // @namespace    http://tampermonkey.net/
-// @version      0.19
+// @version      0.20
 // @description  Click to download video
 // @author       Akuma
 // @match        https://tktube.com/embed/*
@@ -81,11 +81,13 @@ var HEADERS = {
                 break;
             case 'javtiful.com':
                 await fetchTifulUrl(doSize, isEmbed).then(res => {
+                    console.log(`res.url: \n${res.url}`);
                     videoUrl = res.url;
                     size = res.size;
                 });
                 break;
         }
+        console.log(`get ext: \n${videoUrl}`);
         let ext = getExtByUrl(videoUrl);
         if (!ext) {
             ext = '.mp4';
@@ -214,7 +216,13 @@ function fetchTifulUrl(doSize = false, isEmbed = false) {
             processFinalUrl(finalUrl);
         }
 
-        function processFinalUrl(url) {
+        function processFinalUrl(_url) {
+            let url = _url;
+            console.log(`Process final url: ${url}`);
+            if (!url.startsWith('https://javtiful.com')) {
+                url = `https://javtiful.com${url}`;
+                console.log(`fixed url: ${url}`);
+            }
             if (!doSize) {
                 resolve({
                     url: url,
