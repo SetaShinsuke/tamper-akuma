@@ -1,6 +1,6 @@
  [Adblock Plus 2.0]
 ! Title: _Akuma ADB filters
-! Version: 26.10.24
+! Version: 26.11.15
 ! Title should be on TOP
 
 ! steam
@@ -25,6 +25,7 @@ javtiful.com###.front-ad-placement.front-ad-placement-in-video
 javtiful.com##.watch-related>.front-feature-placement
 javtiful.com##section.home-live
 javtiful.com##section[data-home-shorts]
+javtiful.com##div.front-feature-placement.front-feature-placement-player
 ! 以下格式的规则在 uBlock Origin Lite 中不适用，需要以 DNR 规则的形式导入 json
 ||fozekikikiminu.com^
 ||chaseherbalpasty.com^
