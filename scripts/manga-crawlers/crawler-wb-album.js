@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Crawler-Wb-Album
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  爬取微博相册的图, 参数 pic_size 设置大小(orj360, mw690, mw2000, large, woriginal)
 // @author       Akuma
 // @match        https://photo.weibo.com/*/albums/detail/album_id/*/mode/3/*
@@ -31,7 +31,7 @@
 
 function fetchPost(picSize) {
     var tasks = {};
-    let author = document.querySelector(`header a[class*='head_cut']>span`)?.textContent;
+    let author = document.querySelector(`header div[class*='_nick']>a>span`)?.textContent;
     var bookName = verifyFileName(`${author}的WB`);
     tasks['config'] = {};
     tasks['config']['referer'] = `${window.location.protocol}//${window.location.host}`;
@@ -39,14 +39,14 @@ function fetchPost(picSize) {
 
     let postId = window.location.pathname.replaceAll('/', '_');
     let chapName = postId + '';
-    let contentMatch = document.querySelector(`div[class*='detail_wbtext']`)?.textContent?.match(/《(.*?)》/);
+    let contentMatch = document.querySelector(`div[class*='wbpro-feed-content']`)?.textContent?.match(/《(.*?)》/);
     if (contentMatch?.length > 1) {
         // XXX作品_postId
         chapName = contentMatch[1] + chapName;
     }
     console.log('chapter name: ' + chapName);
     tasks[chapName] = [];
-    var imgs = document.querySelectorAll(`div[class*='picture-box'] img`);
+    var imgs = document.querySelectorAll(`div[class*='woo-picture-main'] img`);
     imgs = Array.from(imgs);
     var i = 0;
     imgs.forEach(img => {
