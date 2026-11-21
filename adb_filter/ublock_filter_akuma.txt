@@ -1,9 +1,14 @@
  [Adblock Plus 2.0]
 ! Title: _Akuma UBO filters
-! Version: 26.10.24
+! Version: 26.11.21
 ! Title should be on TOP
 ! 上面第一行对于 uBlock 来说不是必须
 
 ! uBlock Origin 支持 $script 语法，但 Lite 版不支持，所以改用 DNR 规则（开发-导入规则-导入json文件）
 ! ||fozekikikiminu.com^$script
 ! ||seccc.jasjas.xyz^$script
+
+! bilibili
+! live.bilibili.com##div[class*="web-player-icon-roomStatus"]:style(opacity: 0 !important; pointer-events：none !important;)
+! live.bilibili.com##div[id="web-player-module-area-mask-panel"]:style(opacity: 0 !important; pointer-events：none !important;)
+! live.bilibili.com##.web-player-module-area-mask:style(opacity: 0 !important; pointer-events：none !important;)

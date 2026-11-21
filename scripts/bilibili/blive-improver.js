@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         BLiveImprover
 // @namespace    http://tampermonkey.net/
-// @version      0.4
-// @description  防止B站直播在后台自动暂停/去除OW区马赛克
+// @version      0.5
+// @description  防止B站直播在后台自动暂停/去除OW区马赛克/去用户ID水印
 // @author       Akuma
 // @include      /https?:\/\/live\.bilibili\.com\/?\??.*/
 // @include      /https?:\/\/live\.bilibili\.com\/\d+\??.*/
@@ -27,14 +27,19 @@ function removeWatermark() {
     runWhenLoaded(`.web-player-icon-roomStatus`, maskDiv => {
         // maskDiv?.remove();
         maskDiv.style['display'] = 'none';
+        maskDiv.style['opacity'] = '0 !important';
+        maskDiv.style['pointer-events'] = 'none !important';
         console.log('Removed room user id watermark.');
     });
 }
 
 function removeMosaic() {
-    runWhenLoaded(`.web-player-module-area-mask`, maskDiv => {
+    runWhenLoaded(`#web-player-module-area-mask-panel`, maskDiv => {
         // maskDiv?.remove();
-        maskDiv.style['display'] = 'none';
+        // maskDiv.style['display'] = 'none';
+        // 改成 none 会报错 90005 违规操作
+        maskDiv.style['opacity'] = '0 !important';
+        maskDiv.style['pointer-events'] = 'none !important';
         console.log('Removed web player mask.');
     });
 }
